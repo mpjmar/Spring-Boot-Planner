@@ -46,7 +46,7 @@ public class Tarea {
     private Double horasEstimadas;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profesor_id")
+    @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
 
 

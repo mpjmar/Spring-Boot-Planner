@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 
 import java.time.LocalTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "bloquesEstudio", schema = "public")
@@ -21,9 +22,13 @@ public class BloqueEstudio {
     @Column(nullable = false, unique = true, length = 20)
     private String diaSemana;
 
-    private LocalTime horaInicio;
+	@DateTimeFormat(pattern = "HH:mm")
+	@Column(name = "hora_inicio")
+	private LocalTime horaInicio;
 
-    private LocalTime horaFin;
+	@DateTimeFormat(pattern = "HH:mm")
+	@Column(name = "hora_fin")
+	private LocalTime horaFin;
 
     @NotBlank
     @Size(max = 50)
@@ -39,7 +44,7 @@ public class BloqueEstudio {
     private String imagenUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "_id")
+    @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
 
 }
