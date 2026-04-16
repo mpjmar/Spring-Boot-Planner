@@ -2,6 +2,7 @@ package com.planner.spring_boot_planner.entity;
 
 import jakarta.persistence.*;
 
+import java.sql.Time;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.Min;
@@ -43,7 +44,7 @@ public class Tarea {
 
     @Min(0)
     @Column(nullable = false)
-    private Double horasEstimadas;
+    private Time horasEstimadas;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")

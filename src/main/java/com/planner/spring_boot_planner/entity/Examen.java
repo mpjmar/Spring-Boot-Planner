@@ -27,7 +27,7 @@ public class Examen {
     private LocalDate fecha;
 
     @Size(max = 20)
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String peso;
 
     @Min(1)

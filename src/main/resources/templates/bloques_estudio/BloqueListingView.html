@@ -1,10 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${pageTitle} ?: 'Planning de estudio'">Planning de estudio</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+  </head>
+  <body class="fondo-bloques" th:classappend="${bodyClass}">
+    <main class="plan-layout">
+      <aside class="panel-lateral">
+        <div class="panel-titulo">
+          <p>Bloques de estudio</p>
+          <h1 th:text="${tituloHorario} ?: 'Planning diario'">Planning diario</h1>
+        </div>
+
+        <div class="panel-resumen">
+          <div>
+            <span class="resumen-numero">6</span>
+            <span class="resumen-texto">bloques</span>
+          </div>
+          <div>
+            <span class="resumen-numero">18h</span>
+            <span class="resumen-texto">objetivo semanal</span>
+          </div>
+          <div>
+            <span class="resumen-numero">3</span>
+            <span class="resumen-texto">materias activas</span>
+          </div>
+        </div>
+
+        <div class="lista-materias">
+          <article class="materia-card materia-matematicas">
+            <span class="materia-punto"></span>
+            <div>
+              <strong>Matemáticas</strong>
+              <p>2 bloques pendientes</p>
+            </div>
+          </article>
+          <article class="materia-card materia-quimica">
+            <span class="materia-punto"></span>
+            <div>
+              <strong>Química</strong>
+              <p>1 bloque intenso</p>
+            </div>
+          </article>
+          <article class="materia-card materia-fisica">
+            <span class="materia-punto"></span>
+            <div>
+              <strong>Física</strong>
+              <p>Repaso y ejercicios</p>
+            </div>
+          </article>
+        </div>
+
+        <a class="boton-crear" th:href="@{/bloques-estudio/nuevo}">Nuevo bloque</a>
+      </aside>
+
+      <section class="panel-principal">
+        <header class="cabecera-calendario">
+          <div>
+            <p class="subtitulo-seccion">Vista diaria</p>
+            <h2>Agosto 2013</h2>
+          </div>
+          <div class="selector-vista">
+            <button type="button" class="activo">Día</button>
+            <button type="button">Semana</button>
+            <button type="button">Mes</button>
+          </div>
+        </header>
+
+        <div class="calendario-bloques" aria-label="Planning diario de estudio">
+          <div class="calendario-columna-horas">
+            <span>08:00</span>
+            <span>09:00</span>
+            <span>10:00</span>
+            <span>11:00</span>
+            <span>12:00</span>
+            <span>13:00</span>
+            <span>14:00</span>
+            <span>15:00</span>
+          </div>
+
+          <div class="calendario-grid">
+            <div class="bloque bloque-matematicas" style="grid-row: 1 / span 2; grid-column: 1 / span 3;">
+              <span class="bloque-hora">08:00 - 10:00</span>
+              <strong>Matemáticas</strong>
+              <p>Problemas de funciones y derivadas</p>
+            </div>
+            <div class="bloque bloque-quimica" style="grid-row: 2 / span 2; grid-column: 4 / span 2;">
+              <span class="bloque-hora">09:00 - 11:00</span>
+              <strong>Química</strong>
+              <p>Formulación y ejercicios tipo examen</p>
+            </div>
+            <div class="bloque bloque-descanso" style="grid-row: 4 / span 1; grid-column: 1 / span 5;">
+              <span class="bloque-hora">12:00 - 12:30</span>
+              <strong>Descanso</strong>
+              <p>Comida, desconexión y vuelta al foco</p>
+            </div>
+            <div class="bloque bloque-fisica" style="grid-row: 5 / span 2; grid-column: 2 / span 3;">
+              <span class="bloque-hora">13:00 - 15:00</span>
+              <strong>Física</strong>
+              <p>Problemas de dinámica y repaso final</p>
+            </div>
+            <div class="bloque bloque-hueco" style="grid-row: 7 / span 1; grid-column: 4 / span 2;">
+              <span class="bloque-hora">15:00 - 16:00</span>
+              <strong>Revisión</strong>
+              <p>Correcciones y próxima sesión</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>

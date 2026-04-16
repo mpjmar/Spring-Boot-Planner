@@ -31,13 +31,13 @@ public class BloqueEstudio {
 	private LocalTime horaFin;
 
     @NotBlank
-    @Size(max = 50)
-    @Column(nullable = false, unique = true, length = 50)
+    @Size(max = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String tipoSesion;
 
     @NotBlank
-    @Size(max = 20)
-    @Column(nullable = false, unique = true, length = 20)
+    @Size(max = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String completado;
 
     @Column(name = "imagen_url")

@@ -20,21 +20,16 @@ public class Asignatura {
 
     @NotBlank
     @Size(max = 50)
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String nombre;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profesor_id", nullable = false)
+    @JoinColumn(name = "profesor_id")
     private Profesor profesor;
 
     @Min(1)
-    @Column(nullable = false)
+    @Column
     private Integer dificultad;
-
-    @Min(0)
-    @Column(nullable = false)
-    private Integer horasObjetivoSemana;
 
     @Column(name = "imagen_url")
     private String imagenUrl;
