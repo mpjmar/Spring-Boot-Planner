@@ -1,23 +1,21 @@
 package com.planner.spring_boot_planner.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+
 @Entity
-@Table(name = "profesores", schema = "public")
-public class Profesor {
+@Table(name = "usuarios", schema = "public")
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,16 +32,15 @@ public class Profesor {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Asignatura> asignaturas = new ArrayList<>();
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cuadrante cuadrante;
 
-    public Profesor() {
+    public Usuario() {
     }
 
-    public Profesor(String nombre, String email, ArrayList<Asignatura> asignaturas) {
+    public Usuario(String nombre, String email) {
         this.nombre = nombre;
         this.email = email;
-        this.asignaturas = asignaturas;
     }
 
     public Long getId() {
@@ -70,26 +67,21 @@ public class Profesor {
         this.email = email;
     }
 
-    public List<Asignatura> getAsignaturas() {
-        return asignaturas;
+    public Cuadrante getCuadrante() {
+        return cuadrante;
     }
 
-    public void setAsignaturas(List<Asignatura> asignaturas) {
-        this.asignaturas = asignaturas;
-    }
-
-    public void setCursos(List<Asignatura> asignaturas) {
-        this.asignaturas = asignaturas;
+    public void setCuadrante(Cuadrante cuadrante) {
+        this.cuadrante = cuadrante;
     }
 
     @Override
     public String toString() {
-        return "Profesor{" +
+        return "Usuario{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
-                ", asignaturas=" + (asignaturas != null ? asignaturas.size() : 0) +
+                ", cuadrante=" + (cuadrante != null ? "asignado" : null) +
                 '}';
     }
 }
-
