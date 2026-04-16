@@ -3,6 +3,8 @@ package com.planner.spring_boot_planner.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,16 +36,22 @@ public class Usuario {
     @Size(max = 150)
     @Column(nullable = false, unique = true, length = 150)
     private String email;
+	
+    @NotBlank
+    @Size(max = 100)
+    @Column(nullable = false, length = 100)
+    private String password;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cuadrante> cuadrantes = new ArrayList<>();
 
     public Usuario() {
     }
 
-    public Usuario(String nombre, String email) {
+    public Usuario(String nombre, String email, String password) {
         this.nombre = nombre;
         this.email = email;
+		this.password = password;
     }
 
     public Long getId() {
@@ -69,6 +77,15 @@ public class Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
+
+	@JsonIgnore
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
     public List<Cuadrante> getCuadrantes() {
         return cuadrantes;
