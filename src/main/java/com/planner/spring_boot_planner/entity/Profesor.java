@@ -40,7 +40,7 @@ public class Profesor {
     public Profesor() {
     }
 
-    public Profesor(String nombre, String email, ArrayList<Asignatura> asignaturas) {
+    public Profesor(String nombre, String email, List<Asignatura> asignaturas) {
         this.nombre = nombre;
         this.email = email;
         this.asignaturas = asignaturas;
@@ -78,17 +78,13 @@ public class Profesor {
         this.asignaturas = asignaturas;
     }
 
-    public void setCursos(List<Asignatura> asignaturas) {
-        this.asignaturas = asignaturas;
-    }
-
     @Override
     public String toString() {
         return "Profesor{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
-                ", asignaturas=" + (asignaturas != null ? asignaturas.size() : 0) +
+                "id = " + id +
+                ", nombre = '" + nombre + '\'' +
+                ", email = '" + email + '\'' +
+                ", asignaturas = " + (asignaturas != null ? asignaturas.size() : 0) +
                 '}';
     }
 }

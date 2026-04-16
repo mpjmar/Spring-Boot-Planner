@@ -1,12 +1,15 @@
 package com.planner.spring_boot_planner.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -32,8 +35,8 @@ public class Usuario {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cuadrante cuadrante;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cuadrante> cuadrantes = new ArrayList<>();
 
     public Usuario() {
     }
@@ -67,12 +70,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public Cuadrante getCuadrante() {
-        return cuadrante;
+    public List<Cuadrante> getCuadrantes() {
+        return cuadrantes;
     }
 
-    public void setCuadrante(Cuadrante cuadrante) {
-        this.cuadrante = cuadrante;
+    public void setCuadrantes(List<Cuadrante> cuadrantes) {
+        this.cuadrantes = cuadrantes;
     }
 
     @Override
@@ -81,7 +84,6 @@ public class Usuario {
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
-                ", cuadrante=" + (cuadrante != null ? "asignado" : null) +
                 '}';
     }
 }

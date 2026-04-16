@@ -27,7 +27,7 @@ public class Horario {
 
     @NotBlank
     @Size(max = 20)
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(nullable = false, length = 20)
     private String diaSemana;
 
     @DateTimeFormat(pattern = "HH:mm")
@@ -106,14 +106,19 @@ public class Horario {
         this.profesor = profesor;
     }
 
-    @Override
-    public String toString() {
-        return "Horario{" +
-                "id=" + id +
-                ", diaSemana='" + diaSemana + '\'' +
-                ", horaInicio=" + horaInicio +
-                ", horaFin=" + horaFin +
-                '}';
-    }
+	@Override
+	public String toString() {
+		Long idAsignatura = (asignatura != null ? asignatura.getId() : null);
+		Long idProfesor = (profesor != null ? profesor.getId() : null);
+		
+		return "Horario [id = " + id + 
+			   ", diaSemana = " + diaSemana + 
+			   ", horaInicio = " + horaInicio + 
+			   ", horaFin = " + horaFin + 
+			   ", asignatura = " + idAsignatura + 
+			   ", profesor = " + idProfesor + "]";
+	}
+
+
 
 }

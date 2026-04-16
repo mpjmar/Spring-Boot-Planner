@@ -1,5 +1,6 @@
 package com.planner.spring_boot_planner.entity;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,12 +24,11 @@ public class BloqueEstudio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
-    @Size(max = 20)
-    @Column(nullable = false, length = 20)
-    private String diaSemana;
-
+	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(name = "fecha")
+    private LocalDate fecha;
+	
 	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name = "hora_inicio")
 	private LocalTime horaInicio;
@@ -36,20 +36,31 @@ public class BloqueEstudio {
 	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name = "hora_fin")
 	private LocalTime horaFin;
+		
+	@NotBlank
+	@Size(max = 20)
+	@Column(nullable = false, length = 20)
+	private String diaSemana;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cuadrante_id")
+    private Cuadrante cuadrante;
 
     public BloqueEstudio() {
     }
 
-    public BloqueEstudio(String diaSemana, LocalTime horaInicio, LocalTime horaFin, Asignatura asignatura) {
+    public BloqueEstudio(LocalDate fecha, String diaSemana, LocalTime horaInicio, LocalTime horaFin,
+            Asignatura asignatura, Cuadrante cuadrante) {
+        this.fecha = fecha;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.asignatura = asignatura;
+		this.cuadrante = cuadrante;
     }
 
     public Long getId() {
@@ -58,6 +69,14 @@ public class BloqueEstudio {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public String getDiaSemana() {
@@ -92,15 +111,27 @@ public class BloqueEstudio {
         this.asignatura = asignatura;
     }
 
+	public Cuadrante getCuadrante() {
+		return cuadrante;
+	}
 
-    @Override
-    public String toString() {
-        return "BloqueEstudio{" +
-                "id=" + id +
-                ", diaSemana='" + diaSemana + '\'' +
-                ", horaInicio=" + horaInicio +
-                ", horaFin=" + horaFin +
-                ", asignatura=" + (asignatura != null ? asignatura.getId() : null) +
-                '}';
-    }
+	public void setCuadrante(Cuadrante cuadrante) {
+		this.cuadrante = cuadrante;
+	}
+
+	@Override
+	public String toString() {
+		Long asignaturaId = (asignatura != null ? asignatura.getId() : null);
+    	Long cuadranteId = (cuadrante != null ? cuadrante.getId() : null);
+
+
+		return "BloqueEstudio [id=" + id + 
+			   ", fecha = " + fecha + 
+			   ", horaInicio = " + horaInicio + 
+			   ", horaFin = " + horaFin + 
+			   ", diaSemana = " + diaSemana + 
+			   ", asignatura = " + asignaturaId + 
+			   ", cuadrante = " + cuadranteId + "]";
+	}
+
 }

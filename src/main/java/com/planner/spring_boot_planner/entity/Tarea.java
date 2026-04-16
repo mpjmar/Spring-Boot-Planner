@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -50,9 +49,8 @@ public class Tarea {
     @Column(nullable = false, length = 100)
     private String estado;
 
-    @Min(0)
     @Column(nullable = false)
-    private Time horasEstimadas;
+    private Time tiempoEstimado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")
@@ -61,13 +59,13 @@ public class Tarea {
     public Tarea() {
     }
 
-    public Tarea(String titulo, String descripcion, LocalDate fechaLimite, String prioridad, String estado, Time horasEstimadas, Asignatura asignatura) {
+    public Tarea(String titulo, String descripcion, LocalDate fechaLimite, String prioridad, String estado, Time tiempoEstimado, Asignatura asignatura) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fechaLimite = fechaLimite;
         this.prioridad = prioridad;
         this.estado = estado;
-        this.horasEstimadas = horasEstimadas;
+        this.tiempoEstimado = tiempoEstimado;
         this.asignatura = asignatura;
     }
 
@@ -119,12 +117,12 @@ public class Tarea {
         this.estado = estado;
     }
 
-    public Time getHorasEstimadas() {
-        return horasEstimadas;
+    public Time getTiempoEstimado() {
+        return tiempoEstimado;
     }
 
-    public void setHorasEstimadas(Time horasEstimadas) {
-        this.horasEstimadas = horasEstimadas;
+    public void setTiempoEstimado(Time tiempoEstimado) {
+        this.tiempoEstimado = tiempoEstimado;
     }
 
     public Asignatura getAsignatura() {
@@ -138,13 +136,13 @@ public class Tarea {
     @Override
     public String toString() {
         return "Tarea{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", fechaLimite=" + fechaLimite +
-                ", prioridad='" + prioridad + '\'' +
-                ", estado='" + estado + '\'' +
-                ", horasEstimadas=" + horasEstimadas +
+                "id = " + id +
+                ", titulo = '" + titulo + '\'' +
+                ", descripcion = '" + descripcion + '\'' +
+                ", fecha limite = " + fechaLimite +
+                ", prioridad = '" + prioridad + '\'' +
+                ", estado = '" + estado + '\'' +
+                ", tiempo estimado = " + tiempoEstimado +
                 '}';
     }
 

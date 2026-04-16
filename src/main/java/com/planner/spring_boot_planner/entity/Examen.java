@@ -107,11 +107,11 @@ public class Examen {
     @Override
     public String toString() {
         return "Examen{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", fecha=" + fecha +
-                ", peso='" + peso + '\'' +
-                ", notaObjetivo=" + notaObjetivo +
+                "id = " + id +
+                ", titulo = '" + titulo + '\'' +
+                ", fecha = " + fecha +
+                ", peso = '" + peso + '\'' +
+                ", notaObjetivo = " + notaObjetivo +
                 '}';
     }
 

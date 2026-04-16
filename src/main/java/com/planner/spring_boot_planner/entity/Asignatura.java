@@ -31,7 +31,12 @@ public class Asignatura {
     @Column(length = 50)
     private String nombre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+	@NotBlank
+    @Size(max = 50)
+    @Column(length = 50)
+    private String color;
+
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profesor_id")
     private Profesor profesor;
 
@@ -71,6 +76,14 @@ public class Asignatura {
         this.nombre = nombre;
     }
 
+    public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
     public Profesor getProfesor() {
         return profesor;
     }
@@ -107,10 +120,10 @@ public class Asignatura {
     public String toString() {
         return "Asignatura{" +
                 "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", dificultad=" + dificultad +
-                ", imagenUrl='" + imagenUrl + '\'' +
-                ", tareas=" + (tareas != null ? tareas.size() : 0) +
+                ", nombre = '" + nombre + '\'' +
+                ", dificultad = " + dificultad +
+                ", imagenUrl = '" + imagenUrl + '\'' +
+                ", tareas = " + (tareas != null ? tareas.size() : 0) +
                 '}';
     }
 }
