@@ -30,20 +30,16 @@ public class Asignatura {
     @Size(max = 50)
     @Column(length = 50)
     private String nombre;
-
-	@NotBlank
-    @Size(max = 50)
-    @Column(length = 50)
-    private String color;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profesor_id")
     private Profesor profesor;
-
-    @Min(1)
-    @Column
-    private Integer dificultad;
-
+	
+	@NotBlank
+	@Size(max = 50)
+	@Column(length = 50)
+	private String color;
+	
     @Column(name = "imagen_url")
     private String imagenUrl;
 
@@ -53,10 +49,10 @@ public class Asignatura {
     public Asignatura() {
     }
 
-    public Asignatura(String nombre, Profesor profesor, Integer dificultad, String imagenUrl) {
+    public Asignatura(String nombre, Profesor profesor, String color, String imagenUrl) {
         this.nombre = nombre;
         this.profesor = profesor;
-        this.dificultad = dificultad;
+		this.color = color;
         this.imagenUrl = imagenUrl;
     }
 
@@ -92,14 +88,6 @@ public class Asignatura {
         this.profesor = profesor;
     }
 
-    public Integer getDificultad() {
-        return dificultad;
-    }
-
-    public void setDificultad(Integer dificultad) {
-        this.dificultad = dificultad;
-    }
-
     public String getImagenUrl() {
         return imagenUrl;
     }
@@ -121,9 +109,9 @@ public class Asignatura {
         return "Asignatura{" +
                 "id=" + id +
                 ", nombre = '" + nombre + '\'' +
-                ", dificultad = " + dificultad +
+                ", profesor = " + profesor +
+                ", color = " + color +
                 ", imagenUrl = '" + imagenUrl + '\'' +
-                ", tareas = " + (tareas != null ? tareas.size() : 0) +
                 '}';
     }
 }

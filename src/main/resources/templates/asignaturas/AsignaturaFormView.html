@@ -1,10 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title th:text="${accion} + ' asignatura'">Formulario Asignatura</title>
 </head>
+
 <body>
 
+	<header>
+		<h1 th:text="${accion} + ' asignatura'">Formulario Asignatura</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="card">
+
+			<!-- Si es edición, el action apunta a /{id}/editar; si es nuevo, a /nuevo -->
+			<form th:action="${asignatura.id != null}
+                          ? @{/asignaturas/{id}/editar(id=${asignatura.id})}
+                          : @{/asignaturas/nuevo}" th:object="${asignatura}" method="post">
+
+				<div class="form-group">
+					<label for="nombre">Nombre</label>
+					<input type="text" id="nombre" th:field="*{nombre}" placeholder="Nombre asignatura" />
+					<span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="profesor">Profesor</label>
+					<select id="profesor" th:field="*{profesor.id}" class="form-control">
+						<option value="">-- Selecciona un profesor --</option>
+						<option th:each="prof : ${profesores}"
+							th:value="${prof.id}"
+							th:text="${prof.nombre + ' (' + prof.email + ')'}"
+							th:selected="${prof.id == asignatura.profesor?.id}">
+						</option>
+					</select>
+					<span class="error" th:if="${#fields.hasErrors('profesor') || #fields.hasErrors('profesor.id')}" th:errors="*{profesor}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="color">Color</label>
+					<input type="color" id="color" th:field="*{color}" />
+					<span class="error" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="imagen_url">Imagen</label>
+					<input type="text" id="imagen_url" th:field="*{imagen_url}" placeholder="imagen" />
+					<span class="error" th:if="${#fields.hasErrors('imagen_url')}" th:errors="*{imagen_url}"></span>
+				</div>
+
+				<div class="acciones">
+					<a th:href="@{/asignaturas}" class="btn btn-secondary">← Cancelar</a>
+					<button type="submit" class="btn btn-primary" th:text="${accion} + ' asignatura'">Guardar</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>

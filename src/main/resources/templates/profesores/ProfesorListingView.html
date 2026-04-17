@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title>Listado de Profesores</title>
 </head>
+
 <body>
 
+	<header>
+		<h1>Listado de Profesores</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/profesores/nuevo}" class="btn btn-primary">+ Añadir profesor</a>
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nombre</th>
+					<th>Email</th>
+					<th>Nº Asignaturas</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${#lists.isEmpty(profesores)}">
+					<td colspan="6" class="vacio">No hay profesores registrados.</td>
+				</tr>
+				<tr th:each="profesor : ${profesores}">
+					<td th:text="${profesor.id}"></td>
+					<td th:text="${profesor.nombre}"></td>
+					<td th:text="${profesor.email}"></td>
+					<td th:text="${#lists.size(profesor.asignaturas)}"></td>
+					<td>
+						<a th:href="@{/profesores/{id}/editar(id=${profesor.id})}" class="btn-icon"
+							title="Editar">✏️</a>
+						<form th:action="@{/profesores/{id}/eliminar(id=${profesor.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar este profesor?')">
+							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>

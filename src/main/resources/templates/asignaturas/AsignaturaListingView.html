@@ -1,10 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title>Listado de Asignaturas</title>
 </head>
+
 <body>
 
+	<header>
+		<h1>Listado de Asignaturas</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/asignaturas/nuevo}" class="btn btn-primary">+ Añadir asignatura</a>
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nombre</th>
+					<th>Profesor</th>
+					<th>Color</th>
+					<th>Imagen</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${#lists.isEmpty(asignaturas)}">
+					<td colspan="6" class="vacio">No hay asignaturas registradas.</td>
+				</tr>
+				<tr th:each="asignatura : ${asignaturas}">
+					<td th:text="${asignatura.id}"></td>
+					<td th:text="${asignatura.nombre}"></td>
+					<td th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></td>
+					<td th:text="${asignatura.color}"></td>
+					<td th:text="${asignatura.imagen_url}"></td>
+					<td>
+						<a th:href="@{/asignaturas/{id}/editar(id=${asignatura.id})}" class="btn-icon"
+							title="Editar">✏️</a>
+						<form th:action="@{/asignaturas/{id}/eliminar(id=${asignatura.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar esta asignatura?')">
+							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>
