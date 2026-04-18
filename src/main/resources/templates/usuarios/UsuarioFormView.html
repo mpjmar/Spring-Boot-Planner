@@ -21,6 +21,8 @@
                           ? @{/usuarios/{id}/editar(id=${usuario.id})}
                           : @{/usuarios/nuevo}" th:object="${usuario}" method="post">
 
+				<span th:if="${error}" th:text="${error}" class="error"></span>
+				
 				<div class="form-group">
 					<label for="nombre">Nombre</label>
 					<input type="text" id="nombre" th:field="*{nombre}" placeholder="Nombre" />
