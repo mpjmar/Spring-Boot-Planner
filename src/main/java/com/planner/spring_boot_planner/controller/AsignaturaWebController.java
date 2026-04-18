@@ -17,7 +17,8 @@ public class AsignaturaWebController {
 	private final AsignaturaRepository asignaturaRepository;
 	private final ProfesorRepository profesorRepository;
 
-	public AsignaturaWebController(AsignaturaRepository asignaturaRepository, ProfesorRepository profesorRepository) {
+	public AsignaturaWebController(AsignaturaRepository asignaturaRepository, 
+								   ProfesorRepository profesorRepository) {
 		this.asignaturaRepository = asignaturaRepository;
 		this.profesorRepository = profesorRepository;
 	}
@@ -81,7 +82,8 @@ public class AsignaturaWebController {
 
 	private void resolverProfesor(Asignatura asignatura) {
 		if (asignatura.getProfesor() != null && asignatura.getProfesor().getId() != null) {
-			Profesor profesor = profesorRepository.findById(asignatura.getProfesor().getId()).orElse(null);
+			Profesor profesor = profesorRepository.findById(asignatura.getProfesor().getId())
+				.orElse(null);
 			asignatura.setProfesor(profesor);
 		} else {
 			asignatura.setProfesor(null);

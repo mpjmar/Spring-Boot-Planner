@@ -1,7 +1,7 @@
 package com.planner.spring_boot_planner.entity;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -25,10 +26,14 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "asignatura_id")
+    private Asignatura asignatura;
+
     @NotBlank
     @Size(max = 100)
     @Column(nullable = false, length = 100)
-    private String titulo;
+    private String nombre;
 
     @NotBlank
     @Size(max = 100)
@@ -40,9 +45,9 @@ public class Tarea {
     private LocalDate fechaLimite;
 
     @NotBlank
-    @Size(max = 20)
-    @Column(nullable = false, length = 20)
-    private String prioridad;
+    @Min(1)
+    @Column(nullable = false)
+    private Integer prioridad;
 
     @NotBlank
     @Size(max = 100)
@@ -50,23 +55,19 @@ public class Tarea {
     private String estado;
 
     @Column(nullable = false)
-    private Time tiempoEstimado;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asignatura_id")
-    private Asignatura asignatura;
+    private LocalTime tiempoEstimado;
 
     public Tarea() {
     }
 
-    public Tarea(String titulo, String descripcion, LocalDate fechaLimite, String prioridad, String estado, Time tiempoEstimado, Asignatura asignatura) {
-        this.titulo = titulo;
+    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, Integer prioridad, String estado, LocalTime tiempoEstimado) {
+        this.asignatura = asignatura;
+        this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaLimite = fechaLimite;
         this.prioridad = prioridad;
         this.estado = estado;
         this.tiempoEstimado = tiempoEstimado;
-        this.asignatura = asignatura;
     }
 
     public Long getId() {
@@ -77,12 +78,20 @@ public class Tarea {
         this.id = id;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public Asignatura getAsignatura() {
+        return asignatura;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setAsignatura(Asignatura asignatura) {
+        this.asignatura = asignatura;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getDescripcion() {
@@ -101,11 +110,11 @@ public class Tarea {
         this.fechaLimite = fechaLimite;
     }
 
-    public String getPrioridad() {
+    public Integer getPrioridad() {
         return prioridad;
     }
 
-    public void setPrioridad(String prioridad) {
+    public void setPrioridad(Integer prioridad) {
         this.prioridad = prioridad;
     }
 
@@ -117,27 +126,19 @@ public class Tarea {
         this.estado = estado;
     }
 
-    public Time getTiempoEstimado() {
+    public LocalTime getTiempoEstimado() {
         return tiempoEstimado;
     }
 
-    public void setTiempoEstimado(Time tiempoEstimado) {
+    public void setTiempoEstimado(LocalTime tiempoEstimado) {
         this.tiempoEstimado = tiempoEstimado;
-    }
-
-    public Asignatura getAsignatura() {
-        return asignatura;
-    }
-
-    public void setAsignatura(Asignatura asignatura) {
-        this.asignatura = asignatura;
     }
 
     @Override
     public String toString() {
         return "Tarea{" +
                 "id = " + id +
-                ", titulo = '" + titulo + '\'' +
+                ", nombre = '" + nombre + '\'' +
                 ", descripcion = '" + descripcion + '\'' +
                 ", fecha limite = " + fechaLimite +
                 ", prioridad = '" + prioridad + '\'' +

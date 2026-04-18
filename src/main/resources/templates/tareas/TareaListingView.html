@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title>Listado de Tareas</title>
 </head>
+
 <body>
 
+	<header>
+		<h1>Listado de Tareas</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/tareas/nuevo}" class="btn btn-primary">+ Añadir tarea</a>
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Asignatura</th>
+					<th>Nombre</th>
+					<th>Descripción</th>
+					<th>Fecha límite</th>
+					<th>Prioridad</th>
+					<th>Estado</th>
+					<th>Tiempo estimado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${#lists.isEmpty(tareas)}">
+					<td colspan="9" class="vacio">No hay tareas registradas.</td>
+				</tr>
+				<tr th:each="tarea : ${tareas}">
+					<td th:text="${tarea.id}"></td>
+					<td th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></td>
+					<td th:text="${tarea.nombre}"></td>
+					<td th:text="${tarea.descripcion}"></td>
+					<td th:text="${tarea.fechaLimite}"></td>
+					<td th:text="${tarea.prioridad}"></td>
+					<td th:text="${tarea.estado}"></td>
+					<td th:text="${tarea.tiempoEstimado}"></td>
+					<td>
+						<a th:href="@{/tareas/{id}/editar(id=${tarea.id})}" class="btn-icon"
+							title="Editar">✏️</a>
+						<form th:action="@{/tareas/{id}/eliminar(id=${tarea.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar esta tarea?')">
+							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>
