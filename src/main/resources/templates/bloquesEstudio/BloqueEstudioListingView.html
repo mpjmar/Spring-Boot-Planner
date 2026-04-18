@@ -1,96 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title th:text="${pageTitle} ?: 'Planning de estudio'">Planning de estudio</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
-  </head>
-  <body class="fondo-bloques" th:classappend="${bodyClass}">
-    <main class="plan-layout">
-      <aside class="panel-lateral">
-        <div class="panel-titulo">
-          <p>Bloques de estudio</p>
-          <h1 th:text="${tituloHorario} ?: 'Planning diario'">Planning diario</h1>
-        </div>
 
-        <div class="panel-resumen">
-          <div>
-            <span class="resumen-numero">6</span>
-            <span class="resumen-texto">bloques</span>
-          </div>
-          <div>
-            <span class="resumen-numero">18h</span>
-            <span class="resumen-texto">objetivo semanal</span>
-          </div>
-          <div>
-            <span class="resumen-numero">3</span>
-            <span class="resumen-texto">materias activas</span>
-          </div>
-        </div>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Listado de Bloques de estudio</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
 
-        <div class="lista-asignaturas">
-          <article class="asignatura-card materia-programacion">
-            <span class="materia-punto"></span>
-            <div>
-              <strong>Programación</strong>
-              <p>2 bloques pendientes</p>
-            </div>
-          </article>
+<body>
 
-        </div>
+	<header>
+		<h1>Listado de Bloques de estudio</h1>
+	</header>
 
-        <a class="boton-crear" th:href="@{/bloques-estudio/nuevo}">Nuevo bloque</a>
-      </aside>
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloques de estudio</a>
+		</div>
 
-      <section class="panel-principal">
-        <header class="cabecera-calendario">
-          <div>
-            <p class="subtitulo-seccion">Vista diaria</p>
-            <h2>Agosto 2026</h2>
-          </div>
-          <div class="selector-vista">
-            <button type="button" class="activo">Día</button>
-            <button type="button">Semana</button>
-            <button type="button">Mes</button>
-          </div>
-        </header>
+		<table>
+			<thead>
+				<tr>
+					<th>Fecha</th>
+					<th>Hora inicio</th>
+					<th>Hora fin</th>
+					<th>Asignatura</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${#lists.isEmpty(bloquesEstudio)}">
+					<td colspan="5" class="vacio">No tienes bloques de estudio registrados.</td>
+				</tr>
+				<tr th:each="bloque : ${bloquesEstudio}">
+					<td th:text="${bloque.fecha}"></td>
+					<td th:text="${bloque.horaInicio}"></td>
+					<td th:text="${bloque.horaFin}"></td>
+					<td th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : '—'}"></td>
+					<td>
+						<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloqueEstudio.id})}" class="btn-icon"
+							title="Editar">✏️</a>
+						<form th:action="@{/bloquesestudio/{id}/eliminar(id=${bloqueEstudio.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar esta bloque de estudio?')">
+							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
-        <div class="calendario-bloques" aria-label="Planning diario de estudio">
-          <div class="calendario-columna-horas">
-            <span>08:00</span>
-            <span>09:00</span>
-            <span>10:00</span>
-            <span>11:00</span>
-            <span>12:00</span>
-            <span>13:00</span>
-            <span>14:00</span>
-            <span>15:00</span>
-            <span>16:00</span>
-            <span>17:00</span>
-            <span>18:00</span>
-            <span>19:00</span>
-            <span>20:00</span>
-            <span>21:00</span>
-            <span>22:00</span>
-          </div>
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+</body>
 
-          <div class="calendario-grid">
-
-            <div class="bloque bloque-descanso" style="grid-row: 4 / span 1; grid-column: 1 / span 5;">
-              <span class="bloque-hora">15:00 - 16:00</span>
-              <strong>Descanso</strong>
-              <p>Comida, desconexión y vuelta al foco</p>
-            </div>
-
-            <div class="bloque bloque-hueco" style="grid-row: 7 / span 1; grid-column: 4 / span 2;">
-              <span class="bloque-hora">15:00 - 16:00</span>
-              <strong>Revisión</strong>
-              <p>Correcciones y próxima sesión</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </body>
 </html>

@@ -25,6 +25,7 @@
 				<tr>
 					<th>ID</th>
 					<th>Nombre</th>
+					<th>Apellidos</th>
 					<th>Email</th>
 					<th>Nº Asignaturas</th>
 					<th>Acciones</th>
@@ -37,6 +38,7 @@
 				<tr th:each="profesor : ${profesores}">
 					<td th:text="${profesor.id}"></td>
 					<td th:text="${profesor.nombre}"></td>
+					<td th:text="${profesor.apellidos}"></td>
 					<td th:text="${profesor.email}"></td>
 					<td th:text="${#lists.size(profesor.asignaturas)}"></td>
 					<td>

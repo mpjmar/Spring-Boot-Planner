@@ -3,6 +3,8 @@ package com.planner.spring_boot_planner.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,6 +37,7 @@ public class Profesor {
     private String email;
 
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
     private List<Asignatura> asignaturas = new ArrayList<>();
 
     public Profesor() {

@@ -1,6 +1,7 @@
 package com.planner.spring_boot_planner.controller;
 
 import com.planner.spring_boot_planner.entity.BloqueEstudio;
+import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
@@ -24,8 +25,8 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping
-	public String listarBloquesEstudio(Model model) {
-		model.addAttribute("bloquesEstudio", bloqueEstudioRepository.findAll());
+	public String listarBloquesEstudio(Model model, @AuthenticationPrincipal Usuario usuarioAutenticado) {
+		model.addAttribute("bloquesEstudio", bloqueEstudioRepository.findByUsuarioId(usuarioAutenticado.getId()));
 		return "bloquesEstudio/BloqueEstudioListingView";
 	}
 
@@ -39,13 +40,15 @@ public class BloqueEstudioWebController {
 
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
-								BindingResult result, Model model) {
+								BindingResult result, Model model,
+								@AuthenticationPrincipal Usuario usuarioAutenticado) {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
 			return "bloquesEstudio/BloqueEstudioFormView";
 		}
 		resolverAsignatura(bloqueEstudio);
+		bloqueEstudio.setUsuario(usuarioAutenticado);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return "redirect:/bloquesEstudio";
 	}
@@ -63,19 +66,26 @@ public class BloqueEstudioWebController {
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable long id,
 								@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
-								BindingResult result, Model model) {
+								BindingResult result, Model model,
+								@AuthenticationPrincipal Usuario usuarioAutenticado) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "bloquesEstudio/BloquesEstudioFormView";
 		}
 		bloqueEstudio.setId(id);
 		resolverAsignatura(bloqueEstudio);
+		bloqueEstudio.setUsuario(usuarioAutenticado);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return "redirect:/bloquesEstudio";
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuarioAutenticado) {
+		BloqueEstudio bloque = bloqueEstudioRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
+		if (!bloque.getUsuario().getId().equals(usuarioAutenticado.getId())) {
+			return "redirect:/bloquesEstudio?error=forbidden";
+		}
 		bloqueEstudioRepository.deleteById(id);
 		return "redirect:/bloquesEstudio";
 	}

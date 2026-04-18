@@ -4,6 +4,8 @@ import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,11 +42,13 @@ public class Horario {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")
+	@JsonIgnore
     private Asignatura asignatura;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profesor_id", nullable = false)
+	@JsonIgnore
     private Profesor profesor;
 
     public Horario() {

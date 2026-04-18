@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -56,11 +58,16 @@ public class BloqueEstudio {
     @JoinColumn(name = "cuadrante_id")
     private Cuadrante cuadrante;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     public BloqueEstudio() {
     }
 
     public BloqueEstudio(LocalDate fecha, String diaSemana, LocalTime horaInicio, LocalTime horaFin,
-            Asignatura asignatura, Cuadrante cuadrante) {
+            Asignatura asignatura, Cuadrante cuadrante, Usuario usuario) {
         this.fecha = fecha;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
@@ -68,6 +75,7 @@ public class BloqueEstudio {
         this.asignatura = asignatura;
 		this.color = asignatura.getColor();
 		this.cuadrante = cuadrante;
+		this.usuario = usuario;
     }
 
     public Long getId() {
@@ -126,10 +134,19 @@ public class BloqueEstudio {
 		this.cuadrante = cuadrante;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
 	@Override
 	public String toString() {
 		Long asignaturaId = (asignatura != null ? asignatura.getId() : null);
     	Long cuadranteId = (cuadrante != null ? cuadrante.getId() : null);
+    	Long usuarioId = (usuario != null ? usuario.getId() : null);
 
 
 		return "BloqueEstudio [id=" + id + 
@@ -138,7 +155,8 @@ public class BloqueEstudio {
 			   ", horaFin = " + horaFin + 
 			   ", diaSemana = " + diaSemana + 
 			   ", asignatura = " + asignaturaId + 
-			   ", cuadrante = " + cuadranteId + "]";
+			   ", cuadrante = " + cuadranteId + 
+			   ", usuario = " + usuarioId + "]";
 	}
 
 }

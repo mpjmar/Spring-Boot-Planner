@@ -3,7 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title th:text="${accion} + ' asignatura'">Formulario Asignatura</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
@@ -15,7 +17,6 @@
 	<div class="contenedor">
 		<div class="card">
 
-			<!-- Si es edición, el action apunta a /{id}/editar; si es nuevo, a /nuevo -->
 			<form th:action="${asignatura.id != null}
                           ? @{/asignaturas/{id}/editar(id=${asignatura.id})}
                           : @{/asignaturas/nuevo}" th:object="${asignatura}" method="post">
@@ -30,13 +31,13 @@
 					<label for="profesor">Profesor</label>
 					<select id="profesor" th:field="*{profesor.id}" class="form-control">
 						<option value="">-- Selecciona un profesor --</option>
-						<option th:each="prof : ${profesores}"
-							th:value="${prof.id}"
+						<option th:each="prof : ${profesores}" th:value="${prof.id}"
 							th:text="${prof.nombre + ' (' + prof.email + ')'}"
 							th:selected="${prof.id == asignatura.profesor?.id}">
 						</option>
 					</select>
-					<span class="error" th:if="${#fields.hasErrors('profesor') || #fields.hasErrors('profesor.id')}" th:errors="*{profesor}"></span>
+					<span class="error" th:if="${#fields.hasErrors('profesor') || #fields.hasErrors('profesor.id')}"
+						th:errors="*{profesor}"></span>
 				</div>
 
 				<div class="form-group">

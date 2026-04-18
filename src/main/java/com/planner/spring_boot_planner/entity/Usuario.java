@@ -1,7 +1,12 @@
 package com.planner.spring_boot_planner.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,7 +25,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "usuarios", schema = "public")
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,26 +37,45 @@ public class Usuario {
     private String nombre;
 
     @NotBlank
+    @Size(max = 150)
+    @Column(nullable = false, length = 150)
+    private String apellidos;
+
+	@NotBlank
     @Email
     @Size(max = 150)
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 	
     @NotBlank
+	@JsonIgnore
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String password;
+	
+    @NotBlank
+	@JsonIgnore
+    @Size(max = 100)
+    @Column(nullable = false, length = 100)
+    private String repitePassword;
 
+	@JsonIgnore
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BloqueEstudio> bloquesEstudio = new ArrayList<>();
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cuadrante> cuadrantes = new ArrayList<>();
 
     public Usuario() {
     }
 
-    public Usuario(String nombre, String email, String password) {
+    public Usuario(String nombre, String apellidos, String email, String password, String repitePassword) {
         this.nombre = nombre;
+		this.apellidos = apellidos;
         this.email = email;
 		this.password = password;
+		this.repitePassword = repitePassword;
     }
 
     public Long getId() {
@@ -70,6 +94,14 @@ public class Usuario {
         this.nombre = nombre;
     }
 
+	public String getApellidos() {
+		return apellidos;
+	}
+
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
+
     public String getEmail() {
         return email;
     }
@@ -87,6 +119,15 @@ public class Usuario {
 		this.password = password;
 	}
 
+	@JsonIgnore
+    public String getRepitePassword() {
+		return repitePassword;
+	}
+
+	public void setRepitePassword(String repitePassword) {
+		this.repitePassword = repitePassword;
+	}
+
     public List<Cuadrante> getCuadrantes() {
         return cuadrantes;
     }
@@ -95,12 +136,51 @@ public class Usuario {
         this.cuadrantes = cuadrantes;
     }
 
+    public List<BloqueEstudio> getBloquesEstudio() {
+        return bloquesEstudio;
+    }
+
+    public void setBloquesEstudio(List<BloqueEstudio> bloquesEstudio) {
+        this.bloquesEstudio = bloquesEstudio;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
+                "id = " + id +
+                ", nombre = '" + nombre + '\'' +
+                ", apellidos = '" + apellidos + '\'' +
+                ", email = '" + email + '\'' +
                 '}';
     }
+
+	@Override
+	public String getUsername() {
+		return email; // o el campo que uses como identificador de login
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.emptyList(); // O asigna roles si los tienes
+	}
 }

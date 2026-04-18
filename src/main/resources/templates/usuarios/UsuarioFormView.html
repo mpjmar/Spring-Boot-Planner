@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title th:text="${accion} + ' usuario'">Formulario Usuario</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+
+	<header>
+		<h1 th:text="${accion} + ' usuario'">Formulario Usuario</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="card">
+
+			<form th:action="${usuario.id != null}
+                          ? @{/usuarios/{id}/editar(id=${usuario.id})}
+                          : @{/usuarios/nuevo}" th:object="${usuario}" method="post">
+
+				<div class="form-group">
+					<label for="nombre">Nombre</label>
+					<input type="text" id="nombre" th:field="*{nombre}" placeholder="Nombre" />
+					<span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="nombre">Apellidos</label>
+					<input type="text" id="apellidos" th:field="*{apellidos}" placeholder="Apellidos" />
+					<span class="error" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input type="email" id="email" th:field="*{email}" placeholder="correo@ejemplo.com" />
+					<span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" id="password" th:field="*{password}" placeholder="Password />
+					<span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="repitePassword">Introduce de nuevo tu password</label>
+					<input type="password" id="repitePassword" th:field="*{repitePassword}" placeholder="Repite tu password" />
+					<span class="error" th:if="${#fields.hasErrors('repitePassword')}" th:errors="*{repitePassword}"></span>
+				</div>
+
+				<div class="acciones">
+					<a th:href="@{/usuario}" class="btn btn-secondary">← Cancelar</a>
+					<button type="submit" class="btn btn-primary" th:text="${accion} + ' usuario'">Guardar</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+</body>
+
+</html>

@@ -27,5 +27,8 @@ public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Lo
             @Param("inicioSemana") LocalDate inicioSemana,
             @Param("finSemana") LocalDate finSemana
     );
+
+	@RestResource(path = "por-usuario", rel = "por-usuario")
+	List<BloqueEstudio> findByUsuarioId(@Param("usuarioId") Long usuarioId);
 }
 

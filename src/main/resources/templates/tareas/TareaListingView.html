@@ -3,7 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Listado de Tareas</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
@@ -34,7 +36,7 @@
 			</thead>
 			<tbody>
 				<tr th:if="${#lists.isEmpty(tareas)}">
-					<td colspan="9" class="vacio">No hay tareas registradas.</td>
+					<td colspan="9" class="vacio">No tienes tareas registradas.</td>
 				</tr>
 				<tr th:each="tarea : ${tareas}">
 					<td th:text="${tarea.id}"></td>

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,10 +34,12 @@ public class Cuadrante {
     private LocalDate semanaInicio;
 
     @ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @OneToMany(mappedBy = "cuadrante", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
     private List<BloqueEstudio> bloquesEstudio = new ArrayList<>();
 
 	public Long getId() {

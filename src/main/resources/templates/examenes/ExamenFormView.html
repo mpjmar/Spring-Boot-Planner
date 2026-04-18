@@ -3,7 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title th:text="${accion} + ' tarea'">Formulario Examen</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
@@ -15,7 +17,6 @@
 	<div class="contenedor">
 		<div class="card">
 
-			<!-- Si es edición, el action apunta a /{id}/editar; si es nuevo, a /nuevo -->
 			<form th:action="${examen.id != null}
                           ? @{/examenes/{id}/editar(id=${examen.id})}
                           : @{/examenes/nuevo}" th:object="${examen}" method="post">

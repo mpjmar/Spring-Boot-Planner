@@ -3,7 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Listado de Exámenes</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
@@ -32,7 +34,7 @@
 			</texamen
 			<tbody>
 				<tr th:if="${#lists.isEmpty(tareas)}">
-					<td colspan="7" class="vacio">No hay exámenes registrados.</td>
+					<td colspan="7" class="vacio">No tienes exámenes registrados.</td>
 				</tr>
 				<tr th:each="examen : ${examenes}">
 					<td th:text="${examen.id}"></td>
