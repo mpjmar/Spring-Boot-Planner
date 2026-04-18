@@ -1,10 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title th:text="${accion} + ' tarea'">Formulario Examen</title>
 </head>
+
 <body>
 
+	<header>
+		<h1 th:text="${accion} + ' asignatura'">Formulario Examen</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="card">
+
+			<!-- Si es edición, el action apunta a /{id}/editar; si es nuevo, a /nuevo -->
+			<form th:action="${examen.id != null}
+                          ? @{/examenes/{id}/editar(id=${examen.id})}
+                          : @{/examenes/nuevo}" th:object="${examen}" method="post">
+				
+				<div class="form-group">
+					<label for="asignatura">Asignatura</label>
+					<select id="asignatura" th:field="*{asignatura.id}" class="form-control">
+						<option value="">-- Selecciona una asignatura --</option>
+						<option th:each="asig : ${asignaturas}"
+							th:value="${asig.id}"
+							th:text="${asig.nombre}"
+							th:selected="${asig.id == examen.asignatura?.id}">
+						</option>
+					</select>
+					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="descripcion">Descripción</label>
+					<input type="text" id="descripcion" th:field="*{descripcion}" placeholder="Descripción tarea" />
+					<span class="error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="fecha">Fecha</label>
+					<input type="date" id="fecha" th:field="*{fecha}" />
+					<span class="error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="peso">Peso</label>
+					<input type="text" id="peso" th:field="*{peso}" placeholder="Peso examen" />
+					<span class="error" th:if="${#fields.hasErrors('peso')}" th:errors="*{peso}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="notaObjetivo">Nota Objetivo</label>
+					<input type="text" id="notaObjetivo" th:field="*{notaObjetivo}" placeholder="Nota objetivo" />
+					<span class="error" th:if="${#fields.hasErrors('notaObjetivo')}" th:errors="*{notaObjetivo}"></span>
+				</div>
+
+				<div class="acciones">
+					<a th:href="@{/asignaturas}" class="btn btn-secondary">← Cancelar</a>
+					<button type="submit" class="btn btn-primary" th:text="${accion} + ' asignatura'">Guardar</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>

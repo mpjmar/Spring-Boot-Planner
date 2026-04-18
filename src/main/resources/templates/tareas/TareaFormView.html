@@ -30,7 +30,7 @@
 							th:selected="${asig.id == tarea.asignatura?.id}">
 						</option>
 					</select>
-					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{profesor}"></span>
+					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
 				</div>
 
 				<div class="form-group">

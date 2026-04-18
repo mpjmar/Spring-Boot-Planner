@@ -24,10 +24,14 @@ public class Examen {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "asignatura_id")
+    private Asignatura asignatura;
+
     @NotBlank
-    @Size(max = 80)
-    @Column(nullable = false, length = 80)
-    private String titulo;
+    @Size(max = 150)
+    @Column(nullable = false, length = 150)
+    private String descripcion;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Column(name = "fecha_examen")
@@ -41,19 +45,16 @@ public class Examen {
     @Column(nullable = false)
     private Double notaObjetivo;
 
-    @ManyToOne
-    @JoinColumn(name = "asignatura_id")
-    private Asignatura asignatura;
 
     public Examen() {
     }
 
-    public Examen(String titulo, LocalDate fecha, String peso, Double notaObjetivo, Asignatura asignatura) {
-        this.titulo = titulo;
+    public Examen(Asignatura asignatura, String descripcion, LocalDate fecha, String peso, Double notaObjetivo) {
+        this.asignatura = asignatura;
+        this.descripcion = descripcion;
         this.fecha = fecha;
         this.peso = peso;
         this.notaObjetivo = notaObjetivo;
-        this.asignatura = asignatura;
     }
 
     public Long getId() {
@@ -64,12 +65,20 @@ public class Examen {
         this.id = id;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public Asignatura getAsignatura() {
+        return asignatura;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setAsignatura(Asignatura asignatura) {
+        this.asignatura = asignatura;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public LocalDate getFecha() {
@@ -96,19 +105,11 @@ public class Examen {
         this.notaObjetivo = notaObjetivo;
     }
 
-    public Asignatura getAsignatura() {
-        return asignatura;
-    }
-
-    public void setAsignatura(Asignatura asignatura) {
-        this.asignatura = asignatura;
-    }
-
     @Override
     public String toString() {
         return "Examen{" +
                 "id = " + id +
-                ", titulo = '" + titulo + '\'' +
+                ", descripcion = '" + descripcion + '\'' +
                 ", fecha = " + fecha +
                 ", peso = '" + peso + '\'' +
                 ", notaObjetivo = " + notaObjetivo +

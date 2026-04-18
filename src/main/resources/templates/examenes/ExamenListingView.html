@@ -1,10 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<meta charset="UTF-8">
+	<title>Listado de Exámenes</title>
 </head>
+
 <body>
 
+	<header>
+		<h1>Listado de Exámenes</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/examenes/nuevo}" class="btn btn-primary">+ Añadir examen</a>
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Asignatura</th>
+					<th>Descripción</th>
+					<th>Fecha</th>
+					<th>Peso</th>
+					<th>Nota objetivo</th>
+					<th>Acciones</th>
+				</tr>
+			</texamen
+			<tbody>
+				<tr th:if="${#lists.isEmpty(tareas)}">
+					<td colspan="7" class="vacio">No hay exámenes registrados.</td>
+				</tr>
+				<tr th:each="examen : ${examenes}">
+					<td th:text="${examen.id}"></td>
+					<td th:text="${examen.asignatura != null ? examen.asignatura.nombre : '—'}"></td>
+					<td th:text="${examen.descripcion}"></td>
+					<td th:text="${examen.fecha}"></td>
+					<td th:text="${examen.peso}"></td>
+					<td th:text="${examen.notaObjetivo}"></td>
+					<td>
+						<a th:href="@{/examenes/{id}/editar(id=${examen.id})}" class="btn-icon"
+							title="Editar">✏️</a>
+						<form th:action="@{/examenes/{id}/eliminar(id=${examen.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar este examen?')">
+							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>
