@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -29,6 +30,11 @@ public class Tarea {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
+
+	@NotBlank
+	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
+	@Column(name = "color_hex", length = 7)
+	private String color;
 
     @NotBlank
     @Size(max = 100)
@@ -62,6 +68,7 @@ public class Tarea {
 
     public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, Integer prioridad, String estado, LocalTime tiempoEstimado) {
         this.asignatura = asignatura;
+		this.color = asignatura.getColor();
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaLimite = fechaLimite;

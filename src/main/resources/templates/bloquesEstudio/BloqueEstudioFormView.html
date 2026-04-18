@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title th:text="${pageTitle} ?: 'Nuevo bloque de estudio'">Nuevo bloque de estudio</title>
+        <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+    </head>
+    <body class="fondo-bloques" th:classappend="${bodyClass}">
+        <main class="formulario-layout">
+            <section class="formulario-panel">
+                <p class="subtitulo-seccion">Planning diario</p>
+                <h1>Crear bloque de estudio</h1>
+                <p class="formulario-intro">
+                    Define el tramo de trabajo con hora de inicio, hora de fin y la materia o sesión que quieras planificar.
+                </p>
+
+                <form th:action="${formAction} ?: '#'" th:object="${bloqueEstudio}" method="post" class="bloque-formulario">
+					<div class="form-group">
+						<label for="fecha">Fecha</label>
+						<input type="date" id="fecha" th:field="*{fecha}" />
+						<span class="error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+					</div>
+					
+					<!-- <div class="form-group">
+					<label for="diaSemana">Día de la semana</label>
+					<select id="diaSemana" th:field="*{diaSemana}" class="form-control">
+					<option value="">-- Selecciona el día de la semana --</option>
+						<option th:value="lunes">Lunes</option>
+						<option th:value="martes">Martes</option>
+						<option th:value="miercoles">Miércoles</option>
+						<option th:value="jueves">Jueves</option>
+						<option th:value="viernes">Viernes</option>
+						<option th:value="sabado">Sábado</option>
+						<option th:value="domingo">Domingo</option>
+					</select> -->
+
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="horaInicio">Hora de inicio</label>
+                            <input id="horaInicio" type="time" th:field="*{horaInicio}" step="60" />
+                        </div>
+                        <div class="form-field">
+                            <label for="horaFin">Hora de fin</label>
+                            <input id="horaFin" type="time" th:field="*{horaFin}" step="60" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="asignatura">Asignatura</label>
+                        <input id="asignatura" type="text" name="asignatura" placeholder="Matemáticas" />
+                    </div>
+
+                    <div class="acciones">
+                        <a th:href="@{/bloquesEstudio}" class="btn btn-secondary">← Cancelar</a>
+                        <button type="submit" class="btn btn-primary" th:text="${accion} + ' asignatura'">Guardar</button>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="panel-ayuda">
+                <div class="tarjeta-ayuda tarjeta-oscura">
+                    <p class="subtitulo-seccion">Objetivo</p>
+                    <h2>Sin horas fijas</h2>
+                    <p>
+                        Cada bloque se crea como una franja flexible. Eso permite ir montando el planning diario sin depender del horario de clases.
+                    </p>
+                </div>
+                <div class="tarjeta-ayuda">
+                    <p class="subtitulo-seccion">Estructura</p>
+                    <ul>
+                        <li>Hora de inicio y fin</li>
+                        <li>Asignatura asociada</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+    </body>
+</html>

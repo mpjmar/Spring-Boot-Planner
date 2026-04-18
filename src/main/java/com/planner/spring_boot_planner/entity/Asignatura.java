@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -35,8 +36,8 @@ public class Asignatura {
     private Profesor profesor;
 	
 	@NotBlank
-	@Size(max = 50)
-	@Column(length = 50)
+	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
+	@Column(name = "color_hex", length = 7)
 	private String color;
 	
     @Column(name = "imagen_url")

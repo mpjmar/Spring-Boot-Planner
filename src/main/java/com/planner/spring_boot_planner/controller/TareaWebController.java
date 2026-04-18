@@ -38,7 +38,7 @@ public class TareaWebController {
 	}
 
 	@PostMapping("/nuevo")
-	public String guardatNuevo(@Valid @ModelAttribute("tarea") Tarea tarea,
+	public String guardarNuevo(@Valid @ModelAttribute("tarea") Tarea tarea,
 								BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
