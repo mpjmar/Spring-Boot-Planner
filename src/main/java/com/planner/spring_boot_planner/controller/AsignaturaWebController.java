@@ -65,6 +65,7 @@ public class AsignaturaWebController {
 								@Valid @ModelAttribute("asignatura") Asignatura asignatura,
 								BindingResult result, Model model) {
 		if (result.hasErrors()) {
+			model.addAttribute("profesores", profesorRepository.findAll());
 			model.addAttribute("accion", "Editar");
 			return "asignaturas/AsignaturaFormView";
 		}
