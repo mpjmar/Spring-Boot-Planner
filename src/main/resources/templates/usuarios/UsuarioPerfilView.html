@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Perfil de Usuario</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+
+	<header>
+		<h1>Perfil de Usuario</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/usuarios/editar}" class="btn btn-primary">+ Editar usuario</a>
+		</div>
+
+		<table>
+			<tr>
+				<th>ID</th>
+				<td th:text="${usuario.id}"></td>
+			</tr>
+			<tr>
+				<th>Nombre</th>
+				<td th:text="${usuario.nombre}"></td>
+			</tr>
+			<tr>
+				<th>Apellidos</th>
+				<td th:text="${usuario.apellidos}"></td>
+			</tr>
+			<tr>
+				<th>Email</th>
+				<td th:text="${usuario.email}"></td>
+			</tr>
+			</table>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+</body>
+
+</html>

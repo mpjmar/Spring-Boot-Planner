@@ -55,13 +55,13 @@ public class ProfesorWebController {
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("profesor") Profesor profesor,
 								BindingResult result, Model model) {
-	if (result.hasErrors()) {
-		model.addAttribute("accion", "Editar");
-		return "profesores/ProfesorFormView";
-	}
-	profesor.setId(id);
-	profesorRepository.save(profesor);
-	return "redirect:/profesores";
+		if (result.hasErrors()) {
+			model.addAttribute("accion", "Editar");
+			return "profesores/ProfesorFormView";
+		}
+		profesor.setId(id);
+		profesorRepository.save(profesor);
+		return "redirect:/profesores";
 	}
 
 	@PostMapping("/{id}/eliminar")

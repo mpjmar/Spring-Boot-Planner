@@ -4,20 +4,20 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Listado de Profesores</title>
+	<title>Listado de Usuarios</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
 
 	<header>
-		<h1>Listado de Profesores</h1>
+		<h1>Listado de Usuarios</h1>
 	</header>
 
 	<div class="contenedor">
 		<div class="barra-acciones">
 			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/profesores/nuevo}" class="btn btn-primary">+ Añadir profesor</a>
+			<a th:href="@{/usuarios/nuevo}" class="btn btn-primary">+ Añadir usuarios</a>
 		</div>
 
 		<table>
@@ -27,25 +27,23 @@
 					<th>Nombre</th>
 					<th>Apellidos</th>
 					<th>Email</th>
-					<th>Nº Asignaturas</th>
 					<th>Acciones</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:if="${#lists.isEmpty(profesores)}">
-					<td colspan="6" class="vacio">No tienes profesores registrados.</td>
+				<tr th:if="${#lists.isEmpty(usuarios)}">
+					<td colspan="5" class="vacio">No hay usuarios registrados.</td>
 				</tr>
-				<tr th:each="profesor : ${profesores}">
-					<td th:text="${profesor.id}"></td>
-					<td th:text="${profesor.nombre}"></td>
-					<td th:text="${profesor.apellidos}"></td>
-					<td th:text="${profesor.email}"></td>
-					<td th:text="${#lists.size(profesor.asignaturas)}"></td>
+				<tr th:each="usuario : ${usuarios}">
+					<td th:text="${usuario.id}"></td>
+					<td th:text="${usuario.nombre}"></td>
+					<td th:text="${usuario.apellidos}"></td>
+					<td th:text="${usuario.email}"></td>
 					<td>
-						<a th:href="@{/profesores/{id}/editar(id=${profesor.id})}" class="btn-icon"
+						<a th:href="@{/usuarios/{id}/editar(id=${usuario.id})}" class="btn-icon"
 							title="Editar">✏️</a>
-						<form th:action="@{/profesores/{id}/eliminar(id=${profesor.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar este profesor?')">
+						<form th:action="@{/usuarios/{id}/eliminar(id=${usuarios.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar este usuario?')">
 							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
 						</form>
 					</td>

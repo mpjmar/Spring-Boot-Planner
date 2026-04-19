@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title th:text="${accion} + ' bloqueHorario'">Formulario Horario</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+
+	<header>
+		<h1 th:text="${accion} + ' bloqueHorario'">Formulario Horario</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="card">
+
+			<form th:action="${bloqueHorario.id != null}
+                          ? @{/bloqueHorario/{id}/editar(id=${bloqueHorario.id})}
+                          : @{/bloqueHorario/nuevo}" th:object="${bloqueHorario}" method="post">
+
+				<div class="form-group">
+					<label for="dia">Día de la semana</label>
+					<select id="dia" th:field="*{dia}" class="form-control">
+					<option value="">-- Selecciona el día de la semana --</option>
+						<option th:value="lunes">LUNES</option>
+						<option th:value="martes">MARTES</option>
+						<option th:value="miercoles">MIERCOLES</option>
+						<option th:value="jueves">JUEVES</option>
+						<option th:value="viernes">VIERNES</option>
+					</select>
+
+					<span class="error" th:if="${#fields.hasErrors('dia')}" th:errors="*{dia}"></span>
+				</div>
+				
+				<div class="form-group">
+					<label for="horaInicio">Hora inicio</label>
+					<select id="horaInicio" th:field="*{horaInicio}" class="form-control">
+					<option value="">-- Selecciona la hora de inicio --</option>
+						<option th:value="1">08:15</option>
+						<option th:value="2">09:15</option>
+						<option th:value="3">10:15</option>
+						<option th:value="4">11:45</option>
+						<option th:value="5">12:45</option>
+						<option th:value="6">13:45</option>
+					</select>
+
+					<span class="error" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="horaFin">Hora fin</label>
+					<option value="">-- Selecciona la hora de fin --</option>
+						<option th:value="1">09:15</option>
+						<option th:value="2">10:15</option>
+						<option th:value="3">11:15</option>
+						<option th:value="4">12:45</option>
+						<option th:value="5">13:45</option>
+						<option th:value="6">14:45</option>
+					</select>
+
+					<span class="error" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="asignatura">Asignatura</label>
+					<select id="asignatura" th:field="*{asignatura.id}" class="form-control">
+						<option value="">-- Selecciona una asignatura --</option>
+						<option th:each="asig : ${asignaturas}"
+							th:value="${asig.id}"
+							th:text="${asig.nombre}"
+							th:selected="${asig.id == bloqueHorario.asignatura?.id}">
+						</option>
+					</select>
+					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
+				</div>
+
+				<div class="acciones">
+					<a th:href="@{/bloqueHorario}" class="btn btn-secondary">← Cancelar</a>
+					<button type="submit" class="btn btn-primary" th:text="${accion} + ' bloqueHorario'">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+</body>
+</html>
