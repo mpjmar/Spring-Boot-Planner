@@ -7,6 +7,11 @@ import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import jakarta.validation.Valid;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -101,5 +106,18 @@ public class BloqueEstudioWebController {
 		} else {
 			bloqueEstudio.setAsignatura(null);
 		}
+	}
+
+	@PostMapping("/bloquesEstudio/{id}/mover")
+	@ResponseBody
+	public ResponseEntity<?> moverBloque(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+		BloqueEstudio bloque = bloqueEstudioRepository.findById(id).orElseThrow();
+		bloque.setFecha(LocalDate.parse(payload.get("start").substring(0,10)));
+		bloque.setHoraInicio(LocalTime.parse(payload.get("start").substring(11,16)));
+		if (payload.get("end") != null) {
+			bloque.setHoraFin(LocalTime.parse(payload.get("end").substring(11,16)));
+		}
+		bloqueEstudioRepository.save(bloque);
+		return ResponseEntity.ok().build();
 	}
 }

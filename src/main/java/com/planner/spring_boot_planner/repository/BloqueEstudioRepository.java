@@ -30,5 +30,7 @@ public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Lo
 
 	@RestResource(path = "por-usuario", rel = "por-usuario")
 	List<BloqueEstudio> findByUsuarioId(@Param("usuarioId") Long usuarioId);
+
+	List<BloqueEstudio> findByCuadranteId(Long cuadranteId);
 }
 

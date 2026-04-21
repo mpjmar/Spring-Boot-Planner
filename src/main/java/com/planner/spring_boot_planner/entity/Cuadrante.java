@@ -30,8 +30,12 @@ public class Cuadrante {
     private Long id;
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Column(name = "semana_inicio")
-    private LocalDate semanaInicio;
+    @Column(name = "dia_inicio")
+    private LocalDate diaInicio;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(name = "dia_fin")
+    private LocalDate diaFin;
 
     @ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -50,12 +54,20 @@ public class Cuadrante {
 		this.id = id;
 	}
 
-	public LocalDate getSemanaInicio() {
-		return semanaInicio;
+	public LocalDate getDiaInicio() {
+		return diaInicio;
 	}
 
-	public void setSemanaInicio(LocalDate semanaInicio) {
-		this.semanaInicio = semanaInicio;
+	public void setdiaInicio(LocalDate diaInicio) {
+		this.diaInicio = diaInicio;
+	}
+
+	public LocalDate getDiaFin() {
+		return diaFin;
+	}
+
+	public void setdiaFin(LocalDate diaFin) {
+		this.diaFin = diaFin;
 	}
 
 	public Usuario getUsuario() {
@@ -79,7 +91,8 @@ public class Cuadrante {
 		Long idUsuario = (usuario != null ? usuario.getId() : null);
 
 		return "Cuadrante [id = " + id + 
-			   ", semanaInicio = " + semanaInicio + 
+			   ", diaInicio = " + diaInicio + 
+			   ", diaFin = " + diaFin + 
 			   ", usuario = " + idUsuario + "]";
 	}
 

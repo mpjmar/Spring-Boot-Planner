@@ -6,7 +6,10 @@ import com.planner.spring_boot_planner.repository.CuadranteRepository;
 import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -88,5 +91,22 @@ public class CuadranteWebController {
 	public String eliminar(@PathVariable Long id, Model model) {
 		cuadranteRepository.deleteById(id);
 		return "redirect:/cuadrantes";
+	}
+
+	@GetMapping("/cuadrante/{id}/bloques-json")
+	@ResponseBody
+	public List<Map<String, Object>> getBloquesJson(@PathVariable Long id) {
+		List<BloqueEstudio> bloques = bloqueEstudioRepository.findByCuadranteId(id);
+		List<Map<String, Object>> eventos = new ArrayList<>();
+		for (BloqueEstudio b : bloques) {
+			Map<String, Object> evento = new HashMap<>();
+			evento.put("id", b.getId());
+			evento.put("title", b.getAsignatura() != null ? b.getAsignatura().getNombre() : "Bloque");
+			evento.put("start", b.getFecha() + "T" + b.getHoraInicio());
+			evento.put("end", b.getFecha() + "T" + b.getHoraFin());
+			evento.put("color", b.getAsignatura() != null ? b.getAsignatura().getColor() : "#b3e0ff");
+			eventos.add(evento);
+		}
+		return eventos;
 	}
 }
