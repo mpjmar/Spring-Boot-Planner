@@ -3,6 +3,7 @@ package com.planner.spring_boot_planner.repository;
 import com.planner.spring_boot_planner.entity.BloqueEstudio;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,8 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 @RepositoryRestResource(path = "bloqueEstudios", collectionResourceRel = "bloqueEstudios")
 public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Long> {
+
+	List<BloqueEstudio> findByCuadranteId(Long cuadranteId);
 	
 	@RestResource(path = "por-cuadrante-y-semana", rel = "por-cuadrante-y-semana")
     List<BloqueEstudio> findByCuadranteIdAndFechaBetweenOrderByFechaAscHoraInicioAsc(
@@ -31,6 +34,7 @@ public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Lo
 	@RestResource(path = "por-usuario", rel = "por-usuario")
 	List<BloqueEstudio> findByUsuarioId(@Param("usuarioId") Long usuarioId);
 
-	List<BloqueEstudio> findByCuadranteId(Long cuadranteId);
+	List<BloqueEstudio> findByCuadranteIdAndFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
+		Long cuadranteId, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin);
 }
 

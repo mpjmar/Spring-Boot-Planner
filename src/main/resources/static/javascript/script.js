@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     height: "auto",
     events: '/cuadrante/[[${cuadrante.id}]]/bloques-json',
     editable: true,
+    selectable: true,
     eventClick: function(info) {
       window.location.href = '/bloquesEstudio/' + info.event.id + '/editar';
     },
@@ -28,6 +29,16 @@ document.addEventListener('DOMContentLoaded', function() {
           info.revert();
         }
       });
+    },
+    select: function(info) {
+      const start = info.start;
+      const end = info.end;
+      const fecha = start.toISOString().substring(0,10);
+      const horaInicio = start.toTimeString().substring(0,5);
+      const horaFin = end.toTimeString().substring(0,5);
+      // Extrae el id del cuadrante de la URL de eventos
+      const cuadranteId = calendar.getOption('events').split('/')[2];
+      window.location.href = `/bloquesEstudio/nuevo?cuadranteId=${cuadranteId}&fecha=${fecha}&horaInicio=${horaInicio}&horaFin=${horaFin}`;
     }
   });
   calendar.render();

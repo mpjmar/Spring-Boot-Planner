@@ -4,11 +4,13 @@ import com.planner.spring_boot_planner.entity.BloqueEstudio;
 import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
+import com.planner.spring_boot_planner.repository.CuadranteRepository;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -24,11 +26,14 @@ public class BloqueEstudioWebController {
 
 	private final BloqueEstudioRepository bloqueEstudioRepository;
 	private final AsignaturaRepository asignaturaRepository;
+	private final CuadranteRepository cuadranteRepository;
 
 	public BloqueEstudioWebController(BloqueEstudioRepository bloqueEstudioRepository,
-									  AsignaturaRepository asignaturaRepository) {
+									  AsignaturaRepository asignaturaRepository,
+									  CuadranteRepository cuadranteRepository) {
 		this.bloqueEstudioRepository = bloqueEstudioRepository;
 		this.asignaturaRepository = asignaturaRepository;
+		this.cuadranteRepository = cuadranteRepository;
 	}
 
 	@GetMapping
@@ -38,8 +43,24 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model) {
-		model.addAttribute("bloqueEstudio", new BloqueEstudio());
+	public String mostrarFormularioNuevo(
+			@RequestParam(required = false) Long cuadranteId,
+			@RequestParam(required = false) String fecha,
+			@RequestParam(required = false) String horaInicio,
+			@RequestParam(required = false) String horaFin,
+			Model model) {
+
+		BloqueEstudio bloqueEstudio = new BloqueEstudio();
+
+		if (cuadranteId != null) {
+			bloqueEstudio.setCuadrante(cuadranteRepository.findById(cuadranteId).orElse(null));
+		}
+
+		if (fecha != null) bloqueEstudio.setFecha(LocalDate.parse(fecha));
+		if (horaInicio != null) bloqueEstudio.setHoraInicio(LocalTime.parse(horaInicio));
+		if (horaFin != null) bloqueEstudio.setHoraFin(LocalTime.parse(horaFin));
+
+		model.addAttribute("bloqueEstudio", bloqueEstudio);
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Añadir");
 		return "bloquesEstudio/BloqueEstudioFormView";
@@ -48,16 +69,38 @@ public class BloqueEstudioWebController {
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
+								@RequestParam(required = false) Long cuadranteId,
 								@AuthenticationPrincipal Usuario usuarioAutenticado) {
+
+		
+		if (bloqueEstudio.getCuadrante() == null && cuadranteId != null) {
+			bloqueEstudio.setCuadrante(cuadranteRepository.findById(cuadranteId).orElse(null));
+		}
+
+		if (bloqueEstudio.getCuadrante() != null && bloqueEstudio.getFecha() != null
+				&& bloqueEstudio.getHoraInicio() != null && bloqueEstudio.getHoraFin() != null) {
+			List<BloqueEstudio> solapados = bloqueEstudioRepository
+				.findByCuadranteIdAndFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
+					bloqueEstudio.getCuadrante().getId(), 
+					bloqueEstudio.getFecha(),
+					bloqueEstudio.getHoraInicio(),
+					bloqueEstudio.getHoraFin()
+				);
+			if (!solapados.isEmpty()) {
+				result.rejectValue("horaInicio", "error.bloqueEstudio", "Existe un bloque solapado en este horario.");
+			}
+		}
+
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
 			return "bloquesEstudio/BloqueEstudioFormView";
 		}
+
 		resolverAsignatura(bloqueEstudio);
 		bloqueEstudio.setUsuario(usuarioAutenticado);
 		bloqueEstudioRepository.save(bloqueEstudio);
-		return "redirect:/bloquesEstudio";
+		return "redirect:/cuadrantes/" + bloqueEstudio.getCuadrante().getId() + "/editar";
 	}
 
 	@GetMapping("/{id}/editar")
@@ -74,10 +117,32 @@ public class BloqueEstudioWebController {
 	public String guardarEdicion(@PathVariable long id,
 								@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
+								@RequestParam(required = false) Long cuadranteId,
 								@AuthenticationPrincipal Usuario usuarioAutenticado) {
+
+		if (bloqueEstudio.getCuadrante() == null && cuadranteId != null) {
+			bloqueEstudio.setCuadrante(cuadranteRepository.findById(cuadranteId).orElse(null));
+		}
+
+		if (bloqueEstudio.getCuadrante() != null && bloqueEstudio.getFecha() != null
+				&& bloqueEstudio.getHoraInicio() != null && bloqueEstudio.getHoraFin() != null) {
+			List<BloqueEstudio> solapados = bloqueEstudioRepository
+				.findByCuadranteIdAndFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
+					bloqueEstudio.getCuadrante().getId(), 
+					bloqueEstudio.getFecha(),
+					bloqueEstudio.getHoraInicio(),
+					bloqueEstudio.getHoraFin()
+				).stream()
+				.filter(b -> !b.getId().equals(id))
+				.toList();
+			if (!solapados.isEmpty()) {
+				result.rejectValue("horaInicio", "error.bloqueEstudio", "Existe un bloque solapado en este horario.");
+			}
+		}
+		
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
-			return "bloquesEstudio/BloquesEstudioFormView";
+			return "bloquesEstudio/BloqueEstudioFormView";
 		}
 		bloqueEstudio.setId(id);
 		resolverAsignatura(bloqueEstudio);
