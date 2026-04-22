@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -33,10 +32,10 @@ public class Tarea {
 
 	@NotBlank
 	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
-	@Column(name = "color_hex", length = 7)
+	@Column(name = "color", length = 7)
 	private String color;
 
-    @NotBlank
+	@NotBlank
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String nombre;
@@ -50,10 +49,8 @@ public class Tarea {
     @Column(name = "fecha_limite")
     private LocalDate fechaLimite;
 
-    @NotBlank
-    @Min(1)
-    @Column(nullable = false)
-    private Integer prioridad;
+    @Column
+    private String prioridad;
 
     @NotBlank
     @Size(max = 100)
@@ -66,7 +63,7 @@ public class Tarea {
     public Tarea() {
     }
 
-    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, Integer prioridad, String estado, LocalTime tiempoEstimado) {
+    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, String prioridad, String estado, LocalTime tiempoEstimado) {
         this.asignatura = asignatura;
 		this.color = asignatura.getColor();
         this.nombre = nombre;
@@ -93,6 +90,14 @@ public class Tarea {
         this.asignatura = asignatura;
     }
 
+    public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
     public String getNombre() {
         return nombre;
     }
@@ -117,11 +122,11 @@ public class Tarea {
         this.fechaLimite = fechaLimite;
     }
 
-    public Integer getPrioridad() {
+    public String getPrioridad() {
         return prioridad;
     }
 
-    public void setPrioridad(Integer prioridad) {
+    public void setPrioridad(String prioridad) {
         this.prioridad = prioridad;
     }
 

@@ -51,7 +51,7 @@ public class BloqueEstudio {
 
 	@NotBlank
 	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
-	@Column(name = "color_hex", length = 7)
+	@Column(name = "color", length = 7)
 	private String color;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

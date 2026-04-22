@@ -30,7 +30,6 @@ public class Profesor {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @NotBlank
     @Email
     @Size(max = 150)
     @Column(nullable = false, unique = true, length = 150)

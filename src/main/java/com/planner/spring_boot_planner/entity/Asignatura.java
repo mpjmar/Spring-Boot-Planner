@@ -39,10 +39,10 @@ public class Asignatura {
 	
 	@NotBlank
 	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
-	@Column(name = "color_hex", length = 7)
+	@Column(name = "color", length = 7)
 	private String color;
 	
-    @Column(name = "imagen_url")
+    @Column(name = "imagenUrl")
     private String imagenUrl;
 
 	@JsonIgnore

@@ -82,12 +82,16 @@ public class TareaWebController {
 	
 
 	private void resolverAsignatura(Tarea tarea) {
-		if (tarea.getAsignatura() != null && tarea.getAsignatura().getId() != null) {
-			Asignatura asignatura = asignaturaRepository.findById(tarea.getAsignatura().getId())
-				.orElse(null);
-			tarea.setAsignatura(asignatura);
-		} else {
-			tarea.setAsignatura(null);
-		}
-	}
+    if (tarea.getAsignatura() != null && tarea.getAsignatura().getId() != null) {
+        Asignatura asignatura = asignaturaRepository.findById(tarea.getAsignatura().getId())
+            .orElse(null);
+        tarea.setAsignatura(asignatura);
+        if (asignatura != null) {
+            tarea.setColor(asignatura.getColor());
+        }
+    } else {
+        tarea.setAsignatura(null);
+        tarea.setColor(null);
+    }
+}
 }

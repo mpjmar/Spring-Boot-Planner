@@ -47,14 +47,14 @@
 				</div>
 
 				<div class="form-group">
-					<label for="imagen_url">Imagen</label>
-					<input type="text" id="imagen_url" th:field="*{imagen_url}" placeholder="imagen" />
-					<span class="error" th:if="${#fields.hasErrors('imagen_url')}" th:errors="*{imagen_url}"></span>
+					   <label for="imagenUrl">Imagen</label>
+					   <input type="text" id="imagenUrl" th:field="*{imagenUrl}" placeholder="imagen" />
+					   <span class="error" th:if="${#fields.hasErrors('imagenUrl')}" th:errors="*{imagenUrl}"></span>
 				</div>
 
 				<div class="acciones">
-					<a th:href="@{/asignaturas}" class="btn btn-secondary">← Cancelar</a>
-					<button type="submit" class="btn btn-primary" th:text="${accion} + ' asignatura'">Guardar</button>
+					<a th:href="@{/asignaturas}" class="btn btn-secondary">Cancelar</a>
+					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 
 			</form>

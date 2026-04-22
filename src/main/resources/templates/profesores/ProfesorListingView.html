@@ -23,7 +23,6 @@
 		<table>
 			<thead>
 				<tr>
-					<!-- ID eliminado -->
 					<th>Nombre</th>
 					<th>Email</th>
 					<th>Nº Asignaturas</th>
@@ -35,7 +34,6 @@
 					<td colspan="5" class="vacio">No tienes profesores registrados.</td>
 				</tr>
 				<tr th:each="profesor : ${profesores}">
-					<!-- ID eliminado -->
 					<td th:text="${profesor.nombre}"></td>
 					<td th:text="${profesor.email}"></td>
 					<td th:text="${#lists.size(profesor.asignaturas)}"></td>
