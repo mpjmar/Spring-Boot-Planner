@@ -23,7 +23,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
+					<!-- ID eliminado -->
 					<th>Asignatura</th>
 					<th>Nombre</th>
 					<th>Descripción</th>
@@ -36,10 +36,10 @@
 			</thead>
 			<tbody>
 				<tr th:if="${#lists.isEmpty(tareas)}">
-					<td colspan="9" class="vacio">No tienes tareas registradas.</td>
+					<td colspan="5" class="vacio">No tienes tareas registradas.</td>
 				</tr>
 				<tr th:each="tarea : ${tareas}">
-					<td th:text="${tarea.id}"></td>
+					<!-- ID eliminado -->
 					<td th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></td>
 					<td th:text="${tarea.nombre}"></td>
 					<td th:text="${tarea.descripcion}"></td>

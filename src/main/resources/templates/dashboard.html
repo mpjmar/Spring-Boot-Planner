@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
+<head>
+	<meta charset="UTF-8">
+	<title>Bienvenida</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+	<div class="contenedor">
+		<h1>Bienvenido, <span th:text="${#authentication?.name}">Usuario</span></h1>
+		<h2>¿Qué quieres hacer hoy?</h2>
+		<ul>
+			<li><a th:href="@{/asignaturas}">📚 Asignaturas</a></li>
+			<li><a th:href="@{/tareas}">📝 Tareas</a></li>
+			<li><a th:href="@{/examenes}">🧪 Exámenes</a></li>
+			<li><a th:href="@{/horarios}">🕒 Horarios</a></li>
+			<li><a th:href="@{/cuadrantes}">📊 Cuadrantes</a></li>
+			<li><a th:href="@{/logout}">🚪 Cerrar sesión</a></li>
+		</ul>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
 </body>
+
 </html>

@@ -23,7 +23,6 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
 					<th>Asignatura</th>
 					<th>Descripción</th>
 					<th>Fecha</th>
@@ -33,11 +32,10 @@
 				</tr>
 			</texamen
 			<tbody>
-				<tr th:if="${#lists.isEmpty(tareas)}">
-					<td colspan="7" class="vacio">No tienes exámenes registrados.</td>
+				<tr th:if="${#lists.isEmpty(examenes)}">
+					<td colspan="6" class="vacio">No tienes exámenes registrados.</td>
 				</tr>
 				<tr th:each="examen : ${examenes}">
-					<td th:text="${examen.id}"></td>
 					<td th:text="${examen.asignatura != null ? examen.asignatura.nombre : '—'}"></td>
 					<td th:text="${examen.descripcion}"></td>
 					<td th:text="${examen.fecha}"></td>

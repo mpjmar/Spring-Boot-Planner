@@ -23,7 +23,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
+					<!-- ID eliminado -->
 					<th>Nombre</th>
 					<th>Email</th>
 					<th>Nº Asignaturas</th>
@@ -32,10 +32,10 @@
 			</thead>
 			<tbody>
 				<tr th:if="${#lists.isEmpty(profesores)}">
-					<td colspan="6" class="vacio">No tienes profesores registrados.</td>
+					<td colspan="5" class="vacio">No tienes profesores registrados.</td>
 				</tr>
 				<tr th:each="profesor : ${profesores}">
-					<td th:text="${profesor.id}"></td>
+					<!-- ID eliminado -->
 					<td th:text="${profesor.nombre}"></td>
 					<td th:text="${profesor.email}"></td>
 					<td th:text="${#lists.size(profesor.asignaturas)}"></td>

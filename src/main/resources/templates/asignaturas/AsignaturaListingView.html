@@ -23,7 +23,6 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
 					<th>Nombre</th>
 					<th>Profesor</th>
 					<th>Color</th>
@@ -33,10 +32,9 @@
 			</thead>
 			<tbody>
 				<tr th:if="${#lists.isEmpty(asignaturas)}">
-					<td colspan="6" class="vacio">No tienes asignaturas registradas.</td>
+					<td colspan="5" class="vacio">No tienes asignaturas registradas.</td>
 				</tr>
 				<tr th:each="asignatura : ${asignaturas}">
-					<td th:text="${asignatura.id}"></td>
 					<td th:text="${asignatura.nombre}"></td>
 					<td th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></td>
 					<td th:text="${asignatura.color}"></td>
