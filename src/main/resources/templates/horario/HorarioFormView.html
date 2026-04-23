@@ -4,26 +4,26 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title th:text="${accion} + ' bloqueHorario'">Formulario Horario</title>
+	<title th:text="${accion} + ' horario'">Formulario Horario</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
 
 	<header>
-		<h1 th:text="${accion} + ' bloqueHorario'">Formulario Horario</h1>
+		<h1 th:text="${accion} + ' horario'">Formulario Horario</h1>
 	</header>
 
 	<div class="contenedor">
 		<div class="card">
 
-			<form th:action="${bloqueHorario.id != null}
-                          ? @{/bloqueHorario/{id}/editar(id=${bloqueHorario.id})}
-                          : @{/bloqueHorario/nuevo}" th:object="${bloqueHorario}" method="post">
+			<form th:action="${horario.id != null}
+                          ? @{/horario/{id}/editar(id=${horario.id})}
+                          : @{/horario/nuevo}" th:object="${horario}" method="post">
 
 				<div class="form-group">
-					<label for="dia">Día de la semana</label>
-					<select id="dia" th:field="*{dia}" class="form-control">
+					<label for="diaSemana">Día de la semana</label>
+					<select id="diaSemana" th:field="*{diaSemana}" class="form-control">
 					<option value="">-- Selecciona el día de la semana --</option>
 						<option th:value="lunes">LUNES</option>
 						<option th:value="martes">MARTES</option>
@@ -32,7 +32,7 @@
 						<option th:value="viernes">VIERNES</option>
 					</select>
 
-					<span class="error" th:if="${#fields.hasErrors('dia')}" th:errors="*{dia}"></span>
+					<span class="error" th:if="${#fields.hasErrors('diaSemana')}" th:errors="*{diaSemana}"></span>
 				</div>
 				
 				<div class="form-group">
@@ -52,6 +52,7 @@
 
 				<div class="form-group">
 					<label for="horaFin">Hora fin</label>
+					<select id="horaFin" th:field="*{horaInicio}" class="form-control">
 					<option value="">-- Selecciona la hora de fin --</option>
 						<option th:value="1">09:15</option>
 						<option th:value="2">10:15</option>
@@ -71,14 +72,14 @@
 						<option th:each="asig : ${asignaturas}"
 							th:value="${asig.id}"
 							th:text="${asig.nombre}"
-							th:selected="${asig.id == bloqueHorario.asignatura?.id}">
+							th:selected="${asig.id == horario.asignatura?.id}">
 						</option>
 					</select>
 					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
 				</div>
 
 				<div class="acciones">
-					<a th:href="@{/bloqueHorario}" class="btn btn-secondary">Cancelar</a>
+					<a th:href="@{/horario}" class="btn btn-secondary">Cancelar</a>
 					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 			</form>

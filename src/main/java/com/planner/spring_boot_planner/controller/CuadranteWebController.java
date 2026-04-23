@@ -1,11 +1,5 @@
 package com.planner.spring_boot_planner.controller;
 
-import com.planner.spring_boot_planner.entity.Cuadrante;
-import com.planner.spring_boot_planner.entity.BloqueEstudio;
-import com.planner.spring_boot_planner.repository.CuadranteRepository;
-import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
-import jakarta.validation.Valid;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +8,20 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.planner.spring_boot_planner.entity.BloqueEstudio;
+import com.planner.spring_boot_planner.entity.Cuadrante;
+import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
+import com.planner.spring_boot_planner.repository.CuadranteRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/cuadrantes")
@@ -32,7 +39,7 @@ public class CuadranteWebController {
 	@GetMapping
 	public String listarCuadrantes(Model model) {
 		model.addAttribute("cuadrantes", cuadranteRepository.findAll());
-		return "cuadrantes/CuadrantesListingView";
+		return "cuadrantes/CuadranteListingView";
 	}
 
 	@GetMapping("/nuevo")
@@ -91,6 +98,15 @@ public class CuadranteWebController {
 	public String eliminar(@PathVariable Long id, Model model) {
 		cuadranteRepository.deleteById(id);
 		return "redirect:/cuadrantes";
+	}
+
+	@GetMapping("/{id}")
+	public String verCuadrante(@PathVariable Long id, Model model) {
+
+		Cuadrante cuadrante = cuadranteRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Cuadrante no encontrado: " + id));
+		model.addAttribute("cuadrante", cuadrante);
+		return "cuadrantes/CuadranteView";
 	}
 
 	@GetMapping("/cuadrante/{id}/bloques-json")

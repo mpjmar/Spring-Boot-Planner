@@ -20,8 +20,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "horarios", schema = "public")
-public class BloqueHorario {
+@Table(name = "horario", schema = "public")
+public class Horario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,10 +51,10 @@ public class BloqueHorario {
 	@JsonIgnore
     private Profesor profesor;
 
-    public BloqueHorario() {
+    public Horario() {
     }
 
-    public BloqueHorario(String diaSemana, LocalTime horaInicio, LocalTime horaFin, Asignatura asignatura, Profesor profesor) {
+    public Horario(String diaSemana, LocalTime horaInicio, LocalTime horaFin, Asignatura asignatura, Profesor profesor) {
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;

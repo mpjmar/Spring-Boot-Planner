@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${pageTitle} ?: 'Cuadrante'">Cuadrante estudio</title>
+    <link
+      rel="stylesheet"
+      th:href="@{/css/styles.css}"
+      href="/css/styles.css"
+    />
+  </head>
+  <body class="fondo" th:classappend="${bodyClass}">
+    <main class="contenedor">
+      <div class="tabla-wrapper">
+        <table aria-label="Cuadrante semanal">
+          <tr>
+            <th
+              class="nombre-tabla"
+              colspan="7"
+              th:text="${nombreCuadrante} ?: 'Cuadrante Semanal'"
+            >
+              Cuadrante Semanal
+            </th>
+          </tr>
+          <tr>
+            <th class="col-hora">HORA</th>
+            <th class="col-dia">LUNES</th>
+            <th class="col-dia">MARTES</th>
+            <th class="col-dia">MIÉRCOLES</th>
+            <th class="col-dia">JUEVES</th>
+            <th class="col-dia">VIERNES</th>
+            <th class="col-dia">SÁBADO</th>
+            <th class="col-dia">DOMINGO</th>
+          </tr>
+
+          <tr>
+            <td class="col-hora">8:00 - 9:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '08:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">9:00 - 10:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '09:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">10:00 - 11:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '10:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">11:00 - 12:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '11:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '11:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '11:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '11:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '11:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '11:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">13:00 - 14:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '13:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">14:00 - 15:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '14:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">15:00 - 16:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '15:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">16:00 - 17:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '16:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">17:00 - 18:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '17:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">18:00 - 19:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '18:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">20:00 - 21:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '20:00')?.asignatura?.nombre}"></td>
+          </tr>
+
+          <tr>
+            <td class="col-hora">21:00 - 22:00</td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'LUNES' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MARTES' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'MIERCOLES' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'JUEVES' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'VIERNES' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'SÁBADO' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+            <td class="materia" th:text="${#lists.find(bhorario, b -> b.diaSemana == 'DOMINGO' and b.horaInicio == '21:00')?.asignatura?.nombre}"></td>
+          </tr>
+        </table>
+      </div>
+
+	  	<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/cuadrantes/nuevo}" class="btn btn-primary">+ Añadir cuadrante</a>
+		</div>
+
+    </main>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+  </body>
+</html>

@@ -1,21 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title th:text="'Cuadrante: ' + ${cuadrante.nombre}">Cuadrante</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
-</head>
-<body>
-<div class="contenedor">
-    <h1 th:text="'Cuadrante: ' + ${cuadrante.nombre}"></h1>
-    <div id="calendar"></div>
-    <a th:href="@{/cuadrantes}">Volver a cuadrantes</a>
-</div>
-<footer>
-    <p>Planificador de estudios con Spring Boot + Supabase</p>
-    <p>Author: M. Paz Jiménez Martín</p>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-</body>
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="contenedor">
+      <h1 th:text="'Cuadrante: ' + ${cuadrante.nombre}"></h1>
+      <div id="calendar"></div>
+      <a th:href="@{/cuadrantes}">Volver a cuadrantes</a>
+    </div>
+    <footer>
+      <p>Planificador de estudios con Spring Boot + Supabase</p>
+      <p>Author: M. Paz Jiménez Martín</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  </body>
 </html>
