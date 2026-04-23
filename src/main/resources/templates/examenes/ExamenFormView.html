@@ -11,7 +11,7 @@
 <body>
 
 	<header>
-		<h1 th:text="${accion} + ' asignatura'">Formulario Examen</h1>
+		<h1 th:text="${accion} + ' examen'">Formulario Examen</h1>
 	</header>
 
 	<div class="contenedor">
@@ -36,7 +36,7 @@
 
 				<div class="form-group">
 					<label for="descripcion">Descripción</label>
-					<input type="text" id="descripcion" th:field="*{descripcion}" placeholder="Descripción tarea" />
+					<input type="text" id="descripcion" th:field="*{descripcion}" placeholder="Descripción examen" />
 					<span class="error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
 				</div>
 
@@ -59,7 +59,7 @@
 				</div>
 
 				<div class="acciones">
-					<a th:href="@{/asignaturas}" class="btn btn-secondary">Cancelar</a>
+					<a th:href="@{/examenes}" class="btn btn-secondary">Cancelar</a>
 					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 
