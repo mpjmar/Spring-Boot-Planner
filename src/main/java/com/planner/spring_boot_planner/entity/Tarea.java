@@ -1,7 +1,7 @@
 package com.planner.spring_boot_planner.entity;
 
+import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -30,7 +30,6 @@ public class Tarea {
     @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
 
-	@NotBlank
 	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
 	@Column(name = "color", length = 7)
 	private String color;
@@ -58,14 +57,21 @@ public class Tarea {
     private String estado;
 
     @Column(nullable = false)
-    private LocalTime tiempoEstimado;
+    private Duration tiempoEstimado;
+
+    // Campos transitorios para el formulario
+    @jakarta.persistence.Transient
+    private Integer horas = 0;
+
+    @jakarta.persistence.Transient
+    private Integer minutos = 0;
 
     public Tarea() {
     }
 
-    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, String prioridad, String estado, LocalTime tiempoEstimado) {
+    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, String prioridad, String estado, Duration tiempoEstimado) {
         this.asignatura = asignatura;
-		this.color = asignatura.getColor();
+        this.color = asignatura.getColor();
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaLimite = fechaLimite;
@@ -73,7 +79,7 @@ public class Tarea {
         this.estado = estado;
         this.tiempoEstimado = tiempoEstimado;
     }
-
+    
     public Long getId() {
         return id;
     }
@@ -138,12 +144,28 @@ public class Tarea {
         this.estado = estado;
     }
 
-    public LocalTime getTiempoEstimado() {
+    public Duration getTiempoEstimado() {
         return tiempoEstimado;
     }
 
-    public void setTiempoEstimado(LocalTime tiempoEstimado) {
+    public void setTiempoEstimado(Duration tiempoEstimado) {
         this.tiempoEstimado = tiempoEstimado;
+    }
+
+    public Integer getHoras() {
+        return horas;
+    }
+
+    public void setHoras(Integer horas) {
+        this.horas = horas;
+    }
+
+    public Integer getMinutos() {
+        return minutos;
+    }
+
+    public void setMinutos(Integer minutos) {
+        this.minutos = minutos;
     }
 
     @Override
@@ -160,4 +182,17 @@ public class Tarea {
     }
 
 
+    public String getTiempoFormateado() {
+        if (tiempoEstimado == null) 
+            return "";
+
+        long totalMinutes = tiempoEstimado.toMinutes();
+        long horas = totalMinutes / 60;
+        long minutos = totalMinutes % 60;
+
+        if (horas == 0) 
+            return minutos + "min";
+
+        return horas + "h" + (minutos > 0 ? " " + minutos + "min" : "");
+    }
 }

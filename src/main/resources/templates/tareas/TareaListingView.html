@@ -44,7 +44,7 @@
 					<td th:text="${tarea.fechaLimite}"></td>
 					<td th:text="${tarea.prioridad}"></td>
 					<td th:text="${tarea.estado}"></td>
-					<td th:text="${tarea.tiempoEstimado}"></td>
+					<td th:text="${tarea.tiempoFormateado}"></td>
 					<td>
 						<a th:href="@{/tareas/{id}/editar(id=${tarea.id})}" class="btn-icon"
 							title="Editar">✏️</a>

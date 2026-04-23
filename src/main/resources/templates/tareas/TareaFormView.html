@@ -72,12 +72,15 @@
 
 				<div class="form-group">
 					<label for="tiempoEstimado">Tiempo estimado</label>
-					<input type="time" id="tiempoEstimado" th:field="*{tiempoEstimado}" class="form-control" />
+					<label for="horas">Horas</label>
+					<input type="number" id="horas" th:field="*{horas}" class="form-control" min="0" />
+					<label for="minutos">Minutos</label>
+					<input type="number" id="minutos" th:field="*{minutos}" class="form-control" min="0" max="59" />
 					<span class="error" th:if="${#fields.hasErrors('tiempoEstimado')}" th:errors="*{tiempoEstimado}"></span>
 				</div>
 
 				<div class="acciones">
-					<a th:href="@{/asignaturas}" class="btn btn-secondary">Cancelar</a>
+					<a th:href="@{/tareas}" class="btn btn-secondary">Cancelar</a>
 					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 

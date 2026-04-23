@@ -1,14 +1,20 @@
 package com.planner.spring_boot_planner.controller;
 
-import com.planner.spring_boot_planner.entity.Tarea;
-import com.planner.spring_boot_planner.entity.Asignatura;
-import com.planner.spring_boot_planner.repository.TareaRepository;
-import com.planner.spring_boot_planner.repository.AsignaturaRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.planner.spring_boot_planner.entity.Asignatura;
+import com.planner.spring_boot_planner.entity.Tarea;
+import com.planner.spring_boot_planner.repository.AsignaturaRepository;
+import com.planner.spring_boot_planner.repository.TareaRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/tareas")
@@ -45,6 +51,10 @@ public class TareaWebController {
 			model.addAttribute("accion", "Añadir");
 			return "tareas/TareaFormView";
 		}
+		// Construye Duration a partir de horas y minutos
+		int horas = tarea.getHoras() != null ? tarea.getHoras() : 0;
+		int minutos = tarea.getMinutos() != null ? tarea.getMinutos() : 0;
+		tarea.setTiempoEstimado(java.time.Duration.ofHours(horas).plusMinutes(minutos));
 		resolverAsignatura(tarea);
 		tareaRepository.save(tarea);
 		return "redirect:/tareas";
@@ -69,6 +79,10 @@ public class TareaWebController {
 			return "tareas/TareaFormView";
 		}
 		tarea.setId(id);
+		// Construye Duration a partir de horas y minutos
+		int horas = tarea.getHoras() != null ? tarea.getHoras() : 0;
+		int minutos = tarea.getMinutos() != null ? tarea.getMinutos() : 0;
+		tarea.setTiempoEstimado(java.time.Duration.ofHours(horas).plusMinutes(minutos));
 		resolverAsignatura(tarea);
 		tareaRepository.save(tarea);
 		return "redirect:/tareas";
@@ -76,22 +90,22 @@ public class TareaWebController {
 
 	@PostMapping("/{id}/eliminar")
 	public String eliminar(@PathVariable Long id) {
-		asignaturaRepository.deleteById(id);
-		return "redirect:/asignaturas";
+		tareaRepository.deleteById(id);
+		return "redirect:/tareas";
 	}
 	
 
 	private void resolverAsignatura(Tarea tarea) {
-    if (tarea.getAsignatura() != null && tarea.getAsignatura().getId() != null) {
-        Asignatura asignatura = asignaturaRepository.findById(tarea.getAsignatura().getId())
-            .orElse(null);
-        tarea.setAsignatura(asignatura);
-        if (asignatura != null) {
-            tarea.setColor(asignatura.getColor());
-        }
-    } else {
-        tarea.setAsignatura(null);
-        tarea.setColor(null);
-    }
-}
+		if (tarea.getAsignatura() != null && tarea.getAsignatura().getId() != null) {
+			Asignatura asignatura = asignaturaRepository.findById(tarea.getAsignatura().getId())
+				.orElse(null);
+			tarea.setAsignatura(asignatura);
+			if (asignatura != null) {
+				tarea.setColor(asignatura.getColor());
+			}
+		} else {
+			tarea.setAsignatura(null);
+			tarea.setColor(null);
+		}
+	}
 }
