@@ -29,19 +29,19 @@ public class HorarioClaseWebController {
 	private final AsignaturaRepository asignaturaRepository;
 
 	public HorarioClaseWebController(HorarioClaseRepository horarioClaseRepository,
-								AsignaturaRepository asignaturaRepository) {
+								     AsignaturaRepository asignaturaRepository) {
 		this.horarioClaseRepository = horarioClaseRepository;
 		this.asignaturaRepository = asignaturaRepository;
 	}
 
 	@GetMapping()
-	public String listarBloques(Model model) {
+	public String listarBloques(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("horarioClase", horarioClaseRepository.findAll());
 		return "horariosClase/HorarioClaseListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model) {
+	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("horarioClase", new HorarioClase());
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Añadir");
@@ -50,7 +50,8 @@ public class HorarioClaseWebController {
 
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("horarioClase") HorarioClase horarioClase,
-							   BindingResult result, Model model) {
+							   BindingResult result, Model model, 
+							   @AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
@@ -62,7 +63,8 @@ public class HorarioClaseWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+										  @AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de horarioClase no encontrado: " + id));
 		model.addAttribute("horarioClase", horarioClase);
@@ -74,7 +76,8 @@ public class HorarioClaseWebController {
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("horarioClase") HorarioClase horarioClase,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "horariosClase/HorarioClaseFormView";
@@ -86,23 +89,14 @@ public class HorarioClaseWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar8(@PathVariable Long id) {
+	public String eliminar8(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		horarioClaseRepository.deleteById(id);
 		return "redirect:/horariosClase";
 	}
 
-	private void resolverAsignatura(HorarioClase horarioClase) {
-		if (horarioClase.getAsignatura() != null && horarioClase.getAsignatura().getId() != null) {
-			Asignatura asignatura = asignaturaRepository.findById(horarioClase.getAsignatura().getId())
-				.orElse(null);
-			horarioClase.setAsignatura(asignatura);
-		} else {
-			horarioClase.setAsignatura(null);
-		}
-	}
-
 	@GetMapping("/dia")
-	public String verDia(@RequestParam(required = false) String fecha, Model model) {
+	public String verDia(@RequestParam(required = false) String fecha, Model model, 
+						 @AuthenticationPrincipal Usuario usuario) {
 		LocalDate dia;
 		if (fecha == null) {
 			dia = LocalDate.now();
@@ -115,4 +109,15 @@ public class HorarioClaseWebController {
 		model.addAttribute("fecha", dia);
 		return "horariosClase/HorarioClaseDayView";
 	}
+
+	private void resolverAsignatura(HorarioClase horarioClase) {
+		if (horarioClase.getAsignatura() != null && horarioClase.getAsignatura().getId() != null) {
+			Asignatura asignatura = asignaturaRepository.findById(horarioClase.getAsignatura().getId())
+				.orElse(null);
+			horarioClase.setAsignatura(asignatura);
+		} else {
+			horarioClase.setAsignatura(null);
+		}
+	}
+
 }

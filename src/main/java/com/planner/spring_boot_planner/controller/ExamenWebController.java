@@ -24,13 +24,13 @@ public class ExamenWebController {
 	}
 
 	@GetMapping
-	public String listarExamenes(Model model) {
+	public String listarExamenes(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("examenes", examenRepository.findAll());
 		return "examenes/ExamenListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model) {
+	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("examen", new Examen());
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Añadir");
@@ -39,7 +39,8 @@ public class ExamenWebController {
 
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("examen") Examen examen,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
@@ -51,7 +52,8 @@ public class ExamenWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+										  @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Examen no encontrado: " + id));
 		model.addAttribute("examen", examen);
@@ -63,7 +65,8 @@ public class ExamenWebController {
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("examen") Examen examen,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "examenes/ExamenFormView";
@@ -75,7 +78,7 @@ public class ExamenWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		examenRepository.deleteById(id);
 		return "redirect:/examenes";
 	}

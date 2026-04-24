@@ -19,13 +19,13 @@ public class ProfesorWebController {
 	}
 
 	@GetMapping
-	public String listarProfesores(Model model) {
+	public String listarProfesores(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("profesores", profesorRepository.findAll());
 		return "profesores/ProfesorListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model) {
+	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("profesor", new Profesor());
 		model.addAttribute("accion", "Añadir");
 		return "profesores/ProfesorFormView";
@@ -33,7 +33,8 @@ public class ProfesorWebController {
 
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("profesor") Profesor profesor,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Añadir");
 			return "profesores/ProfesorFormView";
@@ -43,7 +44,8 @@ public class ProfesorWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+										  @AuthenticationPrincipal Usuario usuario) {
 		Profesor profesor = profesorRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado: " + id));
 		model.addAttribute("profesor", profesor);
@@ -54,7 +56,8 @@ public class ProfesorWebController {
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("profesor") Profesor profesor,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "profesores/ProfesorFormView";
@@ -65,7 +68,7 @@ public class ProfesorWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		profesorRepository.deleteById(id);
 		return "redirect:/profesores";
 	}

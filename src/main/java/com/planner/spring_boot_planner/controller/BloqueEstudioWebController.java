@@ -45,7 +45,7 @@ public class BloqueEstudioWebController {
 			@RequestParam(required = false) String fecha,
 			@RequestParam(required = false) String horaInicio,
 			@RequestParam(required = false) String horaFin,
-			Model model) {
+			Model model, @AuthenticationPrincipal Usuario usuario) {
 
 		BloqueEstudio bloqueEstudio = new BloqueEstudio();
 
@@ -91,7 +91,7 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
 		model.addAttribute("bloqueEstudio", bloqueEstudio);
@@ -144,6 +144,36 @@ public class BloqueEstudioWebController {
 		return "redirect:/bloquesEstudio";
 	}
 
+	@GetMapping("/dia")
+	public String verDia(@RequestParam(required = false) String fecha, Model model, 
+						 @AuthenticationPrincipal Usuario usuario) {
+		LocalDate dia;
+		if (fecha == null) {
+			dia = LocalDate.now();
+		} else {
+			dia = LocalDate.parse(fecha);
+		}
+		List<BloqueEstudio> bloquesEstudio = bloqueEstudioRepository.findByFecha(dia);
+		bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio));
+		model.addAttribute("bloquesEstudio", bloquesEstudio);
+		model.addAttribute("fecha", dia);
+		return "bloquesEstudio/bloqueEstudioDayView";
+	}
+
+	@PostMapping("/bloquesEstudio/{id}/mover")
+	@ResponseBody
+	public ResponseEntity<?> moverBloque(@PathVariable Long id, @RequestBody Map<String, String> payload, 
+										 @AuthenticationPrincipal Usuario usuario) {
+		BloqueEstudio bloque = bloqueEstudioRepository.findById(id).orElseThrow();
+		bloque.setFecha(LocalDate.parse(payload.get("start").substring(0,10)));
+		bloque.setHoraInicio(LocalTime.parse(payload.get("start").substring(11,16)));
+		if (payload.get("end") != null) {
+			bloque.setHoraFin(LocalTime.parse(payload.get("end").substring(11,16)));
+		}
+		bloqueEstudioRepository.save(bloque);
+		return ResponseEntity.ok().build();
+	}
+
 
 	private void resolverAsignatura(BloqueEstudio bloqueEstudio) {
 		if (bloqueEstudio.getAsignatura() != null && bloqueEstudio.getAsignatura().getId() != null) {
@@ -153,33 +183,5 @@ public class BloqueEstudioWebController {
 		} else {
 			bloqueEstudio.setAsignatura(null);
 		}
-	}
-
-		@GetMapping("/dia")
-		public String verDia(@RequestParam(required = false) String fecha, Model model) {
-			LocalDate dia;
-			if (fecha == null) {
-				dia = LocalDate.now();
-			} else {
-				dia = LocalDate.parse(fecha);
-			}
-			List<BloqueEstudio> bloquesEstudio = bloqueEstudioRepository.findByFecha(dia);
-			bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio));
-			model.addAttribute("bloquesEstudio", bloquesEstudio);
-			model.addAttribute("fecha", dia);
-			return "bloquesEstudio/bloqueEstudioDayView";
-		}
-
-	@PostMapping("/bloquesEstudio/{id}/mover")
-	@ResponseBody
-	public ResponseEntity<?> moverBloque(@PathVariable Long id, @RequestBody Map<String, String> payload) {
-		BloqueEstudio bloque = bloqueEstudioRepository.findById(id).orElseThrow();
-		bloque.setFecha(LocalDate.parse(payload.get("start").substring(0,10)));
-		bloque.setHoraInicio(LocalTime.parse(payload.get("start").substring(11,16)));
-		if (payload.get("end") != null) {
-			bloque.setHoraFin(LocalTime.parse(payload.get("end").substring(11,16)));
-		}
-		bloqueEstudioRepository.save(bloque);
-		return ResponseEntity.ok().build();
 	}
 }

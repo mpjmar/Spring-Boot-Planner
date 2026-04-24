@@ -30,13 +30,13 @@ public class TareaWebController {
 	}
 
 	@GetMapping
-	public String listarTareas(Model model) {
+	public String listarTareas(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("tareas", tareaRepository.findAll());
 		return "tareas/TareaListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model) {
+	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("tarea", new Tarea());
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Añadir");
@@ -45,7 +45,8 @@ public class TareaWebController {
 
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("tarea") Tarea tarea,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
@@ -61,7 +62,8 @@ public class TareaWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+										  @AuthenticationPrincipal Usuario usuario) {
 		Tarea tarea = tareaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada: " + id));
 		model.addAttribute("tarea", tarea);
@@ -73,7 +75,8 @@ public class TareaWebController {
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("tarea") Tarea tarea,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "tareas/TareaFormView";
@@ -89,7 +92,7 @@ public class TareaWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		tareaRepository.deleteById(id);
 		return "redirect:/tareas";
 	}

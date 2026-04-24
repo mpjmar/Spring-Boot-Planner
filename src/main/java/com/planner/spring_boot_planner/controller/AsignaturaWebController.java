@@ -24,13 +24,13 @@ public class AsignaturaWebController {
 	}
 
 	@GetMapping
-	public String listarAsignaturas(Model model) {
+	public String listarAsignaturas(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		return "asignaturas/AsignaturaListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model) {
+	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("asignatura", new Asignatura());
 		model.addAttribute("profesores", profesorRepository.findAll());
 		model.addAttribute("accion", "Añadir");
@@ -39,7 +39,8 @@ public class AsignaturaWebController {
 
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("asignatura") Asignatura asignatura,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("profesores", profesorRepository.findAll());
 			model.addAttribute("accion", "Añadir");
@@ -51,7 +52,8 @@ public class AsignaturaWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+										  @AuthenticationPrincipal Usuario usuario) {
 		Asignatura asignatura = asignaturaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Asignatura no encontrada: " + id));
 		model.addAttribute("asignatura", asignatura);
@@ -63,7 +65,8 @@ public class AsignaturaWebController {
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("asignatura") Asignatura asignatura,
-								BindingResult result, Model model) {
+								BindingResult result, Model model, 
+								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
 			model.addAttribute("profesores", profesorRepository.findAll());
 			model.addAttribute("accion", "Editar");
@@ -76,7 +79,7 @@ public class AsignaturaWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		asignaturaRepository.deleteById(id);
 		return "redirect:/asignaturas";
 	}
