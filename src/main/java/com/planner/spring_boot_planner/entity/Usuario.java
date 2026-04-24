@@ -61,11 +61,11 @@ public class Usuario implements UserDetails {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BloqueEstudio> bloquesEstudio = new ArrayList<>();
+    private List<Asignatura> asignaturas = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HorarioClase> horariosClases = new ArrayList<>();
+    private List<Profesor> profesores = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,6 +74,14 @@ public class Usuario implements UserDetails {
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Examen> examenes = new ArrayList<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HorarioClase> horariosClases = new ArrayList<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BloqueEstudio> bloquesEstudio = new ArrayList<>();
 
     public Usuario() {
     }

@@ -45,6 +45,11 @@ public class Asignatura {
     @Column(name = "imagenUrl")
     private String imagenUrl;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
 	@JsonIgnore
     @OneToMany(mappedBy = "asignatura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tarea> tareas = new ArrayList<>();
@@ -99,6 +104,14 @@ public class Asignatura {
         this.imagenUrl = imagenUrl;
     }
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
     public List<Tarea> getTareas() {
         return tareas;
     }
@@ -109,12 +122,14 @@ public class Asignatura {
 
     @Override
     public String toString() {
+		Long usuarioId = (usuario != null ? usuario.getId() : null);
         return "Asignatura {" +
                 "id = " + id +
                 ", nombre = '" + nombre + 
                 ", profesor = " + profesor +
                 ", color = " + color +
                 ", imagenUrl = '" + imagenUrl + 
+				", usuario = " + usuarioId + 
                 "}";
     }
 }

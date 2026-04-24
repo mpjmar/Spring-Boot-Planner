@@ -8,9 +8,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -34,6 +37,11 @@ public class Profesor {
     @Size(max = 150)
     @Column(nullable = false, unique = true, length = 150)
     private String email;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
@@ -72,6 +80,14 @@ public class Profesor {
         this.email = email;
     }
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
     public List<Asignatura> getAsignaturas() {
         return asignaturas;
     }
@@ -82,11 +98,13 @@ public class Profesor {
 
     @Override
     public String toString() {
+		Long usuarioId = (usuario != null ? usuario.getId() : null);
         return "Profesor{" +
                 "id = " + id +
                 ", nombre = " + nombre + 
                 ", email = " + email +
                 ", asignaturas = " + (asignaturas != null ? asignaturas.size() : 0) +
+				", usuario = " + usuarioId + 
                 "}";
     }
 }

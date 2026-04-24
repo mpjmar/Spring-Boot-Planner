@@ -15,12 +15,8 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @RepositoryRestResource(path = "bloqueEstudios", collectionResourceRel = "bloqueEstudios")
 public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Long> {
 	
-	@RestResource(path = "por-cuadrante-y-semana", rel = "por-cuadrante-y-semana")
-    List<BloqueEstudio> findByFechaBetweenOrderByFechaAscHoraInicioAsc(
-            @Param("cuadranteId") Long cuadranteId,
-            @Param("inicioSemana") LocalDate inicioSemana,
-            @Param("finSemana") LocalDate finSemana
-    );
+	@RestResource(path = "por-fecha", rel = "por-fecha")
+    List<BloqueEstudio> findByFecha(@Param("fecha") LocalDate fecha);
 
 	@RestResource(path = "por-usuario", rel = "por-usuario")
 	List<BloqueEstudio> findByUsuarioId(@Param("usuarioId") Long usuarioId);
