@@ -37,7 +37,7 @@ public class HorarioClaseWebController {
 	@GetMapping()
 	public String listarBloques(Model model) {
 		model.addAttribute("horarioClase", horarioClaseRepository.findAll());
-		return "horariosClase/horarioClaseListingView";
+		return "horariosClase/HorarioClaseListingView";
 	}
 
 	@GetMapping("/nuevo")
@@ -45,7 +45,7 @@ public class HorarioClaseWebController {
 		model.addAttribute("horarioClase", new HorarioClase());
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Añadir");
-		return "horariosClase/horarioClaseFormView";
+		return "horariosClase/HorarioClaseFormView";
 	}
 
 	@PostMapping("/nuevo")
@@ -54,7 +54,7 @@ public class HorarioClaseWebController {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
-			return "horariosClase/horarioClaseFormView";
+			return "horariosClase/HorarioClaseFormView";
 		}
 		resolverAsignatura(horarioClase);
 		horarioClaseRepository.save(horarioClase);
@@ -68,7 +68,7 @@ public class HorarioClaseWebController {
 		model.addAttribute("horarioClase", horarioClase);
 		model.addAttribute("asignatura", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Editar");
-		return "horariosClase/formView";
+		return "horariosClase/HorarioClaseFormView";
 	}
 
 	@PostMapping("/{id}/editar")
@@ -77,7 +77,7 @@ public class HorarioClaseWebController {
 								BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
-			return "horariosClase/horarioClaseFormView";
+			return "horariosClase/HorarioClaseFormView";
 		}
 		horarioClase.setId(id);
 		resolverAsignatura(horarioClase);
@@ -113,6 +113,6 @@ public class HorarioClaseWebController {
 		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio));
 		model.addAttribute("horarios", horarios);
 		model.addAttribute("fecha", dia);
-		return "horarios/horarioDayView";
+		return "horariosClase/HorarioClaseDayView";
 	}
 }
