@@ -46,6 +46,9 @@ public class Cuadrante {
 	@JsonIgnore
     private List<BloqueEstudio> bloquesEstudio = new ArrayList<>();
 
+	public Cuadrante() {
+	}
+
 	public Long getId() {
 		return id;
 	}

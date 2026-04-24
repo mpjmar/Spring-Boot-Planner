@@ -10,90 +10,90 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.planner.spring_boot_planner.entity.Asignatura;
-import com.planner.spring_boot_planner.entity.Horario;
+import com.planner.spring_boot_planner.entity.HorarioClase;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
-import com.planner.spring_boot_planner.repository.HorarioRepository;
+import com.planner.spring_boot_planner.repository.HorarioClaseRepository;
 
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/horario")
-public class HorarioWebController {
+@RequestMapping("/horarioClase")
+public class HorarioClaseWebController {
 
-	private final HorarioRepository horarioRepository;
+	private final HorarioClaseRepository horarioClaseRepository;
 	private final AsignaturaRepository asignaturaRepository;
 
-	public HorarioWebController(HorarioRepository horarioRepository,
+	public HorarioClaseWebController(HorarioClaseRepository horarioClaseRepository,
 								AsignaturaRepository asignaturaRepository) {
-		this.horarioRepository = horarioRepository;
+		this.horarioClaseRepository = horarioClaseRepository;
 		this.asignaturaRepository = asignaturaRepository;
 	}
 
 	@GetMapping()
 	public String listarBloques(Model model) {
-		model.addAttribute("horario", horarioRepository.findAll());
-		return "horario/HorarioView";
+		model.addAttribute("horarioClase", horarioClaseRepository.findAll());
+		return "horarioClase/horarioClaseView";
 	}
 
 	@GetMapping("/nuevo")
 	public String mostrarFormularioNuevo(Model model) {
-		model.addAttribute("horario", new Horario());
+		model.addAttribute("horarioClase", new HorarioClase());
 		model.addAttribute("asignaturas", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Añadir");
-		return "horario/HorarioFormView";
+		return "horarioClase/horarioClaseFormView";
 	}
 
 	@PostMapping("/nuevo")
-	public String guardarNuevo(@Valid @ModelAttribute("horario") Horario horario,
+	public String guardarNuevo(@Valid @ModelAttribute("horarioClase") HorarioClase horarioClase,
 							   BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findAll());
 			model.addAttribute("accion", "Añadir");
-			return "horario/HorarioFormView";
+			return "horarioClase/horarioClaseFormView";
 		}
-		resolverAsignatura(horario);
-		horarioRepository.save(horario);
-		return "redirect:/horario";
+		resolverAsignatura(horarioClase);
+		horarioClaseRepository.save(horarioClase);
+		return "redirect:/horarioClase";
 	}
 
 	@GetMapping("/{id}/editar")
 	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
-		Horario horario = horarioRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Bloque de horario no encontrado: " + id));
-		model.addAttribute("horario", horario);
+		HorarioClase horarioClase = horarioClaseRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Bloque de horarioClase no encontrado: " + id));
+		model.addAttribute("horarioClase", horarioClase);
 		model.addAttribute("asignatura", asignaturaRepository.findAll());
 		model.addAttribute("accion", "Editar");
-		return "horario/formView";
+		return "horarioClase/formView";
 	}
 
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
-								@Valid @ModelAttribute("horario") Horario horario,
+								@Valid @ModelAttribute("horarioClase") HorarioClase horarioClase,
 								BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
-			return "horario/horarioFormView";
+			return "horarioClase/horarioClaseFormView";
 		}
-		horario.setId(id);
-		resolverAsignatura(horario);
-		horarioRepository.save(horario);
-		return "redirect:/horario";
+		horarioClase.setId(id);
+		resolverAsignatura(horarioClase);
+		horarioClaseRepository.save(horarioClase);
+		return "redirect:/horarioClase";
 	}
 
 	@PostMapping("/{id}/eliminar")
 	public String eliminar8(@PathVariable Long id) {
-		horarioRepository.deleteById(id);
-		return "redirect:/horario";
+		horarioClaseRepository.deleteById(id);
+		return "redirect:/horarioClase";
 	}
 
 
-	private void resolverAsignatura(Horario horario) {
-		if (horario.getAsignatura() != null && horario.getAsignatura().getId() != null) {
-			Asignatura asignatura = asignaturaRepository.findById(horario.getAsignatura().getId())
+	private void resolverAsignatura(HorarioClase horarioClase) {
+		if (horarioClase.getAsignatura() != null && horarioClase.getAsignatura().getId() != null) {
+			Asignatura asignatura = asignaturaRepository.findById(horarioClase.getAsignatura().getId())
 				.orElse(null);
-			horario.setAsignatura(asignatura);
+			horarioClase.setAsignatura(asignatura);
 		} else {
-			horario.setAsignatura(null);
+			horarioClase.setAsignatura(null);
 		}
 	}
 }

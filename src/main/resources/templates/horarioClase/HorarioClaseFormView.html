@@ -4,22 +4,22 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title th:text="${accion} + ' horario'">Formulario Horario</title>
+	<title th:text="${accion} + ' horarioClase'">Formulario horarioClase</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
 
 	<header>
-		<h1 th:text="${accion} + ' horario'">Formulario Horario</h1>
+		<h1 th:text="${accion} + ' horarioClase'">Formulario horarioClase</h1>
 	</header>
 
 	<div class="contenedor">
 		<div class="card">
 
-			<form th:action="${horario.id != null}
-                          ? @{/horario/{id}/editar(id=${horario.id})}
-                          : @{/horario/nuevo}" th:object="${horario}" method="post">
+			<form th:action="${horarioClase.id != null}
+                          ? @{/horarioClase/{id}/editar(id=${horarioClase.id})}
+                          : @{/horarioClase/nuevo}" th:object="${horarioClase}" method="post">
 
 				<div class="form-group">
 					<label for="diaSemana">Día de la semana</label>
@@ -72,14 +72,14 @@
 						<option th:each="asig : ${asignaturas}"
 							th:value="${asig.id}"
 							th:text="${asig.nombre}"
-							th:selected="${asig.id == horario.asignatura?.id}">
+							th:selected="${asig.id == horarioClase.asignatura?.id}">
 						</option>
 					</select>
 					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
 				</div>
 
 				<div class="acciones">
-					<a th:href="@{/horario}" class="btn btn-secondary">Cancelar</a>
+					<a th:href="@{/horarioClase}" class="btn btn-secondary">Cancelar</a>
 					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 			</form>
