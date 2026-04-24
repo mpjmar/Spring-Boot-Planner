@@ -14,19 +14,10 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 @RepositoryRestResource(path = "bloqueEstudios", collectionResourceRel = "bloqueEstudios")
 public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Long> {
-
-	List<BloqueEstudio> findByCuadranteId(Long cuadranteId);
 	
 	@RestResource(path = "por-cuadrante-y-semana", rel = "por-cuadrante-y-semana")
-    List<BloqueEstudio> findByCuadranteIdAndFechaBetweenOrderByFechaAscHoraInicioAsc(
+    List<BloqueEstudio> findByFechaBetweenOrderByFechaAscHoraInicioAsc(
             @Param("cuadranteId") Long cuadranteId,
-            @Param("inicioSemana") LocalDate inicioSemana,
-            @Param("finSemana") LocalDate finSemana
-    );
-
-    @RestResource(path = "por-usuario-y-semana", rel = "por-usuario-y-semana")
-    List<BloqueEstudio> findByCuadranteUsuarioIdAndFechaBetweenOrderByFechaAscHoraInicioAsc(
-            @Param("usuarioId") Long usuarioId,
             @Param("inicioSemana") LocalDate inicioSemana,
             @Param("finSemana") LocalDate finSemana
     );
@@ -34,7 +25,7 @@ public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Lo
 	@RestResource(path = "por-usuario", rel = "por-usuario")
 	List<BloqueEstudio> findByUsuarioId(@Param("usuarioId") Long usuarioId);
 
-	List<BloqueEstudio> findByCuadranteIdAndFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
-		Long cuadranteId, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin);
+	List<BloqueEstudio> findByFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
+		LocalDate fecha, LocalTime horaInicio, LocalTime horaFin);
 }
 

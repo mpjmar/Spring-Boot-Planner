@@ -84,10 +84,10 @@ public class Profesor {
     public String toString() {
         return "Profesor{" +
                 "id = " + id +
-                ", nombre = '" + nombre + '\'' +
-                ", email = '" + email + '\'' +
+                ", nombre = " + nombre + 
+                ", email = " + email +
                 ", asignaturas = " + (asignaturas != null ? asignaturas.size() : 0) +
-                '}';
+                "}";
     }
 }
 

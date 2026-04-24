@@ -60,12 +60,20 @@ public class Usuario implements UserDetails {
     private String repitePassword;
 
 	@JsonIgnore
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BloqueEstudio> bloquesEstudio = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cuadrante> cuadrantes = new ArrayList<>();
+    private List<HorarioClase> horariosClases = new ArrayList<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tarea> tareas = new ArrayList<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Examen> examenes = new ArrayList<>();
 
     public Usuario() {
     }
@@ -128,16 +136,20 @@ public class Usuario implements UserDetails {
 		this.repitePassword = repitePassword;
 	}
 
-    public List<Cuadrante> getCuadrantes() {
-        return cuadrantes;
-    }
-
-    public void setCuadrantes(List<Cuadrante> cuadrantes) {
-        this.cuadrantes = cuadrantes;
-    }
-
     public List<BloqueEstudio> getBloquesEstudio() {
         return bloquesEstudio;
+    }
+
+    public List<HorarioClase> getHorariosClases() {
+        return horariosClases;
+    }
+
+    public List<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public List<Examen> getExamenes() {
+        return examenes;
     }
 
     public void setBloquesEstudio(List<BloqueEstudio> bloquesEstudio) {
@@ -146,12 +158,12 @@ public class Usuario implements UserDetails {
 
     @Override
     public String toString() {
-        return "Usuario{" +
+        return "Usuario {" +
                 "id = " + id +
-                ", nombre = '" + nombre + '\'' +
-                ", apellidos = '" + apellidos + '\'' +
-                ", email = '" + email + '\'' +
-                '}';
+                ", nombre = " + nombre + 
+                ", apellidos = " + apellidos + 
+                ", email = '" + email + 
+                "}";
     }
 
 	@Override

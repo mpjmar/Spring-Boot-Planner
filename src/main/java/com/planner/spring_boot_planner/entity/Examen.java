@@ -4,8 +4,11 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,16 +48,23 @@ public class Examen {
     @Column(nullable = false)
     private Double notaObjetivo;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
 
     public Examen() {
     }
 
-    public Examen(Asignatura asignatura, String descripcion, LocalDate fecha, String peso, Double notaObjetivo) {
+    public Examen(Asignatura asignatura, String descripcion, LocalDate fecha, String peso, 
+		Double notaObjetivo, Usuario usuario) {
         this.asignatura = asignatura;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.peso = peso;
         this.notaObjetivo = notaObjetivo;
+		this.usuario = usuario;
     }
 
     public Long getId() {
@@ -105,15 +115,25 @@ public class Examen {
         this.notaObjetivo = notaObjetivo;
     }
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
     @Override
     public String toString() {
-        return "Examen{" +
+		Long usuarioId = (usuario != null ? usuario.getId() : null);
+        return "Examen {" +
                 "id = " + id +
-                ", descripcion = '" + descripcion + '\'' +
+                ", descripcion = " + descripcion + 
                 ", fecha = " + fecha +
-                ", peso = '" + peso + '\'' +
+                ", peso = " + peso + 
                 ", notaObjetivo = " + notaObjetivo +
-                '}';
+				", usuario = " + usuarioId + 
+                "}";
     }
 
 

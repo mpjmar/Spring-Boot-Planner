@@ -4,7 +4,6 @@ import com.planner.spring_boot_planner.entity.BloqueEstudio;
 import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
-import com.planner.spring_boot_planner.repository.CuadranteRepository;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import jakarta.validation.Valid;
 
@@ -26,14 +25,11 @@ public class BloqueEstudioWebController {
 
 	private final BloqueEstudioRepository bloqueEstudioRepository;
 	private final AsignaturaRepository asignaturaRepository;
-	private final CuadranteRepository cuadranteRepository;
 
 	public BloqueEstudioWebController(BloqueEstudioRepository bloqueEstudioRepository,
-									  AsignaturaRepository asignaturaRepository,
-									  CuadranteRepository cuadranteRepository) {
+									  AsignaturaRepository asignaturaRepository) {
 		this.bloqueEstudioRepository = bloqueEstudioRepository;
 		this.asignaturaRepository = asignaturaRepository;
-		this.cuadranteRepository = cuadranteRepository;
 	}
 
 	@GetMapping
@@ -52,10 +48,6 @@ public class BloqueEstudioWebController {
 
 		BloqueEstudio bloqueEstudio = new BloqueEstudio();
 
-		if (cuadranteId != null) {
-			bloqueEstudio.setCuadrante(cuadranteRepository.findById(cuadranteId).orElse(null));
-		}
-
 		if (fecha != null) bloqueEstudio.setFecha(LocalDate.parse(fecha));
 		if (horaInicio != null) bloqueEstudio.setHoraInicio(LocalTime.parse(horaInicio));
 		if (horaFin != null) bloqueEstudio.setHoraFin(LocalTime.parse(horaFin));
@@ -72,16 +64,10 @@ public class BloqueEstudioWebController {
 								@RequestParam(required = false) Long cuadranteId,
 								@AuthenticationPrincipal Usuario usuarioAutenticado) {
 
-		
-		if (bloqueEstudio.getCuadrante() == null && cuadranteId != null) {
-			bloqueEstudio.setCuadrante(cuadranteRepository.findById(cuadranteId).orElse(null));
-		}
-
-		if (bloqueEstudio.getCuadrante() != null && bloqueEstudio.getFecha() != null
+		if (bloqueEstudio.getFecha() != null
 				&& bloqueEstudio.getHoraInicio() != null && bloqueEstudio.getHoraFin() != null) {
 			List<BloqueEstudio> solapados = bloqueEstudioRepository
-				.findByCuadranteIdAndFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
-					bloqueEstudio.getCuadrante().getId(), 
+				.findByFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
 					bloqueEstudio.getFecha(),
 					bloqueEstudio.getHoraInicio(),
 					bloqueEstudio.getHoraFin()
@@ -100,7 +86,7 @@ public class BloqueEstudioWebController {
 		resolverAsignatura(bloqueEstudio);
 		bloqueEstudio.setUsuario(usuarioAutenticado);
 		bloqueEstudioRepository.save(bloqueEstudio);
-		return "redirect:/cuadrantes/" + bloqueEstudio.getCuadrante().getId() + "/editar";
+		return "redirect:/bloquesEstudio";
 	}
 
 	@GetMapping("/{id}/editar")
@@ -120,15 +106,10 @@ public class BloqueEstudioWebController {
 								@RequestParam(required = false) Long cuadranteId,
 								@AuthenticationPrincipal Usuario usuarioAutenticado) {
 
-		if (bloqueEstudio.getCuadrante() == null && cuadranteId != null) {
-			bloqueEstudio.setCuadrante(cuadranteRepository.findById(cuadranteId).orElse(null));
-		}
-
-		if (bloqueEstudio.getCuadrante() != null && bloqueEstudio.getFecha() != null
-				&& bloqueEstudio.getHoraInicio() != null && bloqueEstudio.getHoraFin() != null) {
+		if (bloqueEstudio.getFecha() != null && bloqueEstudio.getHoraInicio() != null 
+			&& bloqueEstudio.getHoraFin() != null) {
 			List<BloqueEstudio> solapados = bloqueEstudioRepository
-				.findByCuadranteIdAndFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
-					bloqueEstudio.getCuadrante().getId(), 
+				.findByFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
 					bloqueEstudio.getFecha(),
 					bloqueEstudio.getHoraInicio(),
 					bloqueEstudio.getHoraFin()

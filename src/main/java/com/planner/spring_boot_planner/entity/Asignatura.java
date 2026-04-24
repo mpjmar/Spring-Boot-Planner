@@ -109,12 +109,12 @@ public class Asignatura {
 
     @Override
     public String toString() {
-        return "Asignatura{" +
-                "id=" + id +
-                ", nombre = '" + nombre + '\'' +
+        return "Asignatura {" +
+                "id = " + id +
+                ", nombre = '" + nombre + 
                 ", profesor = " + profesor +
                 ", color = " + color +
-                ", imagenUrl = '" + imagenUrl + '\'' +
-                '}';
+                ", imagenUrl = '" + imagenUrl + 
+                "}";
     }
 }

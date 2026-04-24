@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -66,10 +68,16 @@ public class Tarea {
     @jakarta.persistence.Transient
     private Integer minutos = 0;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     public Tarea() {
     }
 
-    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, String prioridad, String estado, Duration tiempoEstimado) {
+    public Tarea(Asignatura asignatura, String nombre, String descripcion, LocalDate fechaLimite, 
+		String prioridad, String estado, Duration tiempoEstimado, Usuario usuario) {
         this.asignatura = asignatura;
         this.color = asignatura.getColor();
         this.nombre = nombre;
@@ -78,6 +86,7 @@ public class Tarea {
         this.prioridad = prioridad;
         this.estado = estado;
         this.tiempoEstimado = tiempoEstimado;
+		this.usuario = usuario;
     }
     
     public Long getId() {
@@ -168,17 +177,27 @@ public class Tarea {
         this.minutos = minutos;
     }
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
     @Override
     public String toString() {
+		Long usuarioId = (usuario != null ? usuario.getId() : null);
         return "Tarea{" +
                 "id = " + id +
-                ", nombre = '" + nombre + '\'' +
-                ", descripcion = '" + descripcion + '\'' +
+                ", nombre = " + nombre + 
+                ", descripcion = " + descripcion + 
                 ", fecha limite = " + fechaLimite +
-                ", prioridad = '" + prioridad + '\'' +
-                ", estado = '" + estado + '\'' +
+                ", prioridad = " + prioridad + 
+                ", estado = '" + estado + 
                 ", tiempo estimado = " + tiempoEstimado +
-                '}';
+				", usuario = " + usuarioId + 
+                "}";
     }
 
 

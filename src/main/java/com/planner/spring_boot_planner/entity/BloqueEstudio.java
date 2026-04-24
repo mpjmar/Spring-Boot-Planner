@@ -53,10 +53,6 @@ public class BloqueEstudio {
 	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
 	@Column(name = "color", length = 7)
 	private String color;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cuadrante_id")
-    private Cuadrante cuadrante;
 
     @ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -67,14 +63,13 @@ public class BloqueEstudio {
     }
 
     public BloqueEstudio(LocalDate fecha, String diaSemana, LocalTime horaInicio, LocalTime horaFin,
-            Asignatura asignatura, Cuadrante cuadrante, Usuario usuario) {
+            Asignatura asignatura, Usuario usuario) {
         this.fecha = fecha;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.asignatura = asignatura;
 		this.color = asignatura.getColor();
-		this.cuadrante = cuadrante;
 		this.usuario = usuario;
     }
 
@@ -126,14 +121,6 @@ public class BloqueEstudio {
         this.asignatura = asignatura;
     }
 
-	public Cuadrante getCuadrante() {
-		return cuadrante;
-	}
-
-	public void setCuadrante(Cuadrante cuadrante) {
-		this.cuadrante = cuadrante;
-	}
-
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -145,18 +132,17 @@ public class BloqueEstudio {
 	@Override
 	public String toString() {
 		Long asignaturaId = (asignatura != null ? asignatura.getId() : null);
-    	Long cuadranteId = (cuadrante != null ? cuadrante.getId() : null);
     	Long usuarioId = (usuario != null ? usuario.getId() : null);
 
 
-		return "BloqueEstudio [id=" + id + 
+		return "BloqueEstudio {id=" + id + 
 			   ", fecha = " + fecha + 
 			   ", horaInicio = " + horaInicio + 
 			   ", horaFin = " + horaFin + 
 			   ", diaSemana = " + diaSemana + 
 			   ", asignatura = " + asignaturaId + 
-			   ", cuadrante = " + cuadranteId + 
-			   ", usuario = " + usuarioId + "]";
+			   ", usuario = " + usuarioId + 
+			   "}";
 	}
 
 }
