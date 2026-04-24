@@ -28,6 +28,10 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(name = "fecha")
+    private LocalDate fecha;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
@@ -96,6 +100,14 @@ public class Tarea {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
 
     public Asignatura getAsignatura() {
         return asignatura;
@@ -190,6 +202,7 @@ public class Tarea {
 		Long usuarioId = (usuario != null ? usuario.getId() : null);
         return "Tarea{" +
                 "id = " + id +
+				", fecha = " + fecha +
                 ", nombre = " + nombre + 
                 ", descripcion = " + descripcion + 
                 ", fecha limite = " + fechaLimite +

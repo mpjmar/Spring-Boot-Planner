@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -153,6 +154,21 @@ public class BloqueEstudioWebController {
 			bloqueEstudio.setAsignatura(null);
 		}
 	}
+
+		@GetMapping("/dia")
+		public String verDia(@RequestParam(required = false) String fecha, Model model) {
+			LocalDate dia;
+			if (fecha == null) {
+				dia = LocalDate.now();
+			} else {
+				dia = LocalDate.parse(fecha);
+			}
+			List<BloqueEstudio> bloquesEstudio = bloqueEstudioRepository.findByFecha(dia);
+			bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio));
+			model.addAttribute("bloquesEstudio", bloquesEstudio);
+			model.addAttribute("fecha", dia);
+			return "bloquesEstudio/bloqueEstudioDayView";
+		}
 
 	@PostMapping("/bloquesEstudio/{id}/mover")
 	@ResponseBody

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Listado de horarios de clases</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+
+	<header>
+		<h1>Listado de Horarios de clases</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/horariosClase/nuevo}" class="btn btn-primary">+ Añadir horario de clase</a>
+		</div>
+
+		<div class="navegacion-fecha">
+			<!-- Día anterior -->
+			<a th:href="@{/dia(fecha=${fecha.minusDays(1)})}">⬅️</a>
+			<!-- Selector -->
+			<form th:action="@{/dia}" method="get">
+				<input type="date" name="fecha" th:value="${fecha}" />
+				<button type="submit">Ver</button>
+			</form>
+			<!-- Día siguiente -->
+			<a th:href="@{/dia(fecha=${fecha.plusDays(1)})}">➡️</a>
+			<!-- Hoy -->
+			<a th:href="@{/dia}">Hoy</a>
+		</div>
+
+		<h2 th:text="'Plan para: ' + ${fecha}"></h2>
+
+		<h3>Horario</h3>
+		<table>
+			<tr>
+				<th>Hora</th>
+				<th>Asignatura</th>
+			</tr>
+
+			<tr th:each="b : ${bloques}">
+				<td th:text="${b.horaInicio} + ' - ' + ${b.horaFin}"></td>
+				<td th:text="${b.asignatura?.nombre}"></td>
+			</tr>
+
+			<tr th:if="${#lists.isEmpty(bloques)}">
+				<td colspan="2">No hay bloques para este día</td>
+			</tr>
+		</table>
+
+		<h3>Tareas</h3>
+		<ul>
+			<li th:each="t : ${tareas}">
+				<strong th:text="${t.nombre}"></strong>
+				(<span th:text="${t.tiempoFormateado}"></span>)
+			</li>
+
+			<li th:if="${#lists.isEmpty(tareas)}">
+				No hay tareas para este día
+			</li>
+		</ul>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+</body>
+
+</html>

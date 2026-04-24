@@ -1,5 +1,6 @@
 package com.planner.spring_boot_planner.entity;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +28,11 @@ public class HorarioClase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(name = "fecha")
+    private LocalDate fecha;
+
+	@NotBlank
     @Size(max = 20)
     @Column(nullable = false, length = 20)
     private String diaSemana;
@@ -76,6 +81,14 @@ public class HorarioClase {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
 
     public String getDiaSemana() {
         return diaSemana;
@@ -132,13 +145,14 @@ public class HorarioClase {
 		Long usuarioId = (usuario != null ? usuario.getId() : null);
 		
 		return "horarioClase {id = " + id + 
-			   ", diaSemana = " + diaSemana + 
-			   ", horaInicio = " + horaInicio + 
-			   ", horaFin = " + horaFin + 
-			   ", asignatura = " + idAsignatura + 
-			   ", profesor = " + idProfesor + 
-			 	", usuario = " + usuarioId +   
-			   "}";
+			", fecha = " + fecha +
+			", diaSemana = " + diaSemana + 
+			", horaInicio = " + horaInicio + 
+			", horaFin = " + horaFin + 
+			", asignatura = " + idAsignatura + 
+			", profesor = " + idProfesor + 
+			", usuario = " + usuarioId +   
+			"}";
 	}
 
 

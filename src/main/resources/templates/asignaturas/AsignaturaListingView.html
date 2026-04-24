@@ -38,7 +38,9 @@
 					<td th:text="${asignatura.nombre}"></td>
 					<td th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></td>
 					<td th:text="${asignatura.color}"></td>
-					<td th:text="${asignatura.imagenUrl}"></td>
+					<td data-label="Imagen">
+						<img th:src="${asignatura.imagenUrl}" alt="imagen" style="max-width: 60px;" />
+					</td>
 					<td>
 						<a th:href="@{/asignaturas/{id}/editar(id=${asignatura.id})}" class="btn-icon"
 							title="Editar">✏️</a>

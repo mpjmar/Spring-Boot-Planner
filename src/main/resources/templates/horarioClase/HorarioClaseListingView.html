@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Listado de horarios de clases</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+
+	<header>
+		<h1>Listado de Horarios de clases</h1>
+	</header>
+
+	<div class="contenedor">
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/horariosClase/nuevo}" class="btn btn-primary">+ Añadir horario de clase</a>
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Fecha</th>
+					<th>Hora inicio</th>
+					<th>Hora fin</th>
+					<th>Asignatura</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${#lists.isEmpty(horariosClase)}">
+					<td colspan="5" class="vacio">No tienes horarios de clase registrados.</td>
+				</tr>
+				<tr th:each="horario : ${horariosClase}">
+					<td th:text="${horario.fecha}"></td>
+					<td th:text="${horario.horaInicio}"></td>
+					<td th:text="${horario.horaFin}"></td>
+					<td th:text="${horario.asignatura != null ? horario.nombre : '—'}"></td>
+					<td>
+						<a th:href="@{/horarioClase/{id}/editar(id=${horarioClase.id})}" class="btn-icon"
+							title="Editar">✏️</a>
+						<form th:action="@{/horarioClase/{id}/eliminar(id=${horarioClase.id})}" method="post"
+							onsubmit="return confirm('¿Eliminar esta horario de clase?')">
+							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+</body>
+
+</html>
