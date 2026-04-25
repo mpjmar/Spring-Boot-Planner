@@ -52,6 +52,8 @@ public class ProfesorWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		Profesor profesor = profesorRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado: " + id));
+		if (profesor.getUsuario().getId() != usuario.getId())
+			return "redirect:/profesores";
 		model.addAttribute("profesor", profesor);
 		model.addAttribute("accion", "Editar");
 		return "profesores/ProfesorFormView";
@@ -66,14 +68,21 @@ public class ProfesorWebController {
 			model.addAttribute("accion", "Editar");
 			return "profesores/ProfesorFormView";
 		}
+		if (profesor.getUsuario().getId() != usuario.getId())
+			return "redirect:/profesores";
 		profesor.setId(id);
 		profesorRepository.save(profesor);
 		return "redirect:/profesores";
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar(@PathVariable Long id, 
+						   @AuthenticationPrincipal Usuario usuario) {
+		Profesor profesor = profesorRepository.findById(id).orElse(null);
+		if (profesor == null || profesor.getUsuario().getId() != usuario.getId())
+			return "redirect:/profesores";
 		profesorRepository.deleteById(id);
 		return "redirect:/profesores";
 	}
+	
 }
