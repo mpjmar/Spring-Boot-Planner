@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.HorarioClase;
+import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import com.planner.spring_boot_planner.repository.HorarioClaseRepository;
 
@@ -36,14 +38,14 @@ public class HorarioClaseWebController {
 
 	@GetMapping()
 	public String listarBloques(Model model, @AuthenticationPrincipal Usuario usuario) {
-		model.addAttribute("horarioClase", horarioClaseRepository.findAll());
+		model.addAttribute("horarioClase", horarioClaseRepository.findByUsuarioId(usuario.getId()));
 		return "horariosClase/HorarioClaseListingView";
 	}
 
 	@GetMapping("/nuevo")
 	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("horarioClase", new HorarioClase());
-		model.addAttribute("asignaturas", asignaturaRepository.findAll());
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Añadir");
 		return "horariosClase/HorarioClaseFormView";
 	}
@@ -53,7 +55,7 @@ public class HorarioClaseWebController {
 							   BindingResult result, Model model, 
 							   @AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
-			model.addAttribute("asignaturas", asignaturaRepository.findAll());
+			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Añadir");
 			return "horariosClase/HorarioClaseFormView";
 		}
@@ -68,7 +70,7 @@ public class HorarioClaseWebController {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de horarioClase no encontrado: " + id));
 		model.addAttribute("horarioClase", horarioClase);
-		model.addAttribute("asignatura", asignaturaRepository.findAll());
+		model.addAttribute("asignatura", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Editar");
 		return "horariosClase/HorarioClaseFormView";
 	}

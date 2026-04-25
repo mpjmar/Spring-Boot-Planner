@@ -25,8 +25,8 @@ public class UsuarioWebController {
 	}
 
 	@GetMapping("/perfil")
-	public String verPerfil(Model model, @AuthenticationPrincipal Usuario usuarioAutenticado) {
-		model.addAttribute("usuario", usuarioAutenticado);
+	public String verPerfil(Model model, @AuthenticationPrincipal Usuario usuario) {
+		model.addAttribute("usuario", usuario);
 		return "usuarios/UsuarioPerfilView";
 	}
 

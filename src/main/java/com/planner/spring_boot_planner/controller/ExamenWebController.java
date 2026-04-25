@@ -1,10 +1,13 @@
 package com.planner.spring_boot_planner.controller;
 
 import com.planner.spring_boot_planner.entity.Examen;
+import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.repository.ExamenRepository;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import jakarta.validation.Valid;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,14 +28,14 @@ public class ExamenWebController {
 
 	@GetMapping
 	public String listarExamenes(Model model, @AuthenticationPrincipal Usuario usuario) {
-		model.addAttribute("examenes", examenRepository.findAll());
+		model.addAttribute("examenes", examenRepository.findByUsuarioId(usuario.getId()));
 		return "examenes/ExamenListingView";
 	}
 
 	@GetMapping("/nuevo")
 	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
 		model.addAttribute("examen", new Examen());
-		model.addAttribute("asignaturas", asignaturaRepository.findAll());
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Añadir");
 		return "examenes/ExamenFormView";
 	}
@@ -42,7 +45,7 @@ public class ExamenWebController {
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
-			model.addAttribute("asignaturas", asignaturaRepository.findAll());
+			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Añadir");
 			return "examenes/ExamenFormView";
 		}
@@ -57,7 +60,7 @@ public class ExamenWebController {
 		Examen examen = examenRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Examen no encontrado: " + id));
 		model.addAttribute("examen", examen);
-		model.addAttribute("asignaturas", asignaturaRepository.findAll());
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Editar");
 		return "examenes/ExamenFormView";
 	}

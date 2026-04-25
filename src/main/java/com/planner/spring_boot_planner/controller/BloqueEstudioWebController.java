@@ -34,8 +34,8 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping
-	public String listarBloquesEstudio(Model model, @AuthenticationPrincipal Usuario usuarioAutenticado) {
-		model.addAttribute("bloquesEstudio", bloqueEstudioRepository.findByUsuarioId(usuarioAutenticado.getId()));
+	public String listarBloquesEstudio(Model model, @AuthenticationPrincipal Usuario usuario) {
+		model.addAttribute("bloquesEstudio", bloqueEstudioRepository.findByUsuarioId(usuario.getId()));
 		return "bloquesEstudio/BloqueEstudioListingView";
 	}
 
@@ -54,7 +54,7 @@ public class BloqueEstudioWebController {
 		if (horaFin != null) bloqueEstudio.setHoraFin(LocalTime.parse(horaFin));
 
 		model.addAttribute("bloqueEstudio", bloqueEstudio);
-		model.addAttribute("asignaturas", asignaturaRepository.findAll());
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Añadir");
 		return "bloquesEstudio/BloqueEstudioFormView";
 	}
@@ -63,7 +63,7 @@ public class BloqueEstudioWebController {
 	public String guardarNuevo(@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
 								@RequestParam(required = false) Long cuadranteId,
-								@AuthenticationPrincipal Usuario usuarioAutenticado) {
+								@AuthenticationPrincipal Usuario usuario) {
 
 		if (bloqueEstudio.getFecha() != null
 				&& bloqueEstudio.getHoraInicio() != null && bloqueEstudio.getHoraFin() != null) {
@@ -79,23 +79,24 @@ public class BloqueEstudioWebController {
 		}
 
 		if (result.hasErrors()) {
-			model.addAttribute("asignaturas", asignaturaRepository.findAll());
+			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Añadir");
 			return "bloquesEstudio/BloqueEstudioFormView";
 		}
 
 		resolverAsignatura(bloqueEstudio);
-		bloqueEstudio.setUsuario(usuarioAutenticado);
+		bloqueEstudio.setUsuario(usuario);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return "redirect:/bloquesEstudio";
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+										  @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
 		model.addAttribute("bloqueEstudio", bloqueEstudio);
-		model.addAttribute("asignaturas", asignaturaRepository.findAll());
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Editar");
 		return "bloquesEstudio/BloqueEstudioFormView";
 	}
@@ -105,7 +106,7 @@ public class BloqueEstudioWebController {
 								@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
 								@RequestParam(required = false) Long cuadranteId,
-								@AuthenticationPrincipal Usuario usuarioAutenticado) {
+								@AuthenticationPrincipal Usuario usuario) {
 
 		if (bloqueEstudio.getFecha() != null && bloqueEstudio.getHoraInicio() != null 
 			&& bloqueEstudio.getHoraFin() != null) {
@@ -128,16 +129,16 @@ public class BloqueEstudioWebController {
 		}
 		bloqueEstudio.setId(id);
 		resolverAsignatura(bloqueEstudio);
-		bloqueEstudio.setUsuario(usuarioAutenticado);
+		bloqueEstudio.setUsuario(usuario);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return "redirect:/bloquesEstudio";
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuarioAutenticado) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloque = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
-		if (!bloque.getUsuario().getId().equals(usuarioAutenticado.getId())) {
+		if (!bloque.getUsuario().getId().equals(usuario.getId())) {
 			return "redirect:/bloquesEstudio?error=forbidden";
 		}
 		bloqueEstudioRepository.deleteById(id);
