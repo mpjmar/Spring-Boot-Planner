@@ -141,11 +141,10 @@ public class BloqueEstudioWebController {
 	@PostMapping("/{id}/eliminar")
 	public String eliminar(@PathVariable Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
-		BloqueEstudio bloque = bloqueEstudioRepository.findById(id)
+		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
-		if (!bloque.getUsuario().getId().equals(usuario.getId())) {
+		if (!bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/bloquesEstudio?error=forbidden";
-		}
 		bloqueEstudioRepository.deleteById(id);
 		return "redirect:/bloquesEstudio";
 	}
@@ -166,7 +165,7 @@ public class BloqueEstudioWebController {
 		return "bloquesEstudio/bloqueEstudioDayView";
 	}
 
-	@PostMapping("/bloquesEstudio/{id}/mover")
+	@PostMapping("/{id}/mover")
 	@ResponseBody
 	public ResponseEntity<?> moverBloque(@PathVariable Long id, @RequestBody Map<String, String> payload, 
 										 @AuthenticationPrincipal Usuario usuario) {
