@@ -92,7 +92,7 @@ public class AsignaturaWebController {
 		if (asignatura == null)
 			return "redirect:/asignaturas";
 		asignaturaRepository.deleteById(id);
-		return "redirect:/asignaturas";
+		return "redirect:/asignaturas?error=forbidden";
 	}
 
 	private void resolverProfesor(Asignatura asignatura) {

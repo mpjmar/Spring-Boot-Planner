@@ -95,6 +95,8 @@ public class BloqueEstudioWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
+		if (bloqueEstudio.getUsuario().getId() != usuario.getId())
+			return "redirect:/bloquesEstudio";
 		model.addAttribute("bloqueEstudio", bloqueEstudio);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Editar");
@@ -138,7 +140,7 @@ public class BloqueEstudioWebController {
 	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloque = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
-		if (!bloque.getUsuario().getId().equals(usuario.getId())) {
+		if (bloque.getUsuario().getId() != usuario.getId()) {
 			return "redirect:/bloquesEstudio?error=forbidden";
 		}
 		bloqueEstudioRepository.deleteById(id);

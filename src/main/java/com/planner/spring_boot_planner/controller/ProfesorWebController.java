@@ -80,7 +80,7 @@ public class ProfesorWebController {
 						   @AuthenticationPrincipal Usuario usuario) {
 		Profesor profesor = profesorRepository.findById(id).orElse(null);
 		if (profesor == null || profesor.getUsuario().getId() != usuario.getId())
-			return "redirect:/profesores";
+			return "redirect:/profesores?error=forbidden";
 		profesorRepository.deleteById(id);
 		return "redirect:/profesores";
 	}
