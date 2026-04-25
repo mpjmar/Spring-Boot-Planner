@@ -60,7 +60,7 @@ public class ExamenWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Examen no encontrado: " + id));
-		if (examen.getUsuario().getId() != usuario.getId())
+		if (!examen.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/examenes";
 		model.addAttribute("examen", examen);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -77,7 +77,7 @@ public class ExamenWebController {
 			model.addAttribute("accion", "Editar");
 			return "examenes/ExamenFormView";
 		}
-		if (examen.getUsuario().getId() != usuario.getId())
+		if (!examen.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/examenes";
 		examen.setId(id);
 		resolverAsignatura(examen);
@@ -86,9 +86,10 @@ public class ExamenWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar(@PathVariable Long id, 
+						   @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id).orElse(null);
-		if (examen == null)
+		if (examen == null || !examen.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/examenes?error=forbidden";
 		examenRepository.deleteById(id);
 		return "redirect:/examenes";

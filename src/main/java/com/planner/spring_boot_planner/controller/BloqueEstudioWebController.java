@@ -95,7 +95,7 @@ public class BloqueEstudioWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
-		if (bloqueEstudio.getUsuario().getId() != usuario.getId())
+		if (!bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/bloquesEstudio";
 		model.addAttribute("bloqueEstudio", bloqueEstudio);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -124,11 +124,13 @@ public class BloqueEstudioWebController {
 				result.rejectValue("horaInicio", "error.bloqueEstudio", "Existe un bloque solapado en este horario.");
 			}
 		}
-		
+		if (!bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/bloquesEstudio";
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "bloquesEstudio/BloqueEstudioFormView";
 		}
+
 		bloqueEstudio.setId(id);
 		resolverAsignatura(bloqueEstudio);
 		bloqueEstudio.setUsuario(usuario);
@@ -137,10 +139,11 @@ public class BloqueEstudioWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar(@PathVariable Long id, 
+						   @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloque = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
-		if (bloque.getUsuario().getId() != usuario.getId()) {
+		if (!bloque.getUsuario().getId().equals(usuario.getId())) {
 			return "redirect:/bloquesEstudio?error=forbidden";
 		}
 		bloqueEstudioRepository.deleteById(id);

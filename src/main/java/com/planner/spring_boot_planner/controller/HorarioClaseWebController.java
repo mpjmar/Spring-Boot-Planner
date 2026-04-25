@@ -60,6 +60,7 @@ public class HorarioClaseWebController {
 			return "horariosClase/HorarioClaseFormView";
 		}
 		resolverAsignatura(horarioClase);
+		horarioClase.setUsuario(usuario);
 		horarioClaseRepository.save(horarioClase);
 		return "redirect:/horariosClase";
 	}
@@ -69,6 +70,8 @@ public class HorarioClaseWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de horarioClase no encontrado: " + id));
+		if (!horarioClase.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/horariosClase";
 		model.addAttribute("horarioClase", horarioClase);
 		model.addAttribute("asignatura", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Editar");
@@ -84,6 +87,8 @@ public class HorarioClaseWebController {
 			model.addAttribute("accion", "Editar");
 			return "horariosClase/HorarioClaseFormView";
 		}
+		if (!horarioClase.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/horariosClase";
 		horarioClase.setId(id);
 		resolverAsignatura(horarioClase);
 		horarioClaseRepository.save(horarioClase);
@@ -91,7 +96,11 @@ public class HorarioClaseWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar8(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar8(@PathVariable Long id, 
+							@AuthenticationPrincipal Usuario usuario) {
+		HorarioClase horarioClase = horarioClaseRepository.findById(id).orElse(null);
+		if (horarioClase == null || !horarioClase.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/horariosClase?error=forbidden";
 		horarioClaseRepository.deleteById(id);
 		return "redirect:/horariosClase";
 	}

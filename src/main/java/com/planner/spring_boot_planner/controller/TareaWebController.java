@@ -68,6 +68,8 @@ public class TareaWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		Tarea tarea = tareaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada: " + id));
+		if (!tarea.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/tareas";
 		model.addAttribute("tarea", tarea);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Editar");
@@ -83,6 +85,8 @@ public class TareaWebController {
 			model.addAttribute("accion", "Editar");
 			return "tareas/TareaFormView";
 		}
+		if (!tarea.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/tareas";
 		tarea.setId(id);
 		// Construye Duration a partir de horas y minutos
 		int horas = tarea.getHoras() != null ? tarea.getHoras() : 0;
@@ -94,7 +98,11 @@ public class TareaWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar(@PathVariable Long id, 
+						   @AuthenticationPrincipal Usuario usuario) {
+		Tarea tarea = tareaRepository.findById(id).orElse(null);
+		if (tarea ==  null || !tarea.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/tareas?error=forbidden";
 		tareaRepository.deleteById(id);
 		return "redirect:/tareas";
 	}
