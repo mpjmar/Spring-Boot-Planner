@@ -4,20 +4,20 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Listado de Bloques de estudio</title>
+	<title>Listado de Cuadrantes de planificación</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
 
 	<header>
-		<h1>Listado de Bloques de estudio</h1>
+		<h1>Listado de Cuadrantes de Planificación</h1>
 	</header>
 
 	<div class="contenedor">
 		<div class="barra-acciones">
 			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloques de estudio</a>
+			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir cuadrante</a>
 		</div>
 
 		<table>
@@ -32,7 +32,7 @@
 			</thead>
 			<tbody>
 				<tr th:if="${#lists.isEmpty(bloquesEstudio)}">
-					<td colspan="5" class="vacio">No tienes bloques de estudio registrados.</td>
+					<td colspan="5" class="vacio">No tienes cuadrantes registrados.</td>
 				</tr>
 				<tr th:each="bloque : ${bloquesEstudio}">
 					<td th:text="${bloque.fecha}"></td>
