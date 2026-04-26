@@ -35,7 +35,7 @@
 					<td colspan="5" class="vacio">No tienes cuadrantes registrados.</td>
 				</tr>
 				<tr th:each="bloque : ${bloquesEstudio}">
-					<td th:text="${bloque.fecha}"></td>
+					<td th:text="${#temporals.format(bloqueEstudio.fecha, 'dd/MM/yyyy')}"></td>
 					<td th:text="${bloque.horaInicio}"></td>
 					<td th:text="${bloque.horaFin}"></td>
 					<td th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : '—'}"></td>

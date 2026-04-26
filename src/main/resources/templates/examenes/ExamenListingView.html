@@ -38,7 +38,7 @@
 				<tr th:each="examen : ${examenes}">
 					<td th:text="${examen.asignatura != null ? examen.asignatura.nombre : '—'}"></td>
 					<td th:text="${examen.descripcion}"></td>
-					<td th:text="${examen.fecha}"></td>
+					<td th:text="${#temporals.format(examen.fecha, 'dd/MM/yyyy')}"></td>
 					<td th:text="${examen.peso}"></td>
 					<td th:text="${examen.notaObjetivo}"></td>
 					<td>

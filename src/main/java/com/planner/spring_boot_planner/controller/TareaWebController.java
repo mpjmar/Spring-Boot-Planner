@@ -59,6 +59,7 @@ public class TareaWebController {
 		int minutos = tarea.getMinutos() != null ? tarea.getMinutos() : 0;
 		tarea.setTiempoEstimado(java.time.Duration.ofHours(horas).plusMinutes(minutos));
 		resolverAsignatura(tarea, usuario);
+		tarea.setUsuario(usuario);
 		tareaRepository.save(tarea);
 		return "redirect:/tareas";
 	}

@@ -41,7 +41,7 @@
 					<td th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></td>
 					<td th:text="${tarea.nombre}"></td>
 					<td th:text="${tarea.descripcion}"></td>
-					<td th:text="${tarea.fechaLimite}"></td>
+					<td th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM/yyyy')}"></td>
 					<td th:text="${tarea.prioridad}"></td>
 					<td th:text="${tarea.estado}"></td>
 					<td th:text="${tarea.tiempoFormateado}"></td>
