@@ -27,13 +27,13 @@ public class ExamenWebController {
 	}
 
 	@GetMapping
-	public String listarExamenes(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String listarExamenes(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("examenes", examenRepository.findByUsuarioId(usuario.getId()));
 		return "examenes/ExamenListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String mostrarFormularioNuevo(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("examen", new Examen());
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Añadir");
@@ -49,7 +49,7 @@ public class ExamenWebController {
 			model.addAttribute("accion", "Añadir");
 			return "examenes/ExamenFormView";
 		}
-		resolverAsignatura(examen);
+		resolverAsignatura(examen, usuario);
 		examen.setUsuario(usuario);
 		examenRepository.save(examen);
 		return "redirect:/examenes";
@@ -60,7 +60,7 @@ public class ExamenWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Examen no encontrado: " + id));
-		if (!examen.getUsuario().getId().equals(usuario.getId()))
+		if (examen.getUsuario() == null || !examen.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/examenes";
 		model.addAttribute("examen", examen);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -73,14 +73,17 @@ public class ExamenWebController {
 								@Valid @ModelAttribute("examen") Examen examen,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
+		Examen existente = examenRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Examen no encontrado: " + id));
+		if (existente == null || !existente.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/examenes";
 		if (result.hasErrors()) {
 			model.addAttribute("accion", "Editar");
 			return "examenes/ExamenFormView";
 		}
-		if (!examen.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/examenes";
 		examen.setId(id);
-		resolverAsignatura(examen);
+		examen.setUsuario(usuario);
+		resolverAsignatura(examen, usuario);
 		examenRepository.save(examen);
 		return "redirect:/examenes";
 	}
@@ -89,16 +92,18 @@ public class ExamenWebController {
 	public String eliminar(@PathVariable Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id).orElse(null);
-		if (examen == null || !examen.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/examenes?error=forbidden";
+		if (examen == null || examen.getUsuario() == null || 
+			!examen.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/examenes";
 		examenRepository.deleteById(id);
 		return "redirect:/examenes";
 	}
 
 
-	private void resolverAsignatura(Examen examen) {
+	private void resolverAsignatura(Examen examen, Usuario usuario) {
 		if (examen.getAsignatura() != null && examen.getAsignatura().getId() != null) {
 			Asignatura asignatura = asignaturaRepository.findById(examen.getAsignatura().getId())
+				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
 				.orElse(null);
 			examen.setAsignatura(asignatura);
 		} else {

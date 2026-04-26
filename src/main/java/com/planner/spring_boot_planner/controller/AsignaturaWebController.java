@@ -27,13 +27,13 @@ public class AsignaturaWebController {
 	}
 
 	@GetMapping
-	public String listarAsignaturas(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String listarAsignaturas(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		return "asignaturas/AsignaturaListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String mostrarFormularioNuevo(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("asignatura", new Asignatura());
 		model.addAttribute("profesores", profesorRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Añadir");
@@ -49,7 +49,7 @@ public class AsignaturaWebController {
 			model.addAttribute("accion", "Añadir");
 			return "asignaturas/AsignaturaFormView";
 		}
-		resolverProfesor(asignatura);
+		resolverProfesor(asignatura, usuario);
 		asignatura.setUsuario(usuario);
 		asignaturaRepository.save(asignatura);
 		return "redirect:/asignaturas";
@@ -60,7 +60,7 @@ public class AsignaturaWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		Asignatura asignatura = asignaturaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Asignatura no encontrada: " + id));
-		if (!asignatura.getUsuario().getId().equals(usuario.getId()))
+		if (asignatura == null || !asignatura.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/asignaturas";
 		model.addAttribute("asignatura", asignatura);
 		model.addAttribute("profesores", profesorRepository.findByUsuarioId(usuario.getId()));
@@ -73,15 +73,18 @@ public class AsignaturaWebController {
 								@Valid @ModelAttribute("asignatura") Asignatura asignatura,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
+		Asignatura existente = asignaturaRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Asignatura no encontrada: " + id));
+		if (existente == null || !existente.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/asignaturas";
 		if (result.hasErrors()) {
 			model.addAttribute("profesores", profesorRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Editar");
 			return "asignaturas/AsignaturaFormView";
 		}
-		if (!asignatura.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/asignaturas";
 		asignatura.setId(id);
-		resolverProfesor(asignatura);
+		asignatura.setUsuario(usuario);
+		resolverProfesor(asignatura, usuario);
 		asignaturaRepository.save(asignatura);
 		return "redirect:/asignaturas";
 	}
@@ -90,15 +93,17 @@ public class AsignaturaWebController {
 	public String eliminar(@PathVariable Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Asignatura asignatura = asignaturaRepository.findById(id).orElse(null);
-		if (asignatura == null || !asignatura.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/asignaturas?error=forbidden";
+		if (asignatura == null || asignatura.getUsuario() == null || 
+			!asignatura.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/asignaturas";
 		asignaturaRepository.deleteById(id);
 		return "redirect:/asignaturas";
 	}
 
-	private void resolverProfesor(Asignatura asignatura) {
+	private void resolverProfesor(Asignatura asignatura, Usuario usuario) {
 		if (asignatura.getProfesor() != null && asignatura.getProfesor().getId() != null) {
 			Profesor profesor = profesorRepository.findById(asignatura.getProfesor().getId())
+				.filter(p -> p.getUsuario() != null && p.getUsuario().getId().equals(usuario.getId()))
 				.orElse(null);
 			asignatura.setProfesor(profesor);
 		} else {

@@ -32,13 +32,13 @@ public class TareaWebController {
 	}
 
 	@GetMapping
-	public String listarTareas(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String listarTareas(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("tareas", tareaRepository.findByUsuarioId(usuario.getId()));
 		return "tareas/TareaListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String mostrarFormularioNuevo(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("tarea", new Tarea());
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		model.addAttribute("accion", "Añadir");
@@ -58,7 +58,7 @@ public class TareaWebController {
 		int horas = tarea.getHoras() != null ? tarea.getHoras() : 0;
 		int minutos = tarea.getMinutos() != null ? tarea.getMinutos() : 0;
 		tarea.setTiempoEstimado(java.time.Duration.ofHours(horas).plusMinutes(minutos));
-		resolverAsignatura(tarea);
+		resolverAsignatura(tarea, usuario);
 		tareaRepository.save(tarea);
 		return "redirect:/tareas";
 	}
@@ -68,7 +68,7 @@ public class TareaWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		Tarea tarea = tareaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada: " + id));
-		if (!tarea.getUsuario().getId().equals(usuario.getId()))
+		if (tarea.getUsuario() == null || !tarea.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/tareas";
 		model.addAttribute("tarea", tarea);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -81,18 +81,22 @@ public class TareaWebController {
 								@Valid @ModelAttribute("tarea") Tarea tarea,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
+		Tarea existente = tareaRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada: " + id));
+		if (existente.getUsuario() == null || !existente.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/tareas";
 		if (result.hasErrors()) {
+			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Editar");
 			return "tareas/TareaFormView";
 		}
-		if (!tarea.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/tareas";
 		tarea.setId(id);
 		// Construye Duration a partir de horas y minutos
 		int horas = tarea.getHoras() != null ? tarea.getHoras() : 0;
 		int minutos = tarea.getMinutos() != null ? tarea.getMinutos() : 0;
 		tarea.setTiempoEstimado(java.time.Duration.ofHours(horas).plusMinutes(minutos));
-		resolverAsignatura(tarea);
+		resolverAsignatura(tarea, usuario);
+		tarea.setUsuario(usuario);
 		tareaRepository.save(tarea);
 		return "redirect:/tareas";
 	}
@@ -101,16 +105,17 @@ public class TareaWebController {
 	public String eliminar(@PathVariable Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Tarea tarea = tareaRepository.findById(id).orElse(null);
-		if (tarea ==  null || !tarea.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/tareas?error=forbidden";
+		if (tarea ==  null || tarea.getUsuario() == null || !tarea.getUsuario().getId().equals(usuario.getId()))
+			return "redirect:/tareas";
 		tareaRepository.deleteById(id);
 		return "redirect:/tareas";
 	}
 	
 
-	private void resolverAsignatura(Tarea tarea) {
+	private void resolverAsignatura(Tarea tarea, Usuario usuario) {
 		if (tarea.getAsignatura() != null && tarea.getAsignatura().getId() != null) {
 			Asignatura asignatura = asignaturaRepository.findById(tarea.getAsignatura().getId())
+				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
 				.orElse(null);
 			tarea.setAsignatura(asignatura);
 			if (asignatura != null) {

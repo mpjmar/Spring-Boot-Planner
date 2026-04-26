@@ -61,9 +61,14 @@ public class UsuarioWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+	public String mostrarFormularioEditar(@PathVariable Long id, Model model,
+										  @AuthenticationPrincipal Usuario autenticado) {
+		if (autenticado == null || !autenticado.getId().equals(id))
+			return "redirect:/usuario/perfil";
 		Usuario usuario = usuarioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("El usuario no existe: " + id));
+		usuario.setPassword("");
+		usuario.setRepitePassword("");
 		model.addAttribute("usuario", usuario);
 		model.addAttribute("accion", "Editar");
 		return "usuarios/UsuarioFormView";
@@ -71,19 +76,44 @@ public class UsuarioWebController {
 
 	@PostMapping("/{id}/editar")
 	public String guardarEleccion(@PathVariable Long id,
-								@Valid @ModelAttribute("usuario") Usuario usuario,
-								BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			model.addAttribute("accion", "Editar");
-			return "usuarios/usuarioFormView";
+								@ModelAttribute("usuario") Usuario datosFormulario,
+								@Valid BindingResult result, Model model,
+								@AuthenticationPrincipal Usuario autenticado) {
+		if (autenticado == null || !autenticado.getId().equals(id))
+			return "redirect:/usuario/perfil";
+		Usuario existente = usuarioRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("El usuario no existe: " + id));
+		if (datosFormulario.getNombre() == null || datosFormulario.getNombre().isBlank()
+			|| datosFormulario.getApellidos() == null || datosFormulario.getApellidos().isBlank()
+			|| datosFormulario.getEmail() == null || datosFormulario.getEmail().isBlank()) {
+				model.addAttribute("accion", "Editar");
+				model.addAttribute("error", "Los campos de nombre, apellidos y email son obligatorios.");
+				model.addAttribute("usuario", datosFormulario);
+				return "usuarios/UsuarioFormView";
 		}
-		usuario.setId(id);
-		usuarioRepository.save(usuario);
+		existente.setNombre(datosFormulario.getNombre());
+		existente.setApellidos(datosFormulario.getApellidos());
+		existente.setEmail(datosFormulario.getEmail());
+		if (datosFormulario.getPassword() != null && !datosFormulario.getPassword().isBlank()) {
+			if (!datosFormulario.getPassword().equals(datosFormulario.getRepitePassword())) {
+				model.addAttribute("accion", "Editar");
+				model.addAttribute("error", "Las contraseñas no coinciden");
+				datosFormulario.setPassword("");
+				datosFormulario.setRepitePassword("");
+				model.addAttribute("usuarios", datosFormulario);
+				return "usuarios/UsuarioFormView";
+			}
+			existente.setPassword(passwordEncoder.encode(datosFormulario.getPassword()));
+			existente.setRepitePassword(existente.getPassword());
+		}
+		usuarioRepository.save(existente);
 		return "redirect:/usuario/perfil";
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id) {
+	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+		if (usuario == null || !usuario.getId().equals(id))
+			return "redirect:/usuario/perfil";
 		usuarioRepository.deleteById(id);
 		return "redirect:/login";
 	}

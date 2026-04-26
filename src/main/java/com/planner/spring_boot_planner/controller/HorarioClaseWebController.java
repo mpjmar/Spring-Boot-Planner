@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.HorarioClase;
+import com.planner.spring_boot_planner.entity.Profesor;
 import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import com.planner.spring_boot_planner.repository.HorarioClaseRepository;
+import com.planner.spring_boot_planner.repository.ProfesorRepository;
 
 import jakarta.validation.Valid;
 
@@ -29,23 +31,26 @@ public class HorarioClaseWebController {
 
 	private final HorarioClaseRepository horarioClaseRepository;
 	private final AsignaturaRepository asignaturaRepository;
+	private final ProfesorRepository profesorRepository;
 
 	public HorarioClaseWebController(HorarioClaseRepository horarioClaseRepository,
-								     AsignaturaRepository asignaturaRepository) {
+								     AsignaturaRepository asignaturaRepository,
+									 ProfesorRepository profesorRepository) {
 		this.horarioClaseRepository = horarioClaseRepository;
 		this.asignaturaRepository = asignaturaRepository;
+		this.profesorRepository = profesorRepository;
 	}
 
 	@GetMapping()
-	public String listarBloques(Model model, @AuthenticationPrincipal Usuario usuario) {
-		model.addAttribute("horarioClase", horarioClaseRepository.findByUsuarioId(usuario.getId()));
+	public String listarHorarios(@AuthenticationPrincipal Usuario usuario, Model model) {
+		model.addAttribute("horariosClase", horarioClaseRepository.findByUsuarioId(usuario.getId()));
 		return "horariosClase/HorarioClaseListingView";
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String mostrarFormularioNuevo(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("horarioClase", new HorarioClase());
-		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
+		cargarListasFormulario(model, usuario);
 		model.addAttribute("accion", "Añadir");
 		return "horariosClase/HorarioClaseFormView";
 	}
@@ -55,11 +60,12 @@ public class HorarioClaseWebController {
 							   BindingResult result, Model model, 
 							   @AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
-			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
+			cargarListasFormulario(model, usuario);
 			model.addAttribute("accion", "Añadir");
 			return "horariosClase/HorarioClaseFormView";
 		}
-		resolverAsignatura(horarioClase);
+		resolverAsignatura(horarioClase, usuario);
+		resolverProfesor(horarioClase, usuario);
 		horarioClase.setUsuario(usuario);
 		horarioClaseRepository.save(horarioClase);
 		return "redirect:/horariosClase";
@@ -70,10 +76,10 @@ public class HorarioClaseWebController {
 										  @AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de horarioClase no encontrado: " + id));
-		if (!horarioClase.getUsuario().getId().equals(usuario.getId()))
+		if (!puedeGestionar(horarioClase, usuario))
 			return "redirect:/horariosClase";
 		model.addAttribute("horarioClase", horarioClase);
-		model.addAttribute("asignatura", asignaturaRepository.findByUsuarioId(usuario.getId()));
+		cargarListasFormulario(model, usuario);
 		model.addAttribute("accion", "Editar");
 		return "horariosClase/HorarioClaseFormView";
 	}
@@ -84,13 +90,18 @@ public class HorarioClaseWebController {
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
+			cargarListasFormulario(model, usuario);
 			model.addAttribute("accion", "Editar");
 			return "horariosClase/HorarioClaseFormView";
 		}
-		if (!horarioClase.getUsuario().getId().equals(usuario.getId()))
+		HorarioClase existente = horarioClaseRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Horario de clase no encontrado: " + id));
+		if (!puedeGestionar(existente, usuario))
 			return "redirect:/horariosClase";
 		horarioClase.setId(id);
-		resolverAsignatura(horarioClase);
+		horarioClase.setUsuario(usuario);
+		resolverAsignatura(horarioClase, usuario);
+		resolverProfesor(horarioClase, usuario);
 		horarioClaseRepository.save(horarioClase);
 		return "redirect:/horariosClase";
 	}
@@ -99,8 +110,8 @@ public class HorarioClaseWebController {
 	public String eliminar8(@PathVariable Long id, 
 							@AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id).orElse(null);
-		if (horarioClase == null || !horarioClase.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/horariosClase?error=forbidden";
+		if (horarioClase == null || !puedeGestionar(horarioClase, usuario))
+			return "redirect:/horariosClase";
 		horarioClaseRepository.deleteById(id);
 		return "redirect:/horariosClase";
 	}
@@ -108,26 +119,42 @@ public class HorarioClaseWebController {
 	@GetMapping("/dia")
 	public String verDia(@RequestParam(required = false) String fecha, Model model, 
 						 @AuthenticationPrincipal Usuario usuario) {
-		LocalDate dia;
-		if (fecha == null) {
-			dia = LocalDate.now();
-		} else {
-			dia = LocalDate.parse(fecha);
-		}
-		List<HorarioClase> horarios = horarioClaseRepository.findByFecha(dia);
-		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio));
+		LocalDate dia = fecha == null ? LocalDate.now() : LocalDate.parse(fecha);
+		List<HorarioClase> horarios = horarioClaseRepository.findByFechaAndUsuarioId(dia, usuario.getId());
+		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, Comparator.nullsLast(Comparator.naturalOrder())));
 		model.addAttribute("horarios", horarios);
 		model.addAttribute("fecha", dia);
 		return "horariosClase/HorarioClaseDayView";
 	}
 
-	private void resolverAsignatura(HorarioClase horarioClase) {
+	private void cargarListasFormulario(Model model, Usuario usuario) {
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
+		model.addAttribute("profesores", profesorRepository.findByUsuarioId(usuario.getId()));
+	}
+
+	private boolean puedeGestionar(HorarioClase horarioClase, Usuario usuario) {
+		return horarioClase.getId() != null && horarioClase.getUsuario().getId().equals(usuario.getId());
+	}
+
+	private void resolverAsignatura(HorarioClase horarioClase, Usuario usuario) {
 		if (horarioClase.getAsignatura() != null && horarioClase.getAsignatura().getId() != null) {
 			Asignatura asignatura = asignaturaRepository.findById(horarioClase.getAsignatura().getId())
+				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
 				.orElse(null);
 			horarioClase.setAsignatura(asignatura);
 		} else {
 			horarioClase.setAsignatura(null);
+		}
+	}
+	
+	private void resolverProfesor(HorarioClase horarioClase, Usuario usuario) {
+		if (horarioClase.getProfesor() != null && horarioClase.getProfesor().getId() != null) {
+			Profesor profesor = profesorRepository.findById(horarioClase.getProfesor().getId())
+				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
+				.orElse(null);
+			horarioClase.setProfesor(profesor);
+		} else {
+			horarioClase.setProfesor(null);
 		}
 	}
 

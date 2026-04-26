@@ -7,8 +7,12 @@ import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import jakarta.validation.Valid;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bloquesEstudio")
 public class BloqueEstudioWebController {
 
+	private static final String COLOR_DEFECTO = "#4A5568";
+
 	private final BloqueEstudioRepository bloqueEstudioRepository;
 	private final AsignaturaRepository asignaturaRepository;
 
@@ -34,14 +40,13 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping
-	public String listarBloquesEstudio(Model model, @AuthenticationPrincipal Usuario usuario) {
+	public String listarBloquesEstudio(@AuthenticationPrincipal Usuario usuario, Model model) {
 		model.addAttribute("bloquesEstudio", bloqueEstudioRepository.findByUsuarioId(usuario.getId()));
 		return "bloquesEstudio/BloqueEstudioListingView";
 	}
 
 	@GetMapping("/nuevo")
 	public String mostrarFormularioNuevo(
-			@RequestParam(required = false) Long cuadranteId,
 			@RequestParam(required = false) String fecha,
 			@RequestParam(required = false) String horaInicio,
 			@RequestParam(required = false) String horaFin,
@@ -49,9 +54,12 @@ public class BloqueEstudioWebController {
 
 		BloqueEstudio bloqueEstudio = new BloqueEstudio();
 
-		if (fecha != null) bloqueEstudio.setFecha(LocalDate.parse(fecha));
-		if (horaInicio != null) bloqueEstudio.setHoraInicio(LocalTime.parse(horaInicio));
-		if (horaFin != null) bloqueEstudio.setHoraFin(LocalTime.parse(horaFin));
+		if (fecha != null) 
+			bloqueEstudio.setFecha(LocalDate.parse(fecha));
+		if (horaInicio != null) 
+			bloqueEstudio.setHoraInicio(LocalTime.parse(horaInicio));
+		if (horaFin != null) 
+			bloqueEstudio.setHoraFin(LocalTime.parse(horaFin));
 
 		model.addAttribute("bloqueEstudio", bloqueEstudio);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -62,29 +70,15 @@ public class BloqueEstudioWebController {
 	@PostMapping("/nuevo")
 	public String guardarNuevo(@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
-								@RequestParam(required = false) Long cuadranteId,
 								@AuthenticationPrincipal Usuario usuario) {
-
-		if (bloqueEstudio.getFecha() != null
-				&& bloqueEstudio.getHoraInicio() != null && bloqueEstudio.getHoraFin() != null) {
-			List<BloqueEstudio> solapados = bloqueEstudioRepository
-				.findByFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
-					bloqueEstudio.getFecha(),
-					bloqueEstudio.getHoraInicio(),
-					bloqueEstudio.getHoraFin()
-				);
-			if (!solapados.isEmpty()) {
-				result.rejectValue("horaInicio", "error.bloqueEstudio", "Existe un bloque solapado en este horario.");
-			}
-		}
-
+		resolverAsignatura(bloqueEstudio, usuario);
+		resolverDiaYColor(bloqueEstudio);
+		validarSolapados(null, bloqueEstudio, usuario.getId(), result);
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Añadir");
 			return "bloquesEstudio/BloqueEstudioFormView";
 		}
-
-		resolverAsignatura(bloqueEstudio);
 		bloqueEstudio.setUsuario(usuario);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return "redirect:/bloquesEstudio";
@@ -107,32 +101,20 @@ public class BloqueEstudioWebController {
 	public String guardarEdicion(@PathVariable long id,
 								@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
-								@RequestParam(required = false) Long cuadranteId,
 								@AuthenticationPrincipal Usuario usuario) {
-
-		if (bloqueEstudio.getFecha() != null && bloqueEstudio.getHoraInicio() != null 
-			&& bloqueEstudio.getHoraFin() != null) {
-			List<BloqueEstudio> solapados = bloqueEstudioRepository
-				.findByFechaAndHoraInicioLessThanAndHoraFinGreaterThan(
-					bloqueEstudio.getFecha(),
-					bloqueEstudio.getHoraInicio(),
-					bloqueEstudio.getHoraFin()
-				).stream()
-				.filter(b -> !b.getId().equals(id))
-				.toList();
-			if (!solapados.isEmpty()) {
-				result.rejectValue("horaInicio", "error.bloqueEstudio", "Existe un bloque solapado en este horario.");
-			}
-		}
-		if (!bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
+		BloqueEstudio existente = bloqueEstudioRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudios no encontrado: " + id));
+		if (!existente.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/bloquesEstudio";
+		bloqueEstudio.setId(id);
+		resolverAsignatura(bloqueEstudio, usuario);
+		resolverDiaYColor(bloqueEstudio);
+		validarSolapados(id, bloqueEstudio, usuario.getId(), result);
 		if (result.hasErrors()) {
+			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 			model.addAttribute("accion", "Editar");
 			return "bloquesEstudio/BloqueEstudioFormView";
 		}
-
-		bloqueEstudio.setId(id);
-		resolverAsignatura(bloqueEstudio);
 		bloqueEstudio.setUsuario(usuario);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return "redirect:/bloquesEstudio";
@@ -144,7 +126,7 @@ public class BloqueEstudioWebController {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
 		if (!bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
-			return "redirect:/bloquesEstudio?error=forbidden";
+			return "redirect:/bloquesEstudio";
 		bloqueEstudioRepository.deleteById(id);
 		return "redirect:/bloquesEstudio";
 	}
@@ -152,14 +134,9 @@ public class BloqueEstudioWebController {
 	@GetMapping("/dia")
 	public String verDia(@RequestParam(required = false) String fecha, Model model, 
 						 @AuthenticationPrincipal Usuario usuario) {
-		LocalDate dia;
-		if (fecha == null) {
-			dia = LocalDate.now();
-		} else {
-			dia = LocalDate.parse(fecha);
-		}
-		List<BloqueEstudio> bloquesEstudio = bloqueEstudioRepository.findByFecha(dia);
-		bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio));
+		LocalDate dia = fecha == null ? LocalDate.now() : LocalDate.parse(fecha);
+		List<BloqueEstudio> bloquesEstudio = bloqueEstudioRepository.findByFechaAndUsuarioId(dia, usuario.getId());
+		bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio, Comparator.nullsLast(Comparator.naturalOrder())));
 		model.addAttribute("bloquesEstudio", bloquesEstudio);
 		model.addAttribute("fecha", dia);
 		return "bloquesEstudio/bloqueEstudioDayView";
@@ -167,26 +144,85 @@ public class BloqueEstudioWebController {
 
 	@PostMapping("/{id}/mover")
 	@ResponseBody
-	public ResponseEntity<?> moverBloque(@PathVariable Long id, @RequestBody Map<String, String> payload, 
+	public ResponseEntity<Void> moverBloque(@PathVariable Long id, 
+										 @RequestBody Map<String, String> payload, 
 										 @AuthenticationPrincipal Usuario usuario) {
-		BloqueEstudio bloque = bloqueEstudioRepository.findById(id).orElseThrow();
-		bloque.setFecha(LocalDate.parse(payload.get("start").substring(0,10)));
-		bloque.setHoraInicio(LocalTime.parse(payload.get("start").substring(11,16)));
+		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id).orElse(null);
+		if (bloqueEstudio == null || !bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
+			return ResponseEntity.status(403).build();
+		String start = payload.get("start");
+		if (start == null)
+			return ResponseEntity.badRequest().build();
+		OffsetDateTime odt = OffsetDateTime.parse(start);
+		ZonedDateTime z = odt.atZoneSameInstant(ZoneId.systemDefault());
+		bloqueEstudio.setFecha(z.toLocalDate());
+		bloqueEstudio.setHoraInicio(z.toLocalTime().withSecond(0).withNano(0));
 		if (payload.get("end") != null) {
-			bloque.setHoraFin(LocalTime.parse(payload.get("end").substring(11,16)));
+			OffsetDateTime odtEnd = OffsetDateTime.parse(payload.get("end"));
+			bloqueEstudio.setHoraFin(odtEnd.atZoneSameInstant(ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0));
 		}
-		bloqueEstudioRepository.save(bloque);
+		bloqueEstudio.setDiaSemana(diaSemanaEn(bloqueEstudio.getFecha().getDayOfWeek()));
+		if (bloqueEstudio.getAsignatura() != null)
+			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor() != null
+								   ? bloqueEstudio.getAsignatura().getColor() : COLOR_DEFECTO);
+		else
+			bloqueEstudio.setColor(COLOR_DEFECTO);
+		bloqueEstudioRepository.save(bloqueEstudio);
 		return ResponseEntity.ok().build();
 	}
 
+	private void validarSolapados(Long idExcluido, BloqueEstudio bloqueEstudio,
+								  Long usuarioId, BindingResult result) {
+		if (bloqueEstudio.getFecha() == null)
+			result.rejectValue("fecha", "error.bloqueEstudio", "Indica la fecha del bloque.");
+		if (bloqueEstudio.getHoraInicio() == null || bloqueEstudio.getHoraFin() == null) {
+			if (bloqueEstudio.getHoraInicio() == null)
+				result.rejectValue("horaInicio", "error.bloqueEstudio", "Indica la hora de incio y fin.");
+			else
+				result.rejectValue("horaFin", "error.bloqueEstudio", "Indica la hora de incio y fin.");
+			return;
+		}
+		if (bloqueEstudio.getFecha() == null)
+			return;
+		List<BloqueEstudio> solapados = bloqueEstudioRepository.findSolapadosPorUsuario(
+			bloqueEstudio.getFecha(), usuarioId, bloqueEstudio.getHoraInicio(), bloqueEstudio.getHoraFin());
+		boolean haySolape = idExcluido == null ? !solapados.isEmpty()
+			: solapados.stream().anyMatch(s -> !s.getId().equals(idExcluido));
+		if (haySolape)
+			result.rejectValue("horaInicio", "error.bloqueEstudio", "Existe un bloque solapado en este horario.");
+	}
 
-	private void resolverAsignatura(BloqueEstudio bloqueEstudio) {
+	private void resolverAsignatura(BloqueEstudio bloqueEstudio, Usuario usuario) {
 		if (bloqueEstudio.getAsignatura() != null && bloqueEstudio.getAsignatura().getId() != null) {
 			Asignatura asignatura = asignaturaRepository.findById(bloqueEstudio.getAsignatura().getId())
+				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
 				.orElse(null);
 			bloqueEstudio.setAsignatura(asignatura);
 		} else {
 			bloqueEstudio.setAsignatura(null);
 		}
+	}
+
+	private void resolverDiaYColor(BloqueEstudio bloqueEstudio) {
+		if (bloqueEstudio.getFecha() != null)
+			bloqueEstudio.setDiaSemana(diaSemanaEn(bloqueEstudio.getFecha().getDayOfWeek()));
+		else
+			bloqueEstudio.setDiaSemana("lunes");
+		if (bloqueEstudio.getAsignatura() != null && bloqueEstudio.getAsignatura().getColor() != null)
+			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor());
+		else
+			bloqueEstudio.setColor(COLOR_DEFECTO);
+	}
+
+	private static String diaSemanaEn(DayOfWeek dia) {
+		return switch(dia) {
+			case MONDAY -> "lunes";
+			case TUESDAY -> "martes";
+			case WEDNESDAY -> "miercoles";
+			case THURSDAY -> "jueves";
+			case FRIDAY -> "viernes";
+			case SATURDAY -> "sabado";
+			case SUNDAY -> "domingo";
+		};
 	}
 }

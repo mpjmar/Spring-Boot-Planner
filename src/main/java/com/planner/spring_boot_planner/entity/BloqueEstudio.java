@@ -54,7 +54,7 @@ public class BloqueEstudio {
 	@Column(name = "color", length = 7)
 	private String color;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
@@ -120,6 +120,14 @@ public class BloqueEstudio {
     public void setAsignatura(Asignatura asignatura) {
         this.asignatura = asignatura;
     }
+
+    public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
 
 	public Usuario getUsuario() {
 		return usuario;
