@@ -181,17 +181,18 @@ public class BloqueEstudioWebController {
 
 	private void validarSolapados(Long idExcluido, BloqueEstudio bloqueEstudio,
 								  Long usuarioId, BindingResult result) {
-		if (bloqueEstudio.getFecha() == null)
+		if (bloqueEstudio.getFecha() == null) {
 			result.rejectValue("fecha", "error.bloqueEstudio", "Indica la fecha del bloque.");
-		if (bloqueEstudio.getHoraInicio() == null || bloqueEstudio.getHoraFin() == null) {
-			if (bloqueEstudio.getHoraInicio() == null)
-				result.rejectValue("horaInicio", "error.bloqueEstudio", "Indica la hora de incio y fin.");
-			else
-				result.rejectValue("horaFin", "error.bloqueEstudio", "Indica la hora de incio y fin.");
 			return;
 		}
-		if (bloqueEstudio.getFecha() == null)
+		if (bloqueEstudio.getHoraInicio() == null || bloqueEstudio.getHoraFin() == null) {
+			if (bloqueEstudio.getHoraInicio() == null)
+				result.rejectValue("horaInicio", "error.bloqueEstudio", "Indica la hora de incio.");
+			else
+				result.rejectValue("horaFin", "error.bloqueEstudio", "Indica la hora de fin.");
 			return;
+		}
+			
 		List<BloqueEstudio> solapados = bloqueEstudioRepository.findSolapadosPorUsuario(
 			bloqueEstudio.getFecha(), usuarioId, bloqueEstudio.getHoraInicio(), bloqueEstudio.getHoraFin());
 		boolean haySolape = idExcluido == null ? !solapados.isEmpty()
@@ -216,6 +217,7 @@ public class BloqueEstudioWebController {
 			bloqueEstudio.setDiaSemana(diaSemanaEn(bloqueEstudio.getFecha().getDayOfWeek()));
 		else
 			bloqueEstudio.setDiaSemana("lunes");
+		
 		if (bloqueEstudio.getAsignatura() != null && bloqueEstudio.getAsignatura().getColor() != null)
 			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor());
 		else
