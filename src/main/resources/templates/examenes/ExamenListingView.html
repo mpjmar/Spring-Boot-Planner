@@ -15,11 +15,6 @@
 	</header>
 
 	<div class="contenedor">
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/examenes/nuevo}" class="btn btn-primary">+ Añadir examen</a>
-		</div>
-
 		<table>
 			<thead>
 				<tr>
@@ -52,6 +47,11 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+
+	<div class="barra-acciones">
+		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+		<a th:href="@{/examenes/nuevo}" class="btn btn-primary">+ Añadir examen</a>
 	</div>
 
 	<footer>

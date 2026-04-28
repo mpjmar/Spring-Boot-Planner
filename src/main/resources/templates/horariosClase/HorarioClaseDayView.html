@@ -4,34 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title th:text="${pageTitle} ?: 'horarioClase'">Horario clases</title>
-    <link
-      rel="stylesheet"
-      th:href="@{/css/styles.css}"
-      href="/css/styles.css"
-    />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css"/>
   </head>
+
   <body class="fondo" th:classappend="${bodyClass}">
     <main class="contenedor">
-      <div class="tabla-wrapper">
-		<h2 th:text="'Horario del día: ' + ${fecha}"></h2>
-        <table>
-			<tr>
-				<th class="col-hora">HORA</th>
-				<th class="col-dia">ASIGNATURA</th>
-			</tr>
-
-			<tr th:each="horario : ${horariosClase}">
-				<td th:text="${horario.horaInicio}"></td>
-				<td th:text="${horario.asignatura.nombre}"></td>
-			</tr>
-        </table>
-      </div>
-
-	  	<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/horarioClase/nuevo}" class="btn btn-primary">+ Añadir asignatura</a>
+		<h2 th:text="'Horario del día: ' + ${diaSemana}"></h2>
+		<div class="horarios-grid">
+			<div class="horario-card" th:each="horario : ${horariosClase}">	
+				<div class="horario-horas">
+					<span th:text="${horario.horaInicio}"></span>
+					<span> - </span>
+					<span th:text="${horario.horaFin}"></span>
+				</div>
+				<div class="horario-asignatura">
+					<span th:text="${horario.asignatura.nombre}"></span>
+				</div>
+			</div>
 		</div>
 
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/horariosClase/dia/{diaSemana}(diaSemana=${diaSemana})}" class="btn btn-primary">
+				+ Añadir asignatura
+			</a>
+		</div>
     </main>
 
 	<footer>

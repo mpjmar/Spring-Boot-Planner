@@ -1,8 +1,13 @@
 #calendar {
-            max-width: 1000px;
-            margin: 30px auto;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #0002;
-            padding: 10px;
-        }
+    max-width: 1000px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #0002;
+    padding: 10px;
+}
+
+.btn-diaLectivo {
+	display: block; 
+	margin-bottom: 8px;
+}

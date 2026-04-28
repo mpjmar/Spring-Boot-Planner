@@ -15,12 +15,18 @@
 	</header>
 
 	<div class="contenedor">
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/horariosClase/nuevo}" class="btn btn-primary">+ Añadir horario de clase</a>
+		<div class="navegacion-dias">
+			<h3>Selecciona un día</h3>
+			<div th:each="dia : ${diasSemana}">
+				<a class="btn btn-diaLectivo"
+					th:href="@{/horariosClase/dia/{diaSemana}(diaSemana=${dia})}"
+					th:text="${dia.nombre}">
+				</a>
+			</div>
 		</div>
 
-		<table>
+
+		<!-- <table>
 			<thead>
 				<tr>
 					<th>Día semana</th>
@@ -49,7 +55,12 @@
 					</td>
 				</tr>
 			</tbody>
-		</table>
+		</table> -->
+
+	</div>
+
+	<div class="barra-acciones">
+		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
 	</div>
 
 	<footer>

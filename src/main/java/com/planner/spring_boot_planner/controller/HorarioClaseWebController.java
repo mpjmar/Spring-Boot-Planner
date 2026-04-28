@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.planner.spring_boot_planner.DiaSemana;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.HorarioClase;
 import com.planner.spring_boot_planner.entity.Profesor;
@@ -67,7 +67,7 @@ public class HorarioClaseWebController {
 		resolverProfesor(horarioClase, usuario);
 		horarioClase.setUsuario(usuario);
 		horarioClaseRepository.save(horarioClase);
-		return "redirect:/horariosClase";
+		return "redirect:/horariosClase/dia/" + horarioClase.getDiaSemana();
 	}
 
 	@GetMapping("/{id}/editar")
@@ -115,13 +115,17 @@ public class HorarioClaseWebController {
 		return "redirect:/horariosClase";
 	}
 
-	@GetMapping("/dia")
-	public String verDia(@RequestParam(required = true) String diaSemana, Model model,
+	@GetMapping("/dia/{diaSemana}")
+	public String verDia(@PathVariable String diaSemana, Model model,
 						 @AuthenticationPrincipal Usuario usuario) {
-		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(diaSemana, usuario.getId());
-		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, Comparator.nullsLast(Comparator.naturalOrder())));
+		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
+		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia.name(), usuario.getId());
+		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
+						Comparator.nullsLast(Comparator.naturalOrder())
+						).thenComparing(HorarioClase::getHoraFin,
+						Comparator.nullsLast(Comparator.naturalOrder())));
 		model.addAttribute("horariosClase", horarios);
-		model.addAttribute("fecha", diaSemana);
+		model.addAttribute("diaSemana", dia);
 		return "horariosClase/HorarioClaseDayView";
 	}
 
@@ -154,6 +158,11 @@ public class HorarioClaseWebController {
 		} else {
 			horarioClase.setProfesor(null);
 		}
+	}
+
+	@ModelAttribute("diasSemana")
+	public List<DiaSemana> diasSemana() {
+		return List.of(DiaSemana.values());
 	}
 
 }

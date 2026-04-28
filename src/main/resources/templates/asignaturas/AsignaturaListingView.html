@@ -15,11 +15,6 @@
 	</header>
 
 	<div class="contenedor">
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/asignaturas/nuevo}" class="btn btn-primary">+ Añadir asignatura</a>
-		</div>
-
 		<table>
 			<thead>
 				<tr>
@@ -53,6 +48,12 @@
 			</tbody>
 		</table>
 	</div>
+
+	<div class="barra-acciones">
+		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+		<a th:href="@{/asignaturas/nuevo}" class="btn btn-primary">+ Añadir asignatura</a>
+	</div>
+
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>
