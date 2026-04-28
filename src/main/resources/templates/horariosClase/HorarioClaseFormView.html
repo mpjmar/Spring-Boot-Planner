@@ -18,8 +18,8 @@
 		<div class="card">
 
 			<form th:action="${horarioClase.id != null}
-                          ? @{/horarioClase/{id}/editar(id=${horarioClase.id})}
-                          : @{/horarioClase/nuevo}" th:object="${horarioClase}" method="post">
+                          ? @{/horariosClase/{id}/editar(id=${horarioClase.id})}
+                          : @{/horariosClase/nuevo}" th:object="${horarioClase}" method="post">
 
 				<div class="form-group">
 					<label for="diaSemana">Día de la semana</label>
@@ -39,12 +39,12 @@
 					<label for="horaInicio">Hora inicio</label>
 					<select id="horaInicio" th:field="*{horaInicio}" class="form-control">
 					<option value="">-- Selecciona la hora de inicio --</option>
-						<option th:value="1">08:15</option>
-						<option th:value="2">09:15</option>
-						<option th:value="3">10:15</option>
-						<option th:value="4">11:45</option>
-						<option th:value="5">12:45</option>
-						<option th:value="6">13:45</option>
+						<option th:value="'08:15'">08:15</option>
+						<option th:value="'09:15'">09:15</option>
+						<option th:value="'10:15'">10:15</option>
+						<option th:value="'11:15'">11:45</option>
+						<option th:value="'12:45'">12:45</option>
+						<option th:value="'13:45'">13:45</option>
 					</select>
 
 					<span class="error" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></span>
@@ -52,14 +52,14 @@
 
 				<div class="form-group">
 					<label for="horaFin">Hora fin</label>
-					<select id="horaFin" th:field="*{horaInicio}" class="form-control">
+					<select id="horaFin" th:field="*{horaFin}" class="form-control">
 					<option value="">-- Selecciona la hora de fin --</option>
-						<option th:value="1">09:15</option>
-						<option th:value="2">10:15</option>
-						<option th:value="3">11:15</option>
-						<option th:value="4">12:45</option>
-						<option th:value="5">13:45</option>
-						<option th:value="6">14:45</option>
+						<option th:value="'09:15'">09:15</option>
+						<option th:value="'10:15'">10:15</option>
+						<option th:value="'11:15'">11:15</option>
+						<option th:value="'12:45'">12:45</option>
+						<option th:value="'13:45'">13:45</option>
+						<option th:value="'14:45'">14:45</option>
 					</select>
 
 					<span class="error" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></span>
@@ -79,7 +79,7 @@
 				</div>
 
 				<div class="acciones">
-					<a th:href="@{/horarioClase}" class="btn btn-secondary">Cancelar</a>
+					<a th:href="@{/horariosClase}" class="btn btn-secondary">Cancelar</a>
 					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 			</form>

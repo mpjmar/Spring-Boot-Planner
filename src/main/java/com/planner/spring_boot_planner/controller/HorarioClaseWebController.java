@@ -1,6 +1,5 @@
 package com.planner.spring_boot_planner.controller;
 
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
@@ -117,13 +116,12 @@ public class HorarioClaseWebController {
 	}
 
 	@GetMapping("/dia")
-	public String verDia(@RequestParam(required = false) String fecha, Model model, 
+	public String verDia(@RequestParam(required = true) String diaSemana, Model model,
 						 @AuthenticationPrincipal Usuario usuario) {
-		LocalDate dia = fecha == null ? LocalDate.now() : LocalDate.parse(fecha);
-		List<HorarioClase> horarios = horarioClaseRepository.findByFechaAndUsuarioId(dia, usuario.getId());
+		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(diaSemana, usuario.getId());
 		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, Comparator.nullsLast(Comparator.naturalOrder())));
-		model.addAttribute("horarios", horarios);
-		model.addAttribute("fecha", dia);
+		model.addAttribute("horariosClase", horarios);
+		model.addAttribute("fecha", diaSemana);
 		return "horariosClase/HorarioClaseDayView";
 	}
 

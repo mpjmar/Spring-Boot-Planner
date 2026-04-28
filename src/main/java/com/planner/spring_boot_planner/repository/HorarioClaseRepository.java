@@ -12,12 +12,14 @@ import com.planner.spring_boot_planner.entity.HorarioClase;
 @RepositoryRestResource(path = "horarioClase", collectionResourceRel = "horarioClase")
 public interface HorarioClaseRepository extends JpaRepository<HorarioClase, Long> {
 
-	@RestResource(path = "por-fecha", rel = "por-fecha")
-    List<HorarioClase> findByFecha(LocalDate fecha);
+	@RestResource(path = "por-diaSemana", rel = "por-diaSemana")
+    List<HorarioClase> findByDiaSemana(String diaSemana);
 
 	@RestResource(path = "por-usuario", rel = "por-usuario")
 	List<HorarioClase> findByUsuarioId(Long usuarioId);
 
 	@RestResource(path = "por-fecha-usuario", rel = "por-fecha-usuario")
-	List<HorarioClase> findByFechaAndUsuarioId(LocalDate fecha, Long usuarioId);
+	List<HorarioClase> findByDiaSemanaAndUsuarioId(String diaSemana, Long usuarioId);
+
+	String diaSemana(String diaSemana);
 }

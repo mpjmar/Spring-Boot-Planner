@@ -1,6 +1,5 @@
 package com.planner.spring_boot_planner.entity;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +16,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -28,9 +26,9 @@ public class HorarioClase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	/* @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Column(name = "fecha")
-    private LocalDate fecha;
+    private LocalDate fecha; */
 
 	@NotBlank
     @Size(max = 20)
@@ -50,7 +48,6 @@ public class HorarioClase {
 	@JsonIgnore
     private Asignatura asignatura;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profesor_id", nullable = false)
 	@JsonIgnore
@@ -82,13 +79,13 @@ public class HorarioClase {
         this.id = id;
     }
 
-    public LocalDate getFecha() {
+    /* public LocalDate getFecha() {
 		return fecha;
 	}
 
 	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
-	}
+	} */
 
     public String getDiaSemana() {
         return diaSemana;
@@ -145,7 +142,7 @@ public class HorarioClase {
 		Long usuarioId = (usuario != null ? usuario.getId() : null);
 		
 		return "horarioClase {id = " + id + 
-			", fecha = " + fecha +
+			// ", fecha = " + fecha +
 			", diaSemana = " + diaSemana + 
 			", horaInicio = " + horaInicio + 
 			", horaFin = " + horaFin + 
