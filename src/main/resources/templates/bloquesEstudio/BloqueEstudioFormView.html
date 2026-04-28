@@ -18,25 +18,23 @@
 		<div class="card">
 
 			<form th:action="${bloqueEstudio.id != null}
-                          ? @{/bloqueEstudio/{id}/editar(id=${bloqueEstudio.id})}
-                          : @{/bloqueEstudio/nuevo}" th:object="${bloqueEstudio}" method="post">
-
-				<input type="hidden" name="cuadranteId" th:value="${bloqueEstudio.cuadrante != null ? bloqueEstudio.cuadrante.id : ''}" />
+                          ? @{/bloquesEstudio/{id}/editar(id=${bloqueEstudio.id})}
+                          : @{/bloquesEstudio/nuevo}" th:object="${bloqueEstudio}" method="post">
 
 				<div class="form-group">
 					<label for="fecha">Fecha</label>
-					<input type="date" id="fecha" th:field="*{fecha}" th:value="${param.fecha}" />
+					<input type="date" id="fecha" th:field="*{fecha}" />
 				</div>
 
 				<div class="form-group">
 					<label for="horaInicio">Hora inicio</label>
-					<input type="time" id="horaInicio" th:field="*{horaInicio}" th:value="${param.horaInicio}" />
+					<input type="time" id="horaInicio" th:field="*{horaInicio}" />
 					<span class="error" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></span>
 				</div>
 
 				<div class="form-group">
 					<label for="horaFin">Hora fin</label>
-					<input type="time" id="horaFin" th:field="*{horaFin}" th:value="${param.horaFin}" />
+					<input type="time" id="horaFin" th:field="*{horaFin}" />
 					<span class="error" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></span>
 				</div>
 

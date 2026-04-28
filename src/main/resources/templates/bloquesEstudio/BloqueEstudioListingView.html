@@ -4,20 +4,20 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Listado de Cuadrantes de planificación</title>
+	<title>Listado de Bloques de estudio</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
 
 	<header>
-		<h1>Listado de Cuadrantes de Planificación</h1>
+		<h1>Listado de Bloques de estudio</h1>
 	</header>
 
 	<div class="contenedor">
 		<div class="barra-acciones">
 			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir cuadrante</a>
+			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
 		</div>
 
 		<table>
@@ -32,17 +32,17 @@
 			</thead>
 			<tbody>
 				<tr th:if="${#lists.isEmpty(bloquesEstudio)}">
-					<td colspan="5" class="vacio">No tienes cuadrantes registrados.</td>
+					<td colspan="5" class="vacio">No tienes bloques de estudio registrados.</td>
 				</tr>
 				<tr th:each="bloque : ${bloquesEstudio}">
-					<td th:text="${#temporals.format(bloqueEstudio.fecha, 'dd/MM/yyyy')}"></td>
+					<td th:text="${#temporals.format(bloque.fecha, 'dd/MM/yyyy')}"></td>
 					<td th:text="${bloque.horaInicio}"></td>
 					<td th:text="${bloque.horaFin}"></td>
 					<td th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : '—'}"></td>
 					<td>
-						<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloqueEstudio.id})}" class="btn-icon"
+						<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" class="btn-icon"
 							title="Editar">✏️</a>
-						<form th:action="@{/bloquesestudio/{id}/eliminar(id=${bloqueEstudio.id})}" method="post"
+						<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}" method="post"
 							onsubmit="return confirm('¿Eliminar esta bloque de estudio?')">
 							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
 						</form>

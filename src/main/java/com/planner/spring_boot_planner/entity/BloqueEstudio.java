@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -40,7 +39,6 @@ public class BloqueEstudio {
 	@Column(name = "hora_fin")
 	private LocalTime horaFin;
 		
-	@NotBlank
 	@Size(max = 20)
 	@Column(nullable = false, length = 20)
 	private String diaSemana;
@@ -49,7 +47,6 @@ public class BloqueEstudio {
     @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
 
-	@NotBlank
 	@Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Color inválido")
 	@Column(name = "color", length = 7)
 	private String color;
