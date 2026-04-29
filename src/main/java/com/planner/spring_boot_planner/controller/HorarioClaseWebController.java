@@ -1,5 +1,6 @@
 package com.planner.spring_boot_planner.controller;
 
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.planner.spring_boot_planner.DiaSemana;
 import com.planner.spring_boot_planner.entity.Asignatura;
@@ -47,8 +49,13 @@ public class HorarioClaseWebController {
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(@AuthenticationPrincipal Usuario usuario, Model model) {
-		model.addAttribute("horarioClase", new HorarioClase());
+	public String mostrarFormularioNuevo(@RequestParam(required = false) DiaSemana diaSemana,
+                                     	@AuthenticationPrincipal Usuario usuario,
+                                     	Model model) {
+		HorarioClase horario = new HorarioClase();
+		if (diaSemana != null)
+			horario.setDiaSemana(diaSemana);
+		model.addAttribute("horarioClase", horario);
 		cargarListasFormulario(model, usuario);
 		model.addAttribute("accion", "Añadir");
 		return "horariosClase/HorarioClaseFormView";
@@ -119,7 +126,7 @@ public class HorarioClaseWebController {
 	public String verDia(@PathVariable String diaSemana, Model model,
 						 @AuthenticationPrincipal Usuario usuario) {
 		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
-		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia.name(), usuario.getId());
+		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia, usuario.getId());
 		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
 						Comparator.nullsLast(Comparator.naturalOrder())
 						).thenComparing(HorarioClase::getHoraFin,

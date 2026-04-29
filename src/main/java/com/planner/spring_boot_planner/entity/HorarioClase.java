@@ -5,9 +5,12 @@ import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.planner.spring_boot_planner.DiaSemana;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,8 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "horarioClase", schema = "public")
@@ -26,19 +28,17 @@ public class HorarioClase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	/* @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Column(name = "fecha")
-    private LocalDate fecha; */
+	@NotNull
+	@Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DiaSemana diaSemana;
 
-	@NotBlank
-    @Size(max = 20)
-    @Column(nullable = false, length = 20)
-    private String diaSemana;
-
+	@NotNull
     @DateTimeFormat(pattern = "HH:mm")
     @Column(name = "hora_inicio")
     private LocalTime horaInicio;
 
+	@NotNull
     @DateTimeFormat(pattern = "HH:mm")
     @Column(name = "hora_fin")
     private LocalTime horaFin;
@@ -53,6 +53,7 @@ public class HorarioClase {
 	@JsonIgnore
     private Profesor profesor;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
     @JoinColumn(name = "usuario_id")
@@ -61,7 +62,7 @@ public class HorarioClase {
     public HorarioClase() {
     }
 
-    public HorarioClase(String diaSemana, LocalTime horaInicio, LocalTime horaFin, 
+    public HorarioClase(DiaSemana diaSemana, LocalTime horaInicio, LocalTime horaFin, 
 		Asignatura asignatura, Profesor profesor, Usuario usuario) {
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
@@ -79,19 +80,11 @@ public class HorarioClase {
         this.id = id;
     }
 
-    /* public LocalDate getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(LocalDate fecha) {
-		this.fecha = fecha;
-	} */
-
-    public String getDiaSemana() {
+    public DiaSemana getDiaSemana() {
         return diaSemana;
     }
 
-    public void setDiaSemana(String diaSemana) {
+    public void setDiaSemana(DiaSemana diaSemana) {
         this.diaSemana = diaSemana;
     }
 
@@ -142,7 +135,6 @@ public class HorarioClase {
 		Long usuarioId = (usuario != null ? usuario.getId() : null);
 		
 		return "horarioClase {id = " + id + 
-			// ", fecha = " + fecha +
 			", diaSemana = " + diaSemana + 
 			", horaInicio = " + horaInicio + 
 			", horaFin = " + horaFin + 
