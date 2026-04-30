@@ -18,14 +18,18 @@
 			<li><a th:href="@{/examenes}">🧪 Exámenes</a></li>
 			<li><a th:href="@{/horariosClase}">🕒 Horarios de clases</a></li>
 			<li><a th:href="@{/bloquesEstudio}">📊 Cuadrantes de planificación</a></li>
-			<li><a th:href="@{/logout}">🚪 Cerrar sesión</a></li>
 		</ul>
+		<form th:action="@{/logout}" method="post">
+			<button type="submit">Logout</button>
+		</form>
 	</div>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>
 		<p>Author: M. Paz Jiménez Martín</p>
 	</footer>
+
+	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
 
 </html>

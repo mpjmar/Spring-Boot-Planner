@@ -22,11 +22,13 @@
                 Usuario o contraseña incorrectos.
             </div>
 			<div th:if="${param.logout}">
-				<p>Hasta pronto!.</p>
+				<p>¡Hasta pronto!</p>
 			</div>
             <button type="submit" class="btn btn-primary">Entrar</button>
         </form>
         <p>¿No tienes cuenta? <a th:href="@{/usuario/nuevo}">Regístrate aquí</a></p>
     </div>
+
+	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
 </html>
