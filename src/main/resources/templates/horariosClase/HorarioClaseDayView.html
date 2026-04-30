@@ -21,7 +21,51 @@
 					<span th:text="${horario.asignatura.nombre}"></span>
 				</div>
 
-				
+				<button type="button" class="btn btn-secondary" onclick="mostrarFormularioEdicion('[[${horario.id}]]')">Editar</button>
+			
+				<div id="form-editar-[[${horario.id}]]" style="display:none;">
+					<form th:action="@{/horariosClase/editar}" method="post">
+						<input type="hidden" name="id" th:value="${horario.id}" />
+						<label>Hora inicio:
+							<select name="horaInicio">
+								<option th:each="hora : ${horasInicioDisponibles}"
+										th:value="${hora}"
+										th:text="${hora}"
+										th:selected="${hora == horario.horaInicio}">
+								</option>
+								<option th:if="${!#lists.contains(horasInicioDisponibles, horario.horaInicio)}"
+										th:value="${horario.horaInicio}"
+										th:text="${horario.horaInicio}"
+										selected>
+								</option>
+							</select>
+							</label>
+							<label>Hora fin:
+							<select name="horaFin">
+								<option th:each="hora : ${horasFinDisponibles}"
+										th:value="${hora}"
+										th:text="${hora}"
+										th:selected="${hora == horario.horaFin}">
+								</option>
+								<option th:if="${!#lists.contains(horasFinDisponibles, horario.horaFin)}"
+										th:value="${horario.horaFin}"
+										th:text="${horario.horaFin}"
+										selected>
+								</option>
+							</select>
+						</label>
+						<label>Asignatura:
+							<select name="asignaturaId">
+								<option th:each="asig : ${asignaturas}" 
+										th:value="${asig.id}" 
+										th:text="${asig.nombre}" 
+										th:selected="${asig.id == horario.asignatura.id}"></option>
+							</select>
+						</label>
+						<button type="submit" class="btn btn-primary">Guardar</button>
+						<button type="button" onclick="ocultarFormularioEdicion('[[${horario.id}]]')">Cancelar</button>
+					</form>
+				</div>
 			</div>
 		</div>
 

@@ -43,3 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   calendar.render();
 });
+
+function mostrarFormularioEdicion(id) {
+  document.getElementById('form-editar-' + id).style.display = 'block';
+}
+
+function ocultarFormularioEdicion(id) {
+  document.getElementById('form-editar-' + id).style.display = 'none';
+}

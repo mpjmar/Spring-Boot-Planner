@@ -3,6 +3,8 @@ package com.planner.spring_boot_planner.controller;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -90,7 +92,7 @@ public class HorarioClaseWebController {
 		return "horariosClase/HorarioClaseFormView";
 	}
 
-	@PostMapping("/{id}/editar")
+	/* @PostMapping("/{id}/editar")
 	public String guardarEdicion(@PathVariable Long id,
 								@Valid @ModelAttribute("horarioClase") HorarioClase horarioClase,
 								BindingResult result, Model model, 
@@ -110,6 +112,24 @@ public class HorarioClaseWebController {
 		resolverProfesor(horarioClase, usuario);
 		horarioClaseRepository.save(horarioClase);
 		return "redirect:/horariosClase";
+	} */
+
+	@PostMapping("/editar")
+	public String editarInline(@RequestParam Long id,
+							@RequestParam String horaInicio,
+							@RequestParam String horaFin,
+							@RequestParam Long asignaturaId,
+							@AuthenticationPrincipal Usuario usuario) {
+		HorarioClase horario = horarioClaseRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Bloque no encontrado: " + id));
+		if (!puedeGestionar(horario, usuario))
+			return "redirect:/horariosClase";
+		horario.setHoraInicio(LocalTime.parse(horaInicio));
+		horario.setHoraFin(LocalTime.parse(horaFin));
+		Asignatura asignatura = asignaturaRepository.findById(asignaturaId).orElse(null);
+		horario.setAsignatura(asignatura);
+		horarioClaseRepository.save(horario);
+		return "redirect:/horariosClase/dia/" + horario.getDiaSemana();
 	}
 
 	@PostMapping("/{id}/eliminar")
@@ -122,7 +142,7 @@ public class HorarioClaseWebController {
 		return "redirect:/horariosClase";
 	}
 
-	@GetMapping("/dia/{diaSemana}")
+	/* @GetMapping("/dia/{diaSemana}")
 	public String verDia(@PathVariable String diaSemana, Model model,
 						 @AuthenticationPrincipal Usuario usuario) {
 		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
@@ -133,6 +153,38 @@ public class HorarioClaseWebController {
 						Comparator.nullsLast(Comparator.naturalOrder())));
 		model.addAttribute("horariosClase", horarios);
 		model.addAttribute("diaSemana", dia);
+		return "horariosClase/HorarioClaseDayView";
+	} */
+
+	@GetMapping("/dia/{diaSemana}")
+	public String verDia(@PathVariable String diaSemana, Model model,
+						@AuthenticationPrincipal Usuario usuario) {
+		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
+		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia, usuario.getId());
+		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
+						Comparator.nullsLast(Comparator.naturalOrder()))
+						.thenComparing(HorarioClase::getHoraFin,
+						Comparator.nullsLast(Comparator.naturalOrder())));
+		model.addAttribute("horariosClase", horarios);
+		model.addAttribute("diaSemana", dia);
+
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
+
+		List<String> horasPosibles = List.of(
+			"08:15", "09:15", "10:15", "11:15", "11:45", "12:45", "13:45", "14:45"
+		);
+		model.addAttribute("horasInicioDisponibles", horasPosibles);
+		model.addAttribute("horasFinDisponibles", horasPosibles);
+
+		Set<String> horasOcupadas = horarios.stream()
+			.map(h -> h.getHoraInicio().toString().substring(0,5))
+			.collect(Collectors.toSet());
+
+		List<String> horasDisponibles = horasPosibles.stream()
+			.filter(hora -> !horasOcupadas.contains(hora))
+			.collect(Collectors.toList());
+
+		model.addAttribute("horasDisponibles", horasDisponibles);
 		return "horariosClase/HorarioClaseDayView";
 	}
 
