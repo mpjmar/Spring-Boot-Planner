@@ -49,8 +49,8 @@ public class AsignaturaWebController {
 			model.addAttribute("accion", "Añadir");
 			return "asignaturas/AsignaturaFormView";
 		}
-		resolverProfesor(asignatura, usuario);
 		asignatura.setUsuario(usuario);
+		resolverProfesor(asignatura, usuario);
 		asignaturaRepository.save(asignatura);
 		return "redirect:/asignaturas";
 	}

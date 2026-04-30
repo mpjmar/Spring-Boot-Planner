@@ -21,8 +21,12 @@
 					<span th:text="${horario.asignatura.nombre}"></span>
 				</div>
 
-				<button type="button" class="btn btn-secondary" onclick="mostrarFormularioEdicion('[[${horario.id}]]')">Editar</button>
-			
+				<button type="button"
+						class="btn btn-secondary btn-editar"
+						th:attr="data-id=${horario.id}">
+				Editar
+				</button>
+
 				<div id="form-editar-[[${horario.id}]]" style="display:none;">
 					<form th:action="@{/horariosClase/editar}" method="post">
 						<input type="hidden" name="id" th:value="${horario.id}" />
@@ -63,14 +67,18 @@
 							</select>
 						</label>
 						<button type="submit" class="btn btn-primary">Guardar</button>
-						<button type="button" onclick="ocultarFormularioEdicion('[[${horario.id}]]')">Cancelar</button>
+						<button type="button"
+								class="btn-cancelar"
+								th:attr="data-id=${horario.id}">
+						Cancelar
+						</button>
 					</form>
 				</div>
 			</div>
 		</div>
 
 		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/horariosClase}" class="btn btn-primary">← Horarios</a>
 			<a th:href="@{/horariosClase/nuevo(diaSemana=${diaSemana})}" class="btn btn-primary">
 				+ Añadir asignatura
 			</a>

@@ -49,8 +49,8 @@ public class ExamenWebController {
 			model.addAttribute("accion", "Añadir");
 			return "examenes/ExamenFormView";
 		}
-		resolverAsignatura(examen, usuario);
 		examen.setUsuario(usuario);
+		resolverAsignatura(examen, usuario);
 		examenRepository.save(examen);
 		return "redirect:/examenes";
 	}
