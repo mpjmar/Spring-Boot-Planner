@@ -2,7 +2,7 @@ package com.planner.spring_boot_planner.dto;
 
 import com.planner.spring_boot_planner.DiaSemana;
 
-public class HorarioClaseUpdateDTO {
+public class HorarioClaseFormDTO {
 
     private Long id;
 	private DiaSemana diaSemana;
@@ -10,7 +10,7 @@ public class HorarioClaseUpdateDTO {
     private String horaFin;
     private Long asignaturaId;
 
-	public HorarioClaseUpdateDTO() {
+	public HorarioClaseFormDTO() {
 	}
 
     public Long getId() {

@@ -70,17 +70,20 @@
 				</div>
 
 				<div class="form-group">
-					<label for="asignatura">Asignatura</label>
-					<select id="asignatura" th:field="*{asignatura.id}" class="form-control">
-						<option value="">-- Selecciona una asignatura --</option>
-						<option th:each="asig : ${asignaturas}"
-							th:value="${asig.id}"
-							th:text="${asig.nombre}"
-							th:selected="${asig.id == horarioClase.asignatura?.id}">
-						</option>
-					</select>
-					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
-				</div>
+				<label for="asignatura">Asignatura</label>
+				<select id="asignatura" th:field="*{asignaturaId}" class="form-control">
+					<option value="">-- Selecciona una asignatura --</option>
+					<option th:each="asig : ${asignaturas}"
+						th:value="${asig.id}"
+						th:text="${asig.nombre}"
+						th:selected="${asig.id == horarioClase.asignaturaId}">
+					</option>
+				</select>
+				<span class="error"
+					th:if="${#fields.hasErrors('asignaturaId')}"
+					th:errors="*{asignaturaId}">
+				</span>
+			</div>
 
 				<div class="acciones">
 					<a th:href="@{/horariosClase}" class="btn btn-secondary">Cancelar</a>
