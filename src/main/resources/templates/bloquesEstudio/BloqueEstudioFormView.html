@@ -21,6 +21,12 @@
                           ? @{/bloquesEstudio/{id}/editar(id=${bloqueEstudio.id})}
                           : @{/bloquesEstudio/nuevo}" th:object="${bloqueEstudio}" method="post">
 
+				<div class="error" th:if="${#fields.hasGlobalErrors()}">
+					<p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+				</div>
+				
+				<input type="hidden" th:field="*{diaSemana}" />
+
 				<div class="form-group">
 					<label for="fecha">Fecha</label>
 					<input type="date" id="fecha" th:field="*{fecha}" />
@@ -45,10 +51,13 @@
 						<option th:each="asig : ${asignaturas}"
 							th:value="${asig.id}"
 							th:text="${asig.nombre}"
-							th:selected="${asig.id == bloqueEstudio.asignatura?.id}">
+							th:selected="${asig.id == bloqueEstudio.asignaturaId}">
 						</option>
 					</select>
-					<span class="error" th:if="${#fields.hasErrors('asignatura') || #fields.hasErrors('asignatura.id')}" th:errors="*{asignatura}"></span>
+					<span class="error"
+						th:if="${#fields.hasErrors('asignaturaId')}"
+						th:errors="*{asignaturaId}">
+					</span>
 				</div>
 
 				<div class="acciones">

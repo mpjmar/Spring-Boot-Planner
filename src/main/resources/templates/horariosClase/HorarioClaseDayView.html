@@ -8,8 +8,13 @@
   </head>
 
   <body class="fondo" th:classappend="${bodyClass}">
+
     <main class="contenedor">
-		<h2 th:text="'Horario del día: ' + ${diaSemana}"></h2>
+		
+		<header>
+			<h2 th:text="'Horario del día: ' + ${diaLectivo}"></h2>
+		</header>
+		
 		<div class="horarios-grid">
 			<div class="horario-card" th:each="horario : ${horariosClase}">	
 				<div class="horario-horas">
@@ -38,7 +43,7 @@
 				<div th:id="'form-editar-' + ${horario.id}" style="display:none;">
 					<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
 						<input type="hidden" name="id" th:value="${horario.id}" />
-						<input type="hidden" name="diaSemana" th:value="${horario.diaSemana}" />
+						<input type="hidden" name="diaLectivo" th:value="${horario.diaLectivo}" />
 						<label>Hora inicio:
 							<select name="horaInicio">
 								<option th:each="hora : ${horasInicioDisponibles}"
@@ -88,7 +93,7 @@
 
 		<div class="barra-acciones">
 			<a th:href="@{/horariosClase}" class="btn btn-primary">← Horarios</a>
-			<a th:href="@{/horariosClase/nuevo(diaSemana=${diaSemana})}" class="btn btn-primary">
+			<a th:href="@{/horariosClase/nuevo(diaLectivo=${diaLectivo})}" class="btn btn-primary">
 				+ Añadir asignatura
 			</a>
 		</div>

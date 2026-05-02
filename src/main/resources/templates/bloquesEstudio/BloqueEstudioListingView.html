@@ -15,41 +15,19 @@
 	</header>
 
 	<div class="contenedor">
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
+		<div class="navegacion-dias">
+			<h3>Selecciona un día</h3>
+			<div th:each="dia : ${diasSemana}">
+				<a class="btn btn-diaSemana"
+					th:href="@{/bloquesEstudio/dia/{diaSemana}(diaSemana=${dia})}"
+					th:text="${dia.nombre}">
+				</a>
+			</div>
 		</div>
+	</div>
 
-		<table>
-			<thead>
-				<tr>
-					<th>Fecha</th>
-					<th>Hora inicio</th>
-					<th>Hora fin</th>
-					<th>Asignatura</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${#lists.isEmpty(bloquesEstudio)}">
-					<td colspan="5" class="vacio">No tienes bloques de estudio registrados.</td>
-				</tr>
-				<tr th:each="bloque : ${bloquesEstudio}">
-					<td th:text="${#temporals.format(bloque.fecha, 'dd/MM/yyyy')}"></td>
-					<td th:text="${bloque.horaInicio}"></td>
-					<td th:text="${bloque.horaFin}"></td>
-					<td th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : '—'}"></td>
-					<td>
-						<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" class="btn-icon"
-							title="Editar">✏️</a>
-						<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar esta bloque de estudio?')">
-							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+	<div class="barra-acciones">
+		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
 	</div>
 
 	<footer>

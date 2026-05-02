@@ -1,17 +1,15 @@
 package com.planner.spring_boot_planner;
 
-public enum DiaSemana {
+public enum DiaLectivo {
     LUNES("Lunes"),
     MARTES("Martes"),
     MIERCOLES("Miércoles"),
 	JUEVES("Jueves"),
-	VIERNES("Viernes"),
-	SABADO("Sábado"),
-	DOMINGO("Domingo");
+	VIERNES("Viernes");
 
     private final String nombre;
 
-    DiaSemana(String nombre) {
+    DiaLectivo(String nombre) {
         this.nombre = nombre;
     }
 

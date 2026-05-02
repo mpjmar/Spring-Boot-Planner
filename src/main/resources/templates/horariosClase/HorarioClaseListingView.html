@@ -17,9 +17,9 @@
 	<div class="contenedor">
 		<div class="navegacion-dias">
 			<h3>Selecciona un día</h3>
-			<div th:each="dia : ${diasSemana}">
+			<div th:each="dia : ${diasLectivos}">
 				<a class="btn btn-diaLectivo"
-					th:href="@{/horariosClase/dia/{diaSemana}(diaSemana=${dia})}"
+					th:href="@{/horariosClase/dia/{diaLectivo}(diaLectivo=${dia})}"
 					th:text="${dia.nombre}">
 				</a>
 			</div>

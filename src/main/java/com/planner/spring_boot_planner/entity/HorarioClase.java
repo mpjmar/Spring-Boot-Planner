@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.planner.spring_boot_planner.DiaSemana;
+import com.planner.spring_boot_planner.DiaLectivo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +31,7 @@ public class HorarioClase {
 	@NotNull
 	@Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DiaSemana diaSemana;
+    private DiaLectivo diaLectivo;
 
 	@NotNull
     @DateTimeFormat(pattern = "HH:mm")
@@ -57,9 +57,9 @@ public class HorarioClase {
     public HorarioClase() {
     }
 
-    public HorarioClase(DiaSemana diaSemana, LocalTime horaInicio, LocalTime horaFin, 
+    public HorarioClase(DiaLectivo diaLectivo, LocalTime horaInicio, LocalTime horaFin, 
 		Asignatura asignatura, Usuario usuario) {
-        this.diaSemana = diaSemana;
+        this.diaLectivo = diaLectivo;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.asignatura = asignatura;
@@ -74,12 +74,12 @@ public class HorarioClase {
         this.id = id;
     }
 
-    public DiaSemana getDiaSemana() {
-        return diaSemana;
+    public DiaLectivo getDiaLectivo() {
+        return diaLectivo;
     }
 
-    public void setDiaSemana(DiaSemana diaSemana) {
-        this.diaSemana = diaSemana;
+    public void setDiaLectivo(DiaLectivo diaLectivo) {
+        this.diaLectivo = diaLectivo;
     }
 
     public LocalTime getHoraInicio() {
@@ -120,7 +120,7 @@ public class HorarioClase {
 		Long usuarioId = (usuario != null ? usuario.getId() : null);
 		
 		return "horarioClase {id = " + id + 
-			", diaSemana = " + diaSemana + 
+			", diaLectivo = " + diaLectivo + 
 			", horaInicio = " + horaInicio + 
 			", horaFin = " + horaFin + 
 			", asignatura = " + idAsignatura + 

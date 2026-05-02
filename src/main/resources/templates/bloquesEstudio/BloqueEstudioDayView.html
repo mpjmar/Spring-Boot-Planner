@@ -4,21 +4,21 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Listado bloques de estudio</title>
+	<title th:text="${pageTitle} ?: 'bloqueEstudio'">Cuadrante de estudio</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
-<body>
+<body class="fondo" th:classappend="${bodyClass}">
+
+	<main class="contenedor">
 
 	<header>
-		<h1>Listado de bloques de estudio</h1>
+		<h2 th:text="'Cuadrante del día: ' + ${diaSemana}"></h2>
 	</header>
 
-	<div class="contenedor">
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/horariosClase/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
-		</div>
+	<div class="horarios-grid">
+		<div class="bloqueEstudio" th:each="bloque : ${bloquesEstudio}">	
+
 
 		<div class="navegacion-fecha">
 			<!-- Día anterior -->
@@ -65,6 +65,14 @@
 			</li>
 		</ul>
 	</div>
+
+	<div class="barra-acciones">
+		<a th:href="@{/horariosClase}" class="btn btn-primary">← Planificación</a>
+		<a th:href="@{/bloquesEstudio/nuevo(fecha=${fecha})}" class="btn btn-primary">
+			+ Añadir bloque de estudio
+		</a>
+	</div>
+</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

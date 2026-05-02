@@ -1,6 +1,6 @@
 package com.planner.spring_boot_planner.dto;
 
-import com.planner.spring_boot_planner.DiaSemana;
+import com.planner.spring_boot_planner.DiaLectivo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ public class HorarioClaseFormDTO {
     private Long id;
 
     @NotNull(message = "El día es obligatorio")
-    private DiaSemana diaSemana;
+    private DiaLectivo diaLectivo;
 
     @NotBlank(message = "La hora de inicio es obligatoria")
     private String horaInicio;
@@ -32,12 +32,12 @@ public class HorarioClaseFormDTO {
 		this.id = id;
 	}
 
-	public DiaSemana getDiaSemana() {
-		return diaSemana;
+	public DiaLectivo getDiaLectivo() {
+		return diaLectivo;
 	}
 
-	public void setDiaSemana(DiaSemana diaSemana) {
-		this.diaSemana = diaSemana;
+	public void setDiaLectivo(DiaLectivo diaLectivo) {
+		this.diaLectivo = diaLectivo;
 	}
 
 	public String getHoraInicio() {

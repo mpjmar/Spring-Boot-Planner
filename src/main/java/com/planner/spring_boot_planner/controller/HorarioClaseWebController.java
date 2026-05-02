@@ -3,8 +3,6 @@ package com.planner.spring_boot_planner.controller;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.planner.spring_boot_planner.DiaSemana;
+import com.planner.spring_boot_planner.DiaLectivo;
 import com.planner.spring_boot_planner.dto.HorarioClaseFormDTO;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.HorarioClase;
@@ -47,30 +45,16 @@ public class HorarioClaseWebController {
 	}
 
 	@GetMapping("/nuevo")
-	public String mostrarFormularioNuevo(@RequestParam(required = false) DiaSemana diaSemana,
+	public String mostrarFormularioNuevo(@RequestParam(required = false) DiaLectivo diaLectivo,
                                      	@AuthenticationPrincipal Usuario usuario,
                                      	Model model) {
 		HorarioClaseFormDTO dto = new HorarioClaseFormDTO();
 
-		if (diaSemana != null)
-			dto.setDiaSemana(diaSemana);
-
-		List<HorarioClase> horarios = diaSemana != null
-			? horarioClaseRepository.findByDiaSemanaAndUsuarioId(diaSemana, usuario.getId())
-			: List.of();
-
-		Set<String> horasOcupadas = horarios.stream()
-			.map(h -> h.getHoraInicio().toString().substring(0, 5))
-			.collect(Collectors.toSet());
-
-		List<String> horasDisponibles = horasPosibles().stream()
-			.filter(hora -> !horasOcupadas.contains(hora))
-			.collect(Collectors.toList());
+		if (diaLectivo != null)
+			dto.setDiaLectivo(diaLectivo);
 
 		model.addAttribute("horarioClase", dto);
-		model.addAttribute("horasDisponibles", horasPosibles().subList(0, horasPosibles().size() - 1));
-		model.addAttribute("horasFinDisponibles", horasPosibles());
-
+		cargarHorasFormulario(model);
 		cargarListasFormulario(model, usuario);
 		model.addAttribute("accion", "Añadir");
 
@@ -82,6 +66,7 @@ public class HorarioClaseWebController {
 							   BindingResult result, Model model, 
 							   @AuthenticationPrincipal Usuario usuario) {
 		if (result.hasErrors()) {
+			cargarHorasFormulario(model);
 			cargarListasFormulario(model, usuario);
 			model.addAttribute("accion", "Añadir");
 			return "horariosClase/HorarioClaseFormView";
@@ -90,12 +75,21 @@ public class HorarioClaseWebController {
 		LocalTime horaInicio = LocalTime.parse(dto.getHoraInicio());
 		LocalTime horaFin = LocalTime.parse(dto.getHoraFin());
 
+		if (!horaInicio.isBefore(horaFin)) {
+			result.reject("horario.rango", "La hora de inicio debe ser anterior a la hora de fin");
+			cargarHorasFormulario(model);
+			cargarListasFormulario(model, usuario);
+			model.addAttribute("accion", "Añadir");
+			return "horariosClase/HorarioClaseFormView";
+		}
+
 		if (horarioClaseRepository.existeSolapamiento(
 				usuario.getId(),
-				dto.getDiaSemana(),
+				dto.getDiaLectivo(),
 				horaInicio,
 				horaFin)) {
 			result.reject("horario.solapado", "Ya existe un horario en ese tramo");
+			cargarHorasFormulario(model);
 			cargarListasFormulario(model, usuario);
 			model.addAttribute("accion", "Añadir");
 			return "horariosClase/HorarioClaseFormView";
@@ -103,14 +97,14 @@ public class HorarioClaseWebController {
 		
 		HorarioClase horarioClase = new HorarioClase();
 
-		horarioClase.setDiaSemana(dto.getDiaSemana());
-		horarioClase.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
-		horarioClase.setHoraFin(LocalTime.parse(dto.getHoraFin()));
+		horarioClase.setDiaLectivo(dto.getDiaLectivo());
+		horarioClase.setHoraInicio(horaInicio);
+		horarioClase.setHoraFin(horaFin);
 		horarioClase.setUsuario(usuario);
 		horarioClase.setAsignatura(resolverAsignatura(dto.getAsignaturaId(), usuario));
 		horarioClaseRepository.save(horarioClase);
 		
-		return "redirect:/horariosClase/dia/" + horarioClase.getDiaSemana();
+		return "redirect:/horariosClase/dia/" + horarioClase.getDiaLectivo();
 	}
 
 	@GetMapping("/{id}/editar")
@@ -123,7 +117,7 @@ public class HorarioClaseWebController {
 
 		HorarioClaseFormDTO dto = new HorarioClaseFormDTO();
 		dto.setId(horarioClase.getId());
-		dto.setDiaSemana(horarioClase.getDiaSemana());
+		dto.setDiaLectivo(horarioClase.getDiaLectivo());
 		dto.setHoraInicio(horarioClase.getHoraInicio().toString());
 		dto.setHoraFin(horarioClase.getHoraFin().toString());
 
@@ -131,6 +125,7 @@ public class HorarioClaseWebController {
 			dto.setAsignaturaId(horarioClase.getAsignatura().getId());
 		
 		model.addAttribute("horarioClase", dto);
+		cargarHorasFormulario(model);
 		cargarListasFormulario(model, usuario);
 		model.addAttribute("accion", "Editar");
 		return "horariosClase/HorarioClaseFormView";
@@ -152,6 +147,31 @@ public class HorarioClaseWebController {
 		}
 
 		if (result.hasErrors()) {
+			cargarHorasFormulario(model);
+			cargarListasFormulario(model, usuario);
+			model.addAttribute("accion", "Editar");
+			return "horariosClase/HorarioClaseFormView";
+		}
+
+		LocalTime horaInicio = LocalTime.parse(dto.getHoraInicio());
+		LocalTime horaFin = LocalTime.parse(dto.getHoraFin());
+
+		if (!horaInicio.isBefore(horaFin)) {
+			result.reject("horario.rango", "La hora de inicio debe ser anterior a la hora de fin");
+			cargarHorasFormulario(model);
+			cargarListasFormulario(model, usuario);
+			model.addAttribute("accion", "Editar");
+			return "horariosClase/HorarioClaseFormView";
+		}
+
+		if (horarioClaseRepository.existeSolapamientoEditando(
+				id,
+				usuario.getId(),
+				dto.getDiaLectivo(),
+				horaInicio,
+				horaFin)) {
+			result.reject("horario.solapado", "Ya existe un horario en ese tramo");
+			cargarHorasFormulario(model);
 			cargarListasFormulario(model, usuario);
 			model.addAttribute("accion", "Editar");
 			return "horariosClase/HorarioClaseFormView";
@@ -161,15 +181,15 @@ public class HorarioClaseWebController {
 			.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
 			.orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
 
-		existente.setDiaSemana(dto.getDiaSemana());
-		existente.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
-		existente.setHoraFin(LocalTime.parse(dto.getHoraFin()));
+		existente.setDiaLectivo(dto.getDiaLectivo());
+		existente.setHoraInicio(horaInicio);
+		existente.setHoraFin(horaFin);
 		existente.setAsignatura(asignatura);
 		existente.setUsuario(usuario);
 
 		horarioClaseRepository.save(existente);
 
-		return "redirect:/horariosClase/dia/" + existente.getDiaSemana();
+		return "redirect:/horariosClase/dia/" + existente.getDiaLectivo();
 	}
 
 	@PostMapping("/{id}/eliminar")
@@ -178,16 +198,16 @@ public class HorarioClaseWebController {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id).orElse(null);
 		if (horarioClase == null || !puedeGestionar(horarioClase, usuario))
 			return "redirect:/horariosClase";
-		DiaSemana diaSemana = horarioClase.getDiaSemana();
+		DiaLectivo diaLectivo = horarioClase.getDiaLectivo();
 		horarioClaseRepository.deleteById(id);
-		return "redirect:/horariosClase/dia/" + diaSemana;
+		return "redirect:/horariosClase/dia/" + diaLectivo;
 	}
 
-	@GetMapping("/dia/{diaSemana}")
-	public String verDia(@PathVariable String diaSemana, Model model,
+	@GetMapping("/dia/{diaLectivo}")
+	public String verDia(@PathVariable String diaLectivo, Model model,
 						@AuthenticationPrincipal Usuario usuario) {
-		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
-		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia, usuario.getId());
+		DiaLectivo dia = DiaLectivo.valueOf(diaLectivo.toUpperCase());
+		List<HorarioClase> horarios = horarioClaseRepository.findByDiaLectivoAndUsuarioId(dia, usuario.getId());
 		
 		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
 						Comparator.nullsLast(Comparator.naturalOrder()))
@@ -195,7 +215,7 @@ public class HorarioClaseWebController {
 						Comparator.nullsLast(Comparator.naturalOrder())));
 		
 		model.addAttribute("horariosClase", horarios);
-		model.addAttribute("diaSemana", dia);
+		model.addAttribute("diaLectivo", dia);
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 		
 		model.addAttribute("horasInicioDisponibles", horasPosibles());
@@ -208,6 +228,12 @@ public class HorarioClaseWebController {
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
 	}
 
+	private void cargarHorasFormulario(Model model) {
+		List<String> horas = horasPosibles();
+		model.addAttribute("horasDisponibles", horas.subList(0, horas.size() - 1));
+		model.addAttribute("horasFinDisponibles", horas);
+	}
+
 	private boolean puedeGestionar(HorarioClase horarioClase, Usuario usuario) {
 		return horarioClase.getId() != null && horarioClase.getUsuario().getId().equals(usuario.getId());
 	}
@@ -218,9 +244,9 @@ public class HorarioClaseWebController {
 			.orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
 	}
 
-	@ModelAttribute("diasSemana")
-	public List<DiaSemana> diasSemana() {
-		return List.of(DiaSemana.values());
+	@ModelAttribute("diasLectivos")
+	public List<DiaLectivo> diasLectivos() {
+		return List.of(DiaLectivo.values());
 	}
 
 	private List<String> horasPosibles() {
