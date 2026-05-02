@@ -69,8 +69,21 @@ public class HorarioClaseWebController {
 			model.addAttribute("accion", "Añadir");
 			return "horariosClase/HorarioClaseFormView";
 		}
-		HorarioClase horarioClase = new HorarioClase();
 
+		LocalTime horaInicio = LocalTime.parse(dto.getHoraInicio());
+		LocalTime horaFin = LocalTime.parse(dto.getHoraFin());
+		if (horarioClaseRepository.existeSolapamiento(
+				usuario.getId(),
+				dto.getDiaSemana(),
+				horaInicio,
+				horaFin)) {
+			result.reject("horario.solapado", "Ya existe un horario en ese tramo");
+			cargarListasFormulario(model, usuario);
+			model.addAttribute("accion", "Añadir");
+			return "horariosClase/HorarioClaseFormView";
+		}
+		
+		HorarioClase horarioClase = new HorarioClase();
 		horarioClase.setDiaSemana(dto.getDiaSemana());
 		horarioClase.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
 		horarioClase.setHoraFin(LocalTime.parse(dto.getHoraFin()));

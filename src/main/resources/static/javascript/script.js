@@ -1,4 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+	document.querySelectorAll('form').forEach(form => {
+		form.addEventListener('submit', function() {
+			const botonSubmit = form.querySelector('button[type="submit"]');
+
+			if (botonSubmit) {
+				botonSubmit.disabled = true;
+				botonSubmit.textContent = 'Enviando...';
+			}
+		});
+	});
+
+
+
 	/* var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		initialView: 'timeGridWeek',

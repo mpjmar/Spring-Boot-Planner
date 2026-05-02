@@ -21,20 +21,10 @@
                           ? @{/horariosClase/{id}/editar(id=${horarioClase.id})}
                           : @{/horariosClase/nuevo}" th:object="${horarioClase}" method="post">
 
-				<!-- <div class="form-group">
-					<label for="diaSemana">Día de la semana</label>
-					<select id="diaSemana" th:field="*{diaSemana}" class="form-control">
-					<option value="">-- Selecciona el día de la semana --</option>
-						<option th:value="lunes">LUNES</option>
-						<option th:value="martes">MARTES</option>
-						<option th:value="miercoles">MIERCOLES</option>
-						<option th:value="jueves">JUEVES</option>
-						<option th:value="viernes">VIERNES</option>
-					</select>
-
-					<span class="error" th:if="${#fields.hasErrors('diaSemana')}" th:errors="*{diaSemana}"></span>
-				</div> -->
-
+				<div class="error" th:if="${#fields.hasGlobalErrors()}">
+					<p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+				</div>
+				
 				<input type="hidden" th:field="*{diaSemana}" />
 
 				<div class="form-group">
