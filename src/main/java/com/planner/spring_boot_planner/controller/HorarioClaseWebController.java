@@ -22,11 +22,9 @@ import com.planner.spring_boot_planner.dto.HorarioClaseFormDTO;
 import com.planner.spring_boot_planner.dto.HorarioClaseUpdateDTO;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.HorarioClase;
-import com.planner.spring_boot_planner.entity.Profesor;
 import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import com.planner.spring_boot_planner.repository.HorarioClaseRepository;
-import com.planner.spring_boot_planner.repository.ProfesorRepository;
 
 import jakarta.validation.Valid;
 
@@ -36,14 +34,11 @@ public class HorarioClaseWebController {
 
 	private final HorarioClaseRepository horarioClaseRepository;
 	private final AsignaturaRepository asignaturaRepository;
-	private final ProfesorRepository profesorRepository;
 
 	public HorarioClaseWebController(HorarioClaseRepository horarioClaseRepository,
-								     AsignaturaRepository asignaturaRepository,
-									 ProfesorRepository profesorRepository) {
+								     AsignaturaRepository asignaturaRepository) {
 		this.horarioClaseRepository = horarioClaseRepository;
 		this.asignaturaRepository = asignaturaRepository;
-		this.profesorRepository = profesorRepository;
 	}
 
 	@GetMapping()
@@ -80,8 +75,7 @@ public class HorarioClaseWebController {
 		horarioClase.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
 		horarioClase.setHoraFin(LocalTime.parse(dto.getHoraFin()));
 		horarioClase.setUsuario(usuario);
-		resolverAsignatura(horarioClase, usuario);
-		// resolverProfesor(horarioClase, usuario);
+		horarioClase.setAsignatura(resolverAsignatura(dto.getAsignaturaId(), usuario));
 		horarioClaseRepository.save(horarioClase);
 		return "redirect:/horariosClase/dia/" + horarioClase.getDiaSemana();
 	}
@@ -138,56 +132,12 @@ public class HorarioClaseWebController {
 		existente.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
 		existente.setHoraFin(LocalTime.parse(dto.getHoraFin()));
 		existente.setAsignatura(asignatura);
-		// existente.setProfesor(asignatura.getProfesor());
 		existente.setUsuario(usuario);
 
 		horarioClaseRepository.save(existente);
 
 		return "redirect:/horariosClase/dia/" + existente.getDiaSemana();
 	}
-
-	/* @PostMapping("/editar")
-	public String editarInline(@RequestParam Long id,
-							@RequestParam String horaInicio,
-							@RequestParam String horaFin,
-							@RequestParam Long asignaturaId,
-							@AuthenticationPrincipal Usuario usuario) {
-		HorarioClase horario = horarioClaseRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Bloque no encontrado: " + id));
-		if (!puedeGestionar(horario, usuario))
-			return "redirect:/horariosClase";
-		horario.setHoraInicio(LocalTime.parse(horaInicio));
-		horario.setHoraFin(LocalTime.parse(horaFin));
-		Asignatura asignatura = asignaturaRepository.findById(asignaturaId).orElse(null);
-		horario.setAsignatura(asignatura);
-		horarioClaseRepository.save(horario);
-		return "redirect:/horariosClase/dia/" + horario.getDiaSemana();
-	} */
-
-	/* @PostMapping("/editar")
-	public String editarInline(
-			@ModelAttribute HorarioClaseUpdateDTO dto,
-			@AuthenticationPrincipal Usuario usuario) {
-
-		HorarioClase horario = horarioClaseRepository.findById(dto.getId())
-				.orElseThrow(() -> new IllegalArgumentException("Bloque no encontrado"));
-
-		if (!puedeGestionar(horario, usuario))
-			return "redirect:/horariosClase";
-
-		horario.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
-		horario.setHoraFin(LocalTime.parse(dto.getHoraFin()));
-
-		Asignatura asignatura = asignaturaRepository.findById(dto.getAsignaturaId())
-				.orElseThrow(() -> new IllegalArgumentException("Asignatura no encontrada"));
-
-		horario.setUsuario(usuario);
-		horario.setAsignatura(asignatura);
-		horarioClaseRepository.save(horario);
-
-		return "redirect:/horariosClase/dia/" + horario.getDiaSemana();
-	} */
-
 
 	@PostMapping("/{id}/eliminar")
 	public String eliminar8(@PathVariable Long id, 
@@ -198,20 +148,6 @@ public class HorarioClaseWebController {
 		horarioClaseRepository.deleteById(id);
 		return "redirect:/horariosClase";
 	}
-
-	/* @GetMapping("/dia/{diaSemana}")
-	public String verDia(@PathVariable String diaSemana, Model model,
-						 @AuthenticationPrincipal Usuario usuario) {
-		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
-		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia, usuario.getId());
-		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
-						Comparator.nullsLast(Comparator.naturalOrder())
-						).thenComparing(HorarioClase::getHoraFin,
-						Comparator.nullsLast(Comparator.naturalOrder())));
-		model.addAttribute("horariosClase", horarios);
-		model.addAttribute("diaSemana", dia);
-		return "horariosClase/HorarioClaseDayView";
-	} */
 
 	@GetMapping("/dia/{diaSemana}")
 	public String verDia(@PathVariable String diaSemana, Model model,
@@ -247,36 +183,17 @@ public class HorarioClaseWebController {
 
 	private void cargarListasFormulario(Model model, Usuario usuario) {
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
-		model.addAttribute("profesores", profesorRepository.findByUsuarioId(usuario.getId()));
 	}
 
 	private boolean puedeGestionar(HorarioClase horarioClase, Usuario usuario) {
 		return horarioClase.getId() != null && horarioClase.getUsuario().getId().equals(usuario.getId());
 	}
 
-	private void resolverAsignatura(HorarioClase horarioClase, Usuario usuario) {
-		if (horarioClase.getAsignatura() != null && horarioClase.getAsignatura().getId() != null) {
-			Asignatura asignatura = asignaturaRepository
-				.findById(horarioClase.getAsignatura().getId())
-				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
-				.orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
-			horarioClase.setAsignatura(asignatura);
-		} else {
-			horarioClase.setAsignatura(null);
-		}
+	private Asignatura resolverAsignatura(Long asignaturaId, Usuario usuario) {
+		return asignaturaRepository.findById(asignaturaId)
+			.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
+			.orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
 	}
-	
-	/* private void resolverProfesor(HorarioClase horarioClase, Usuario usuario) {
-		if (horarioClase.getProfesor() != null && horarioClase.getProfesor().getId() != null) {
-			Profesor profesor = profesorRepository
-				.findById(horarioClase.getProfesor().getId())
-				.filter(a -> a.getUsuario() != null && a.getUsuario().getId().equals(usuario.getId()))
-				.orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
-			horarioClase.setProfesor(profesor);
-		} else {
-			horarioClase.setProfesor(null);
-		}
-	} */
 
 	@ModelAttribute("diasSemana")
 	public List<DiaSemana> diasSemana() {

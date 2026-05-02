@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-	var calendarEl = document.getElementById('calendar');
+	/* var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		initialView: 'timeGridWeek',
 		locale: 'es',
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			window.location.href = `/bloquesEstudio/nuevo?cuadranteId=${cuadranteId}&fecha=${fecha}&horaInicio=${horaInicio}&horaFin=${horaFin}`;
 		}
 	});
-	calendar.render();
+	calendar.render(); */
 
 
 	// BOTONES EDITAR

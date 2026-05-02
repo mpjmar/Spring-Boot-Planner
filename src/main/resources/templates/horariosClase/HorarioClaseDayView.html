@@ -18,7 +18,7 @@
 					<span th:text="${horario.horaFin}"></span>
 				</div>
 				<div class="horario-asignatura">
-					<span th:text="${horario.asignatura.nombre}"></span>
+					<span th:text="${horario.asignatura != null ? horario.asignatura.nombre : 'Sin asignatura'}"></span>
 				</div>
 
 				<button type="button"
@@ -28,7 +28,7 @@
 				</button>
 
 				<div id="form-editar-[[${horario.id}]]" style="display:none;">
-					<form th:action="@{/horariosClase/editar}" method="post">
+					<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
 						<input type="hidden" name="id" th:value="${horario.id}" />
 						<label>Hora inicio:
 							<select name="horaInicio">
@@ -63,7 +63,7 @@
 								<option th:each="asig : ${asignaturas}" 
 										th:value="${asig.id}" 
 										th:text="${asig.nombre}" 
-										th:selected="${asig.id == horario.asignatura.id}"></option>
+										th:selected="${horario.asignatura != null and asig.id == horario.asignatura.id}"></option>
 							</select>
 						</label>
 						<button type="submit" class="btn btn-primary">Guardar</button>

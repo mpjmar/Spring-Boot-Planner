@@ -48,11 +48,6 @@ public class HorarioClase {
 	@JsonIgnore
     private Asignatura asignatura;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profesor_id", nullable = false)
-	@JsonIgnore
-    private Profesor profesor;
-
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -63,12 +58,11 @@ public class HorarioClase {
     }
 
     public HorarioClase(DiaSemana diaSemana, LocalTime horaInicio, LocalTime horaFin, 
-		Asignatura asignatura, Profesor profesor, Usuario usuario) {
+		Asignatura asignatura, Usuario usuario) {
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.asignatura = asignatura;
-        this.profesor = profesor;
 		this.usuario = usuario;
     }
 
@@ -112,14 +106,6 @@ public class HorarioClase {
         this.asignatura = asignatura;
     }
 
-    public Profesor getProfesor() {
-        return profesor;
-    }
-
-    public void setProfesor(Profesor profesor) {
-        this.profesor = profesor;
-    }
-
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -131,7 +117,6 @@ public class HorarioClase {
 	@Override
 	public String toString() {
 		Long idAsignatura = (asignatura != null ? asignatura.getId() : null);
-		Long idProfesor = (profesor != null ? profesor.getId() : null);
 		Long usuarioId = (usuario != null ? usuario.getId() : null);
 		
 		return "horarioClase {id = " + id + 
@@ -139,7 +124,6 @@ public class HorarioClase {
 			", horaInicio = " + horaInicio + 
 			", horaFin = " + horaFin + 
 			", asignatura = " + idAsignatura + 
-			", profesor = " + idProfesor + 
 			", usuario = " + usuarioId +   
 			"}";
 	}
