@@ -38,6 +38,7 @@
 				<div th:id="'form-editar-' + ${horario.id}" style="display:none;">
 					<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
 						<input type="hidden" name="id" th:value="${horario.id}" />
+						<input type="hidden" name="diaSemana" th:value="${horario.diaSemana}" />
 						<label>Hora inicio:
 							<select name="horaInicio">
 								<option th:each="hora : ${horasInicioDisponibles}"

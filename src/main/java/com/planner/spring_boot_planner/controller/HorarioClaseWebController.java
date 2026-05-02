@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.planner.spring_boot_planner.DiaSemana;
 import com.planner.spring_boot_planner.dto.HorarioClaseFormDTO;
-import com.planner.spring_boot_planner.dto.HorarioClaseUpdateDTO;
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.HorarioClase;
 import com.planner.spring_boot_planner.entity.Usuario;
@@ -52,11 +51,29 @@ public class HorarioClaseWebController {
                                      	@AuthenticationPrincipal Usuario usuario,
                                      	Model model) {
 		HorarioClaseFormDTO dto = new HorarioClaseFormDTO();
+
 		if (diaSemana != null)
 			dto.setDiaSemana(diaSemana);
+
+		List<HorarioClase> horarios = diaSemana != null
+			? horarioClaseRepository.findByDiaSemanaAndUsuarioId(diaSemana, usuario.getId())
+			: List.of();
+
+		Set<String> horasOcupadas = horarios.stream()
+			.map(h -> h.getHoraInicio().toString().substring(0, 5))
+			.collect(Collectors.toSet());
+
+		List<String> horasDisponibles = horasPosibles().stream()
+			.filter(hora -> !horasOcupadas.contains(hora))
+			.collect(Collectors.toList());
+
 		model.addAttribute("horarioClase", dto);
+		model.addAttribute("horasDisponibles", horasPosibles().subList(0, horasPosibles().size() - 1));
+		model.addAttribute("horasFinDisponibles", horasPosibles());
+
 		cargarListasFormulario(model, usuario);
 		model.addAttribute("accion", "Añadir");
+
 		return "horariosClase/HorarioClaseFormView";
 	}
 
@@ -72,6 +89,7 @@ public class HorarioClaseWebController {
 
 		LocalTime horaInicio = LocalTime.parse(dto.getHoraInicio());
 		LocalTime horaFin = LocalTime.parse(dto.getHoraFin());
+
 		if (horarioClaseRepository.existeSolapamiento(
 				usuario.getId(),
 				dto.getDiaSemana(),
@@ -84,12 +102,14 @@ public class HorarioClaseWebController {
 		}
 		
 		HorarioClase horarioClase = new HorarioClase();
+
 		horarioClase.setDiaSemana(dto.getDiaSemana());
 		horarioClase.setHoraInicio(LocalTime.parse(dto.getHoraInicio()));
 		horarioClase.setHoraFin(LocalTime.parse(dto.getHoraFin()));
 		horarioClase.setUsuario(usuario);
 		horarioClase.setAsignatura(resolverAsignatura(dto.getAsignaturaId(), usuario));
 		horarioClaseRepository.save(horarioClase);
+		
 		return "redirect:/horariosClase/dia/" + horarioClase.getDiaSemana();
 	}
 
@@ -168,30 +188,19 @@ public class HorarioClaseWebController {
 						@AuthenticationPrincipal Usuario usuario) {
 		DiaSemana dia = DiaSemana.valueOf(diaSemana.toUpperCase());
 		List<HorarioClase> horarios = horarioClaseRepository.findByDiaSemanaAndUsuarioId(dia, usuario.getId());
+		
 		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
 						Comparator.nullsLast(Comparator.naturalOrder()))
 						.thenComparing(HorarioClase::getHoraFin,
 						Comparator.nullsLast(Comparator.naturalOrder())));
+		
 		model.addAttribute("horariosClase", horarios);
 		model.addAttribute("diaSemana", dia);
-
 		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
-
-		List<String> horasPosibles = List.of(
-			"08:15", "09:15", "10:15", "11:15", "11:45", "12:45", "13:45", "14:45"
-		);
-		model.addAttribute("horasInicioDisponibles", horasPosibles);
-		model.addAttribute("horasFinDisponibles", horasPosibles);
-
-		Set<String> horasOcupadas = horarios.stream()
-			.map(h -> h.getHoraInicio().toString().substring(0,5))
-			.collect(Collectors.toSet());
-
-		List<String> horasDisponibles = horasPosibles.stream()
-			.filter(hora -> !horasOcupadas.contains(hora))
-			.collect(Collectors.toList());
-
-		model.addAttribute("horasDisponibles", horasDisponibles);
+		
+		model.addAttribute("horasInicioDisponibles", horasPosibles());
+		model.addAttribute("horasFinDisponibles", horasPosibles());
+		
 		return "horariosClase/HorarioClaseDayView";
 	}
 
@@ -212,6 +221,13 @@ public class HorarioClaseWebController {
 	@ModelAttribute("diasSemana")
 	public List<DiaSemana> diasSemana() {
 		return List.of(DiaSemana.values());
+	}
+
+	private List<String> horasPosibles() {
+		return List.of(
+			"08:15", "09:15", "10:15", "11:15",
+			"11:45", "12:45", "13:45", "14:45"
+		);
 	}
 
 }
