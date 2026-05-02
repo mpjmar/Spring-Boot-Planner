@@ -140,13 +140,14 @@ public class HorarioClaseWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar8(@PathVariable Long id, 
+	public String eliminar(@PathVariable Long id, 
 							@AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id).orElse(null);
 		if (horarioClase == null || !puedeGestionar(horarioClase, usuario))
 			return "redirect:/horariosClase";
+		DiaSemana diaSemana = horarioClase.getDiaSemana();
 		horarioClaseRepository.deleteById(id);
-		return "redirect:/horariosClase";
+		return "redirect:/horariosClase/dia/" + diaSemana;
 	}
 
 	@GetMapping("/dia/{diaSemana}")

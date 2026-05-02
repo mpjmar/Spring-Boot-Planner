@@ -61,8 +61,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	function mostrarFormularioEdicion(id) {
-		document.getElementById('form-editar-' + id).style.display = 'block';
-	}
+    const form = document.getElementById('form-editar-' + id);
+    if (form) {
+        form.style.display = 'block';
+    }
+}
 
 	function ocultarFormularioEdicion(id) {
 		document.getElementById('form-editar-' + id).style.display = 'none';

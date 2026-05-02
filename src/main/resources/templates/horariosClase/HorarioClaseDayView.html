@@ -27,7 +27,15 @@
 				Editar
 				</button>
 
-				<div id="form-editar-[[${horario.id}]]" style="display:none;">
+				<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
+					method="post"
+					onsubmit="return confirm('¿Eliminar este horario de clase?')">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+
+				<div th:id="'form-editar-' + ${horario.id}" style="display:none;">
 					<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
 						<input type="hidden" name="id" th:value="${horario.id}" />
 						<label>Hora inicio:
