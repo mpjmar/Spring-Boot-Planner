@@ -6,28 +6,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Listado de Bloques de estudio</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 </head>
 
-<body>
+  <body class="fondo" th:classappend="${bodyClass}">
 
-	<header>
-		<h1>Listado de Bloques de estudio</h1>
-	</header>
-
-	<div class="contenedor">
-		<div class="navegacion-dias">
+    <div class="contenedor">
+		<div class="card">
 			<h3>Selecciona un día</h3>
-			<div th:each="dia : ${diasSemana}">
-				<a class="btn btn-diaSemana"
-					th:href="@{/bloquesEstudio/dia/{diaSemana}(diaSemana=${dia})}"
-					th:text="${dia.nombre}">
-				</a>
-			</div>
-		</div>
-	</div>
+	
+			<form th:action="@{/bloquesEstudio/dia}" method="get">
+				<label for="fecha">Fecha</label>
+				<input type="date" id="fecha" name="fecha" />
+				<button type="submit" class="btn btn-primary">Ver día</button>
+			</form>
 
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<div id="calendar"></div>
+		</div>
 	</div>
 
 	<footer>
@@ -35,6 +30,7 @@
 		<p>Author: M. Paz Jiménez Martín</p>
 	</footer>
 
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>	
 	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
 

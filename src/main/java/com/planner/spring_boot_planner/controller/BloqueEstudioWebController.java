@@ -80,7 +80,7 @@ public class BloqueEstudioWebController {
 								BindingResult result, Model model,
 								@AuthenticationPrincipal Usuario usuario) {
 		resolverAsignatura(bloqueEstudio, usuario);
-		resolverDiaYColor(bloqueEstudio);
+		resolverColor(bloqueEstudio);
 		validarSolapados(null, bloqueEstudio, usuario.getId(), result);
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -116,7 +116,7 @@ public class BloqueEstudioWebController {
 			return "redirect:/bloquesEstudio";
 		bloqueEstudio.setId(id);
 		resolverAsignatura(bloqueEstudio, usuario);
-		resolverDiaYColor(bloqueEstudio);
+		resolverColor(bloqueEstudio);
 		validarSolapados(id, bloqueEstudio, usuario.getId(), result);
 		if (result.hasErrors()) {
 			model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
@@ -169,7 +169,6 @@ public class BloqueEstudioWebController {
 			OffsetDateTime odtEnd = OffsetDateTime.parse(payload.get("end"));
 			bloqueEstudio.setHoraFin(odtEnd.atZoneSameInstant(ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0));
 		}
-		bloqueEstudio.setDiaSemana(diaSemanaEn(bloqueEstudio.getFecha().getDayOfWeek()));
 		if (bloqueEstudio.getAsignatura() != null)
 			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor() != null
 								   ? bloqueEstudio.getAsignatura().getColor() : COLOR_DEFECTO);
@@ -212,27 +211,11 @@ public class BloqueEstudioWebController {
 		}
 	}
 
-	private void resolverDiaYColor(BloqueEstudio bloqueEstudio) {
-		if (bloqueEstudio.getFecha() != null)
-			bloqueEstudio.setDiaSemana(diaSemanaEn(bloqueEstudio.getFecha().getDayOfWeek()));
-		else
-			bloqueEstudio.setDiaSemana("lunes");
-		
+	private void resolverColor(BloqueEstudio bloqueEstudio) {
 		if (bloqueEstudio.getAsignatura() != null && bloqueEstudio.getAsignatura().getColor() != null)
 			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor());
 		else
 			bloqueEstudio.setColor(COLOR_DEFECTO);
 	}
 
-	private static String diaSemanaEn(DayOfWeek dia) {
-		return switch(dia) {
-			case MONDAY -> "lunes";
-			case TUESDAY -> "martes";
-			case WEDNESDAY -> "miercoles";
-			case THURSDAY -> "jueves";
-			case FRIDAY -> "viernes";
-			case SATURDAY -> "sabado";
-			case SUNDAY -> "domingo";
-		};
-	}
 }

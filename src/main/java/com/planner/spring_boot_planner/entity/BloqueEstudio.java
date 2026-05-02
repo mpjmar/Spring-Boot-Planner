@@ -38,10 +38,6 @@ public class BloqueEstudio {
 	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name = "hora_fin")
 	private LocalTime horaFin;
-		
-	@Size(max = 20)
-	@Column(nullable = false, length = 20)
-	private String diaSemana;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asignatura_id")
@@ -59,10 +55,9 @@ public class BloqueEstudio {
     public BloqueEstudio() {
     }
 
-    public BloqueEstudio(LocalDate fecha, String diaSemana, LocalTime horaInicio, LocalTime horaFin,
+    public BloqueEstudio(LocalDate fecha, LocalTime horaInicio, LocalTime horaFin,
             Asignatura asignatura, Usuario usuario) {
         this.fecha = fecha;
-        this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.asignatura = asignatura;
@@ -84,14 +79,6 @@ public class BloqueEstudio {
 
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
-    }
-
-    public String getDiaSemana() {
-        return diaSemana;
-    }
-
-    public void setDiaSemana(String diaSemana) {
-        this.diaSemana = diaSemana;
     }
 
     public LocalTime getHoraInicio() {
@@ -144,7 +131,6 @@ public class BloqueEstudio {
 			   ", fecha = " + fecha + 
 			   ", horaInicio = " + horaInicio + 
 			   ", horaFin = " + horaFin + 
-			   ", diaSemana = " + diaSemana + 
 			   ", asignatura = " + asignaturaId + 
 			   ", usuario = " + usuarioId + 
 			   "}";
