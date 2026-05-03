@@ -19,7 +19,7 @@
 
 			<nav class="dashboard-grid">
 				<a th:href="@{/asignaturas}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">📚</span>
+					<span class="dashboard-icono">📘</span>
 					<span>Asignaturas</span>
 				</a>
 
@@ -34,7 +34,7 @@
 				</a>
 
 				<a th:href="@{/examenes}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">🧪</span>
+					<span class="dashboard-icono">📄</span>
 					<span>Exámenes</span>
 				</a>
 
@@ -44,15 +44,15 @@
 				</a>
 
 				<a th:href="@{/bloquesEstudio}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">📊</span>
+					<span class="dashboard-icono">📅</span>
 					<span>Cuadrantes de planificación</span>
 				</a>
 			</nav>
-
-			<form th:action="@{/logout}" method="post" class="acciones">
-				<button type="submit" class="btn btn-secondary">Cerrar sesión</button>
-			</form>
 		</section>
+
+		<form th:action="@{/logout}" method="post" class="acciones">
+			<button type="submit" class="btn btn-secondary">Cerrar sesión</button>
+		</form>
 	</main>
 
 	<footer>

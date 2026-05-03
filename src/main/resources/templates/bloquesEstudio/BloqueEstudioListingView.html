@@ -11,7 +11,7 @@
 
   <body class="fondo" th:classappend="${bodyClass}">
 
-    <div class="contenedor">
+    <main class="contenedor">
 		<div class="card">
 			<h3>Selecciona un día</h3>
 	
@@ -30,28 +30,38 @@
 					No hay bloques de estudio planificados.
 				</div>
 			
-				<div class="bloque-card" th:each="bloque : ${bloquesEstudio}">
-					<div class="bloques-fecha"
-						 th:text="${#temporals.format(bloque.fecha, 'EEEE dd-MM-yyyy')}">
+				<div class="bloque-card"
+					 th:each="bloque : ${bloquesEstudio}"
+					 th:style="${bloque.asignatura != null and bloque.asignatura.color != null ? '--card-color:' + bloque.asignatura.color : ''}">
+					<div class="card-contenido">
+						<div class="bloques-fecha"
+							 th:text="${#temporals.format(bloque.fecha, 'EEEE dd-MM-yyyy')}">
+						</div>
+				
+						<div class="bloques-horas">
+							<span th:text="${bloque.horaInicio}"></span>
+							<span> - </span>
+							<span th:text="${bloque.horaFin}"></span>
+						</div>
+				
+						<div class="bloque-asignatura">
+							<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin asignatura'}"></span>
+						</div>
 					</div>
-			
-					<div class="bloques-horas">
-						<span th:text="${bloque.horaInicio}"></span>
-						<span> - </span>
-						<span th:text="${bloque.horaFin}"></span>
+
+					<div class="card-acciones">
+						<a th:href="@{/bloquesEstudio/dia(fecha=${bloque.fecha})}" class="btn btn-secondary">
+							Ver día
+						</a>
 					</div>
-			
-					<div class="bloque-asignatura">
-						<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin asignatura'}"></span>
-					</div>
-			
-					<a th:href="@{/bloquesEstudio/dia(fecha=${bloque.fecha})}" class="btn btn-secondary">
-						Ver día
-					</a>
 				</div>
 			</section>
 		</div>
-	</div>
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
+		</div>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

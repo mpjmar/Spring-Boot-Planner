@@ -17,30 +17,36 @@
 	</header>
 
 	<div class="bloques-grid">
-		<div class="bloque-card" th:each="bloque : ${bloquesEstudio}">	
-			<div class="bloques-horas">
-				<span th:text="${bloque.horaInicio}"></span>
-				<span> - </span>
-				<span th:text="${bloque.horaFin}"></span>
-			</div>
-			<div class="bloque-asignatura">
-				<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin bloques de estudio'}"></span>
+		<div class="bloque-card"
+			 th:each="bloque : ${bloquesEstudio}"
+			 th:style="${bloque.asignatura != null and bloque.asignatura.color != null ? '--card-color:' + bloque.asignatura.color : ''}">
+			<div class="card-contenido">
+				<div class="bloques-horas">
+					<span th:text="${bloque.horaInicio}"></span>
+					<span> - </span>
+					<span th:text="${bloque.horaFin}"></span>
+				</div>
+				<div class="bloque-asignatura">
+					<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin bloques de estudio'}"></span>
+				</div>
 			</div>
 
-			<button type="button"
-					class="btn btn-secondary btn-editar"
-					th:attr="data-id=${bloque.id}">
-			Editar
-			</button>
-
-			<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}"
-				method="post"
-				class="form-eliminar"
-				data-confirm="¿Eliminar este bloque de estudio?">
-				<button type="submit" class="btn btn-secondary">
-					Borrar
+			<div class="card-acciones">
+				<button type="button"
+						class="btn btn-secondary btn-editar"
+						th:attr="data-id=${bloque.id}">
+				Editar
 				</button>
-			</form>
+
+				<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}"
+					method="post"
+					class="form-eliminar"
+					data-confirm="¿Eliminar este bloque de estudio?">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+			</div>
 
 			<div th:id="'form-editar-' + ${bloque.id}" style="display:none;">
 				<form th:action="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" method="post">

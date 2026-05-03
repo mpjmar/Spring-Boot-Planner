@@ -14,39 +14,43 @@
 		<h1>Listado de Tareas</h1>
 	</header>
 
-	<div class="contenedor">
-		<article class="card-listado" th:each="tarea : ${tareas}">
-			<h3 th:text="${tarea.nombre}"></h3>
-		
-			<p class="card-campo">
-				<span class="card-label">Asignatura:</span>
-				<span th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Descripción:</span>
-				<span th:text="${tarea.descripcion}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Fecha límite:</span>
-				<span th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM/yyyy')}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Prioridad:</span>
-				<span th:text="${tarea.prioridad}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Estado:</span>
-				<span th:text="${tarea.estado}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Tiempo estimado:</span>
-				<span th:text="${tarea.tiempoFormateado}"></span>
-			</p>
+	<main class="contenedor">
+		<article class="card-listado"
+				 th:each="tarea : ${tareas}"
+				 th:style="${tarea.asignatura != null and tarea.asignatura.color != null ? '--card-color:' + tarea.asignatura.color : ''}">
+			<div class="card-contenido">
+				<h3 th:text="${tarea.nombre}"></h3>
+			
+				<p class="card-campo">
+					<span class="card-label">Asignatura:</span>
+					<span th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Descripción:</span>
+					<span th:text="${tarea.descripcion}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Fecha límite:</span>
+					<span th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM/yyyy')}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Prioridad:</span>
+					<span th:text="${tarea.prioridad}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Estado:</span>
+					<span th:text="${tarea.estado}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Tiempo estimado:</span>
+					<span th:text="${tarea.tiempoFormateado}"></span>
+				</p>
+			</div>
 		
 			<div class="card-acciones">
 				<a th:href="@{/tareas/{id}/editar(id=${tarea.id})}" class="btn btn-secondary">
@@ -67,12 +71,12 @@
 		<div th:if="${#lists.isEmpty(tareas)}">
 			<p>No tienes tareas registradas.</p>
 		</div>
-	</div>
-
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		<a th:href="@{/tareas/nuevo}" class="btn btn-primary">+ Añadir tarea</a>
-	</div>
+		
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/tareas/nuevo}" class="btn btn-primary">+ Añadir tarea</a>
+		</div>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

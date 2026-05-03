@@ -14,7 +14,7 @@
 		<h1>Listado de Horarios de clases</h1>
 	</header>
 
-	<div class="contenedor">
+	<main class="contenedor">
 		<div class="navegacion-dias">
 			<h3>Selecciona un día</h3>
 			<div th:each="dia : ${diasLectivos}">
@@ -24,11 +24,11 @@
 				</a>
 			</div>
 		</div>
-	</div>
-
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-	</div>
+		
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+		</div>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

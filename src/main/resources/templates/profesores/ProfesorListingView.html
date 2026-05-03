@@ -14,19 +14,21 @@
 		<h1>Listado de Profesores</h1>
 	</header>
 
-	<div class="contenedor">
+	<main class="contenedor">
 		<article class="card-listado" th:each="profesor : ${profesores}">
-			<h3 th:text="${profesor.nombre}"></h3>
-		
-			<p class="card-campo">
-				<span class="card-label">Email:</span>
-				<span th:text="${profesor.email}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Nº Asignaturas:</span>
-				<span th:text="${#lists.size(profesor.asignaturas)}"></span>
-			</p>
+			<div class="card-contenido">
+				<h3 th:text="${profesor.nombre}"></h3>
+			
+				<p class="card-campo">
+					<span class="card-label">Email:</span>
+					<span th:text="${profesor.email}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Nº Asignaturas:</span>
+					<span th:text="${#lists.size(profesor.asignaturas)}"></span>
+				</p>
+			</div>
 		
 			<div class="card-acciones">
 				<a th:href="@{/profesores/{id}/editar(id=${profesor.id})}" class="btn btn-secondary">
@@ -47,12 +49,12 @@
 		<div th:if="${#lists.isEmpty(profesores)}">
 			<p>No tienes profesores registrados.</p>
 		</div>
-	</div>
-
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		<a th:href="@{/profesores/nuevo}" class="btn btn-primary">+ Añadir profesor</a>
-	</div>
+		
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/profesores/nuevo}" class="btn btn-primary">+ Añadir profesor</a>
+		</div>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

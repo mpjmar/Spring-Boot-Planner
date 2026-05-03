@@ -14,7 +14,7 @@
 		<h1>Perfil de Usuario</h1>
 	</header>
 
-	<div class="contenedor">
+	<main class="contenedor">
 		<article class="card-listado">
 			<h3 th:text="${usuario.nombre}"></h3>
 		
@@ -39,12 +39,11 @@
 			</p>
 		</article>
 		
-	</div>
-
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		<a th:href="@{/usuarios/editar}" class="btn btn-primary">+ Editar usuario</a>
-	</div>
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/usuarios/editar}" class="btn btn-primary">+ Editar usuario</a>
+		</div>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

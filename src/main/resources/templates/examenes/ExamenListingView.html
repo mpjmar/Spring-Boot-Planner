@@ -14,29 +14,33 @@
 		<h1>Listado de Exámenes</h1>
 	</header>
 
-	<div class="contenedor">
-		<article class="card-listado" th:each="examen : ${examenes}">
-			<h3 th:text="${examen.asignatura != null ? examen.asignatura.nombre : 'Sin asignatura'}"></h3>
-		
-			<p class="card-campo">
-				<span class="card-label">Descripción:</span>
-				<span th:text="${examen.descripcion}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Fecha:</span>
-				<span th:text="${#temporals.format(examen.fecha, 'dd/MM/yyyy')}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Peso:</span>
-				<span th:text="${examen.peso}"></span>
-			</p>
-		
-			<p class="card-campo">
-				<span class="card-label">Nota objetivo:</span>
-				<span th:text="${examen.notaObjetivo}"></span>
-			</p>
+	<main class="contenedor">
+		<article class="card-listado"
+         		 th:each="examen : ${examenes}"
+         		 th:style="${examen.asignatura != null and examen.asignatura.color != null ? '--card-color:' + examen.asignatura.color : ''}">
+			<div class="card-contenido">
+				<h3 th:text="${examen.asignatura != null ? examen.asignatura.nombre : 'Sin asignatura'}"></h3>
+			
+				<p class="card-campo">
+					<span class="card-label">Descripción:</span>
+					<span th:text="${examen.descripcion}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Fecha:</span>
+					<span th:text="${#temporals.format(examen.fecha, 'dd/MM/yyyy')}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Peso:</span>
+					<span th:text="${examen.peso}"></span>
+				</p>
+			
+				<p class="card-campo">
+					<span class="card-label">Nota objetivo:</span>
+					<span th:text="${examen.notaObjetivo}"></span>
+				</p>
+			</div>
 		
 			<div class="card-acciones">
 				<a th:href="@{/examenes/{id}/editar(id=${examen.id})}" class="btn btn-secondary">
@@ -57,12 +61,12 @@
 		<div th:if="${#lists.isEmpty(examenes)}">
 			<p>No tienes exámenes registrados.</p>
 		</div>
-	</div>
 
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		<a th:href="@{/examenes/nuevo}" class="btn btn-primary">+ Añadir examen</a>
-	</div>
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/examenes/nuevo}" class="btn btn-primary">+ Añadir examen</a>
+		</div>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

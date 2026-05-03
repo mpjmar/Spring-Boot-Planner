@@ -14,18 +14,22 @@
 		<h1>Listado de Asignaturas</h1>
 	</header>
 
-	<div class="contenedor">
-		<article class="card-listado" th:each="asignatura : ${asignaturas}">
-			<h3 th:text="${asignatura.nombre}"></h3>
-			<p class="card-campo">
-				<span class="card-label">Profesor:</span>
-				<span th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></span>
-			</p>
-			<p class="card-campo">
-				<span class="card-label">Color:</span>
-				<span th:text="${asignatura.color}"></span>
-			</p>
-			<img th:src="${asignatura.imagenUrl}" alt="imagen" class="card-imagen" />
+	<main class="contenedor">
+		<article class="card-listado"
+				 th:each="asignatura : ${asignaturas}"
+				 th:style="${asignatura.color != null ? '--card-color:' + asignatura.color : ''}">
+			<div class="card-contenido">
+				<h3 th:text="${asignatura.nombre}"></h3>
+				<p class="card-campo">
+					<span class="card-label">Profesor:</span>
+					<span th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></span>
+				</p>
+				<p class="card-campo">
+					<span class="card-label">Color:</span>
+					<span th:text="${asignatura.color}"></span>
+				</p>
+				<img th:src="${asignatura.imagenUrl}" alt="imagen" class="card-imagen" />
+			</div>
 			<div class="card-acciones">
 				<a th:href="@{/asignaturas/{id}/editar(id=${asignatura.id})}" class="btn btn-secondary">
 					Editar
@@ -44,12 +48,12 @@
 		<div th:if="${#lists.isEmpty(asignaturas)}">
 			<p>No tienes asignaturas registradas.</p>
 		</div>
-	</div>
-
-	<div class="barra-acciones">
-		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		<a th:href="@{/asignaturas/nuevo}" class="btn btn-primary">+ Añadir asignatura</a>
-	</div>
+		
+		<div class="barra-acciones">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/asignaturas/nuevo}" class="btn btn-primary">+ Añadir asignatura</a>
+		</div>
+	</main>
 
 
 	<footer>

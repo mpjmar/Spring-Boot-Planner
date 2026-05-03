@@ -16,7 +16,9 @@
 		</header>
 		
 		<div class="horarios-grid">
-			<div class="horario-card" th:each="horario : ${horariosClase}">	
+			<div class="horario-card"
+				 th:each="horario : ${horariosClase}"
+				 th:style="${horario.asignatura != null and horario.asignatura.color != null ? '--card-color:' + horario.asignatura.color : ''}">
 				<div class="horario-horas">
 					<span th:text="${horario.horaInicio}"></span>
 					<span> - </span>
@@ -26,21 +28,23 @@
 					<span th:text="${horario.asignatura != null ? horario.asignatura.nombre : 'Sin asignatura'}"></span>
 				</div>
 
-				<button type="button"
-						class="btn btn-secondary btn-editar"
-						th:attr="data-id=${horario.id}">
-				Editar
-				</button>
-
-				<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
-					method="post"
-					class="form-eliminar"
-					data-confirm="¿Eliminar este horario de clase?">
-					<button type="submit" class="btn btn-secondary">
-						Borrar
+				<div class="card-acciones">	
+					<button type="button"
+							class="btn btn-secondary btn-editar"
+							th:attr="data-id=${horario.id}">
+					Editar
 					</button>
-				</form>
 
+					<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
+						method="post"
+						class="form-eliminar"
+						data-confirm="¿Eliminar este horario de clase?">
+						<button type="submit" class="btn btn-secondary">
+							Borrar
+						</button>
+					</form>
+				</div>
+				
 				<div th:id="'form-editar-' + ${horario.id}" style="display:none;">
 					<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
 						<input type="hidden" name="id" th:value="${horario.id}" />
