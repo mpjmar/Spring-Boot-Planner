@@ -166,6 +166,7 @@ select {
     line-height: 1;
     min-height: 2.5rem;
     box-shadow: 3px 3px 3px #0002;
+    transition: all 0.3s ease;
 }
 
 .btn:hover {
@@ -229,6 +230,19 @@ select {
     display: block;
     font-size: 2rem;
     margin-bottom: 0.5rem;
+}
+
+.mensaje-destacado {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+}
+
+.texto-secundario {
+    text-align: center;
+    padding: 1rem;
 }
 
 @media (max-width: 640px) {
