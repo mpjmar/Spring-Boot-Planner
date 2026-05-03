@@ -68,4 +68,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         calendar.render();
     }
+
+	// FORMULARIOS ELIMINAR
+	document.querySelectorAll('.form-eliminar').forEach(form => {
+		form.addEventListener('submit', function (event) {
+			const mensaje = form.dataset.confirm || '¿Eliminar este registro?';
+	
+			if (!confirm(mensaje)) {
+				event.preventDefault();
+			}
+		});
+	});
+
 });
+

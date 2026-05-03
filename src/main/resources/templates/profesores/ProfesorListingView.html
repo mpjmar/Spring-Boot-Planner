@@ -15,34 +15,38 @@
 	</header>
 
 	<div class="contenedor">
-		<table>
-			<thead>
-				<tr>
-					<th>Nombre</th>
-					<th>Email</th>
-					<th>Nº Asignaturas</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${#lists.isEmpty(profesores)}">
-					<td colspan="5" class="vacio">No tienes profesores registrados.</td>
-				</tr>
-				<tr th:each="profesor : ${profesores}">
-					<td th:text="${profesor.nombre}"></td>
-					<td th:text="${profesor.email}"></td>
-					<td th:text="${#lists.size(profesor.asignaturas)}"></td>
-					<td>
-						<a th:href="@{/profesores/{id}/editar(id=${profesor.id})}" class="btn-icon"
-							title="Editar">✏️</a>
-						<form th:action="@{/profesores/{id}/eliminar(id=${profesor.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar este profesor?')">
-							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<article class="card-listado" th:each="profesor : ${profesores}">
+			<h3 th:text="${profesor.nombre}"></h3>
+		
+			<p class="card-campo">
+				<span class="card-label">Email:</span>
+				<span th:text="${profesor.email}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Nº Asignaturas:</span>
+				<span th:text="${#lists.size(profesor.asignaturas)}"></span>
+			</p>
+		
+			<div class="card-acciones">
+				<a th:href="@{/profesores/{id}/editar(id=${profesor.id})}" class="btn btn-secondary">
+					Editar
+				</a>
+		
+				<form th:action="@{/profesores/{id}/eliminar(id=${profesor.id})}"
+					  method="post"
+					  class="form-eliminar"
+					  data-confirm="¿Eliminar este profesor?">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+			</div>
+		</article>
+		
+		<div th:if="${#lists.isEmpty(profesores)}">
+			<p>No tienes profesores registrados.</p>
+		</div>
 	</div>
 
 	<div class="barra-acciones">

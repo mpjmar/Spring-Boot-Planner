@@ -3,26 +3,57 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Bienvenida</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Dashboard</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
 <body>
-	<div class="contenedor">
+	<header>
 		<h1>¡Bienvenido! <span th:text="${#authentication?.name}">Usuario</span></h1>
-		<h2>¿Qué quieres hacer hoy?</h2>
-		<ul>
-			<li><a th:href="@{/asignaturas}">📚 Asignaturas</a></li>
-			<li><a th:href="@{/profesores}">🎓 Profesores</a></li>
-			<li><a th:href="@{/tareas}">📝 Tareas</a></li>
-			<li><a th:href="@{/examenes}">🧪 Exámenes</a></li>
-			<li><a th:href="@{/horariosClase}">🕒 Horarios de clases</a></li>
-			<li><a th:href="@{/bloquesEstudio}">📊 Cuadrantes de planificación</a></li>
-		</ul>
-		<form th:action="@{/logout}" method="post">
-			<button type="submit">Logout</button>
-		</form>
-	</div>
+	</header>
+
+	<main class="contenedor">
+		<section class="card">
+			<h2>¿Qué quieres hacer hoy?</h2>
+
+			<nav class="dashboard-grid">
+				<a th:href="@{/asignaturas}" class="card-listado dashboard-card">
+					<span class="dashboard-icono">📚</span>
+					<span>Asignaturas</span>
+				</a>
+
+				<a th:href="@{/profesores}" class="card-listado dashboard-card">
+					<span class="dashboard-icono">🎓</span>
+					<span>Profesores</span>
+				</a>
+
+				<a th:href="@{/tareas}" class="card-listado dashboard-card">
+					<span class="dashboard-icono">📝</span>
+					<span>Tareas</span>
+				</a>
+
+				<a th:href="@{/examenes}" class="card-listado dashboard-card">
+					<span class="dashboard-icono">🧪</span>
+					<span>Exámenes</span>
+				</a>
+
+				<a th:href="@{/horariosClase}" class="card-listado dashboard-card">
+					<span class="dashboard-icono">🕒</span>
+					<span>Horarios de clase</span>
+				</a>
+
+				<a th:href="@{/bloquesEstudio}" class="card-listado dashboard-card">
+					<span class="dashboard-icono">📊</span>
+					<span>Cuadrantes de planificación</span>
+				</a>
+			</nav>
+
+			<form th:action="@{/logout}" method="post" class="acciones">
+				<button type="submit" class="btn btn-secondary">Cerrar sesión</button>
+			</form>
+		</section>
+	</main>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

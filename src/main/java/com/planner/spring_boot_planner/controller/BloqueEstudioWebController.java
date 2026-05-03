@@ -49,7 +49,18 @@ public class BloqueEstudioWebController {
 
 	@GetMapping
 	public String listarBloquesEstudio(@AuthenticationPrincipal Usuario usuario, Model model) {
-		model.addAttribute("bloquesEstudio", bloqueEstudioRepository.findByUsuarioId(usuario.getId()));
+		LocalDate hoy = LocalDate.now();
+
+		List<BloqueEstudio> bloques = bloqueEstudioRepository.findByUsuarioId(usuario.getId())
+			.stream()
+			.filter(bloque -> !bloque.getFecha().isBefore(hoy))
+			.sorted(
+				Comparator.comparing(BloqueEstudio::getFecha)
+						.thenComparing(BloqueEstudio::getHoraInicio)
+			)
+			.toList();
+
+		model.addAttribute("bloquesEstudio", bloques);
 		return "bloquesEstudio/BloqueEstudioListingView";
 	}
 
@@ -147,7 +158,8 @@ public class BloqueEstudioWebController {
 		bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio, Comparator.nullsLast(Comparator.naturalOrder())));
 		model.addAttribute("bloquesEstudio", bloquesEstudio);
 		model.addAttribute("fecha", dia);
-		return "bloquesEstudio/bloqueEstudioDayView";
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
+		return "bloquesEstudio/BloqueEstudioDayView";
 	}
 
 	@PostMapping("/{id}/mover")

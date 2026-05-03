@@ -22,6 +22,34 @@
 			</form>
 
 			<div id="calendar"></div>
+
+			<section class="bloques-dia">
+				<h3>Bloques reservados</h3>
+			
+				<div th:if="${#lists.isEmpty(bloquesEstudio)}">
+					No hay bloques de estudio planificados.
+				</div>
+			
+				<div class="bloque-card" th:each="bloque : ${bloquesEstudio}">
+					<div class="bloques-fecha"
+						 th:text="${#temporals.format(bloque.fecha, 'EEEE dd-MM-yyyy')}">
+					</div>
+			
+					<div class="bloques-horas">
+						<span th:text="${bloque.horaInicio}"></span>
+						<span> - </span>
+						<span th:text="${bloque.horaFin}"></span>
+					</div>
+			
+					<div class="bloque-asignatura">
+						<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin asignatura'}"></span>
+					</div>
+			
+					<a th:href="@{/bloquesEstudio/dia(fecha=${bloque.fecha})}" class="btn btn-secondary">
+						Ver día
+					</a>
+				</div>
+			</section>
 		</div>
 	</div>
 

@@ -15,38 +15,48 @@
 	</header>
 
 	<div class="contenedor">
-		<table>
-			<thead>
-				<tr>
-					<th>Asignatura</th>
-					<th>Descripción</th>
-					<th>Fecha</th>
-					<th>Peso</th>
-					<th>Nota objetivo</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${#lists.isEmpty(examenes)}">
-					<td colspan="6" class="vacio">No tienes exámenes registrados.</td>
-				</tr>
-				<tr th:each="examen : ${examenes}">
-					<td th:text="${examen.asignatura != null ? examen.asignatura.nombre : '—'}"></td>
-					<td th:text="${examen.descripcion}"></td>
-					<td th:text="${#temporals.format(examen.fecha, 'dd/MM/yyyy')}"></td>
-					<td th:text="${examen.peso}"></td>
-					<td th:text="${examen.notaObjetivo}"></td>
-					<td>
-						<a th:href="@{/examenes/{id}/editar(id=${examen.id})}" class="btn-icon"
-							title="Editar">✏️</a>
-						<form th:action="@{/examenes/{id}/eliminar(id=${examen.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar este examen?')">
-							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<article class="card-listado" th:each="examen : ${examenes}">
+			<h3 th:text="${examen.asignatura != null ? examen.asignatura.nombre : 'Sin asignatura'}"></h3>
+		
+			<p class="card-campo">
+				<span class="card-label">Descripción:</span>
+				<span th:text="${examen.descripcion}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Fecha:</span>
+				<span th:text="${#temporals.format(examen.fecha, 'dd/MM/yyyy')}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Peso:</span>
+				<span th:text="${examen.peso}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Nota objetivo:</span>
+				<span th:text="${examen.notaObjetivo}"></span>
+			</p>
+		
+			<div class="card-acciones">
+				<a th:href="@{/examenes/{id}/editar(id=${examen.id})}" class="btn btn-secondary">
+					Editar
+				</a>
+		
+				<form th:action="@{/examenes/{id}/eliminar(id=${examen.id})}"
+					  method="post"
+					  class="form-eliminar"
+					  data-confirm="¿Eliminar este examen?">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+			</div>
+		</article>
+		
+		<div th:if="${#lists.isEmpty(examenes)}">
+			<p>No tienes exámenes registrados.</p>
+		</div>
 	</div>
 
 	<div class="barra-acciones">

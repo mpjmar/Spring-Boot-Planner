@@ -13,57 +13,71 @@
 	<main class="contenedor">
 
 	<header>
-		<h2 th:text="'Cuadrante del día: ' + ${diaSemana}"></h2>
+		<h2 th:text="'Cuadrante del ' + ${#temporals.format(fecha, 'EEEE dd-MM-yyyy')}"></h2>
 	</header>
 
-	<div class="horarios-grid">
-		<div class="bloqueEstudio" th:each="bloque : ${bloquesEstudio}">	
+	<div class="bloques-grid">
+		<div class="bloque-card" th:each="bloque : ${bloquesEstudio}">	
+			<div class="bloques-horas">
+				<span th:text="${bloque.horaInicio}"></span>
+				<span> - </span>
+				<span th:text="${bloque.horaFin}"></span>
+			</div>
+			<div class="bloque-asignatura">
+				<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin bloques de estudio'}"></span>
+			</div>
 
+			<button type="button"
+					class="btn btn-secondary btn-editar"
+					th:attr="data-id=${bloque.id}">
+			Editar
+			</button>
 
-		<div class="navegacion-fecha">
-			<!-- Día anterior -->
-			<a th:href="@{/dia(fecha=${fecha.minusDays(1)})}">⬅️</a>
-			<!-- Selector -->
-			<form th:action="@{/dia}" method="get">
-				<input type="date" name="fecha" th:value="${fecha}" />
-				<button type="submit">Ver</button>
+			<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}"
+				method="post"
+				class="form-eliminar"
+				data-confirm="¿Eliminar este bloque de estudio?">
+				<button type="submit" class="btn btn-secondary">
+					Borrar
+				</button>
 			</form>
-			<!-- Día siguiente -->
-			<a th:href="@{/dia(fecha=${fecha.plusDays(1)})}">➡️</a>
-			<!-- Hoy -->
-			<a th:href="@{/dia}">Hoy</a>
+
+			<div th:id="'form-editar-' + ${bloque.id}" style="display:none;">
+				<form th:action="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" method="post">
+					<input type="hidden" name="id" th:value="${bloque.id}" />
+					<input type="hidden" name="fecha" th:value="${bloque.fecha}" />
+					<label>Hora inicio:
+						<input type="time" name="horaInicio" th:value="${bloque.horaInicio}" />
+					</label>
+					<label>Hora fin:
+						<input type="time" name="horaFin" th:value="${bloque.horaFin}" />
+					</label>
+					<label>Asignatura:
+						<select name="asignatura.id">
+							<option th:each="asig : ${asignaturas}" 
+									th:value="${asig.id}" 
+									th:text="${asig.nombre}" 
+									th:selected="${bloque.asignatura != null and asig.id == bloque.asignatura.id}"></option>
+						</select>
+					</label>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+					<button type="button"
+							class="btn-cancelar"
+							th:attr="data-id=${bloque.id}">
+					Cancelar
+					</button>
+				</form>
+			</div>
 		</div>
+	</div>
 
-		<h2 th:text="'Plan para: ' + ${fecha}"></h2>
-
-		<h3>Horario</h3>
-		<table>
-			<tr>
-				<th>Hora</th>
-				<th>Asignatura</th>
-			</tr>
-
-			<tr th:each="b : ${bloques}">
-				<td th:text="${b.horaInicio} + ' - ' + ${b.horaFin}"></td>
-				<td th:text="${b.asignatura?.nombre}"></td>
-			</tr>
-
-			<tr th:if="${#lists.isEmpty(bloques)}">
-				<td colspan="2">No hay ningún bloque planificado para este día</td>
-			</tr>
-		</table>
-
-		<h3>Tareas</h3>
-		<ul>
-			<li th:each="t : ${tareas}">
-				<strong th:text="${t.nombre}"></strong>
-				(<span th:text="${t.tiempoFormateado}"></span>)
-			</li>
-
-			<li th:if="${#lists.isEmpty(tareas)}">
-				No hay tareas para este día
-			</li>
-		</ul>
+	<div class="navegacion-fecha">
+		<!-- Día anterior -->
+		<a th:href="@{/bloquesEstudio/dia(fecha=${fecha.minusDays(1)})}">⬅️</a>
+		<!-- Hoy -->
+		<a th:href="@{/bloquesEstudio/dia}">Hoy</a>
+		<!-- Día siguiente -->
+		<a th:href="@{/bloquesEstudio/dia(fecha=${fecha.plusDays(1)})}">➡️</a>
 	</div>
 
 	<div class="barra-acciones">

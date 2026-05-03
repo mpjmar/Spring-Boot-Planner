@@ -34,7 +34,8 @@
 
 				<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
 					method="post"
-					onsubmit="return confirm('¿Eliminar este horario de clase?')">
+					class="form-eliminar"
+					data-confirm="¿Eliminar este horario de clase?">
 					<button type="submit" class="btn btn-secondary">
 						Borrar
 					</button>
@@ -94,7 +95,7 @@
 		<div class="barra-acciones">
 			<a th:href="@{/horariosClase}" class="btn btn-primary">← Horarios</a>
 			<a th:href="@{/horariosClase/nuevo(diaLectivo=${diaLectivo})}" class="btn btn-primary">
-				+ Añadir asignatura
+				+ Añadir horario de clase
 			</a>
 		</div>
     </main>

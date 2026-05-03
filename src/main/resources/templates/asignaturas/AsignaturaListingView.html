@@ -15,38 +15,35 @@
 	</header>
 
 	<div class="contenedor">
-		<table>
-			<thead>
-				<tr>
-					<th>Nombre</th>
-					<th>Profesor</th>
-					<th>Color</th>
-					<th>Imagen</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${#lists.isEmpty(asignaturas)}">
-					<td colspan="5" class="vacio">No tienes asignaturas registradas.</td>
-				</tr>
-				<tr th:each="asignatura : ${asignaturas}">
-					<td th:text="${asignatura.nombre}"></td>
-					<td th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></td>
-					<td th:text="${asignatura.color}"></td>
-					<td data-label="Imagen">
-						<img th:src="${asignatura.imagenUrl}" alt="imagen" style="max-width: 60px;" />
-					</td>
-					<td>
-						<a th:href="@{/asignaturas/{id}/editar(id=${asignatura.id})}" class="btn-icon"
-							title="Editar">✏️</a>
-						<form th:action="@{/asignaturas/{id}/eliminar(id=${asignatura.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar esta asignatura?')">
-							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<article class="card-listado" th:each="asignatura : ${asignaturas}">
+			<h3 th:text="${asignatura.nombre}"></h3>
+			<p class="card-campo">
+				<span class="card-label">Profesor:</span>
+				<span th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></span>
+			</p>
+			<p class="card-campo">
+				<span class="card-label">Color:</span>
+				<span th:text="${asignatura.color}"></span>
+			</p>
+			<img th:src="${asignatura.imagenUrl}" alt="imagen" class="card-imagen" />
+			<div class="card-acciones">
+				<a th:href="@{/asignaturas/{id}/editar(id=${asignatura.id})}" class="btn btn-secondary">
+					Editar
+				</a>
+				<form th:action="@{/asignaturas/{id}/eliminar(id=${asignatura.id})}"
+					  method="post"
+					  class="form-eliminar"
+					  data-confirm="¿Eliminar esta asignatura?">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+			</div>
+		</article>
+
+		<div th:if="${#lists.isEmpty(asignaturas)}">
+			<p>No tienes asignaturas registradas.</p>
+		</div>
 	</div>
 
 	<div class="barra-acciones">

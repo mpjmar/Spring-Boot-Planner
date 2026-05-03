@@ -1,3 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.contenedor {
+    width: min(1100px, 92%);
+    margin: 2rem auto;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px #0002;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.acciones {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    border: 0;
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.error {
+    color: #b91c1c;
+    margin-bottom: 1rem;
+}
+
+.mensaje-exito {
+    color: #15803d;
+    margin-bottom: 1rem;
+}
+
+.enlace-secundario,
+.texto-secundario {
+    margin-top: 0.5rem;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.card-listado {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px #0002;
+}
+
+.card-listado h3 {
+    margin-top: 0;
+}
+
+.card-imagen {
+    max-width: 80px;
+    border-radius: 8px;
+}
+
+.card-acciones {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
 #calendar {
     max-width: 1000px;
     margin: 30px auto;
@@ -10,4 +105,21 @@
 .btn-diaLectivo {
 	display: block; 
 	margin-bottom: 8px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.dashboard-card {
+    text-decoration: none;
+    text-align: center;
+}
+
+.dashboard-icono {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }

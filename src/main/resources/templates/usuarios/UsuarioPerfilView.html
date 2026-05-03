@@ -15,29 +15,35 @@
 	</header>
 
 	<div class="contenedor">
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/usuarios/editar}" class="btn btn-primary">+ Editar usuario</a>
-		</div>
+		<article class="card-listado">
+			<h3 th:text="${usuario.nombre}"></h3>
+		
+			<p class="card-campo">
+				<span class="card-label">ID:</span>
+				<span th:text="${usuario.id}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Nombre:</span>
+				<span th:text="${usuario.nombre}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Apellidos:</span>
+				<span th:text="${usuario.apellidos}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Email:</span>
+				<span th:text="${usuario.email}"></span>
+			</p>
+		</article>
+		
+	</div>
 
-		<table>
-			<tr>
-				<th>ID</th>
-				<td th:text="${usuario.id}"></td>
-			</tr>
-			<tr>
-				<th>Nombre</th>
-				<td th:text="${usuario.nombre}"></td>
-			</tr>
-			<tr>
-				<th>Apellidos</th>
-				<td th:text="${usuario.apellidos}"></td>
-			</tr>
-			<tr>
-				<th>Email</th>
-				<td th:text="${usuario.email}"></td>
-			</tr>
-			</table>
+	<div class="barra-acciones">
+		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+		<a th:href="@{/usuarios/editar}" class="btn btn-primary">+ Editar usuario</a>
 	</div>
 
 	<footer>

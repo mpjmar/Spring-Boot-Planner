@@ -1,34 +1,51 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Iniciar sesión</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
-<body>
-    <div class="contenedor">
-        <h1>Iniciar sesión</h1>
-        <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label for="username">Email</label>
-                <input type="text" id="username" name="username" placeholder="Correo electrónico" required />
-            </div>
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required />
-				<a th:href="@{/recuperar-password}">¿Olvidaste tu contraseña?</a>
-            </div>
-            <div th:if="${param.error}" class="error">
-                Usuario o contraseña incorrectos.
-            </div>
-			<div th:if="${param.logout}">
-				<p>¡Hasta pronto!</p>
-			</div>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </form>
-        <p>¿No tienes cuenta? <a th:href="@{/usuario/nuevo}">Regístrate aquí</a></p>
-    </div>
 
-	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
+<body>
+    <main class="contenedor">
+        <section class="card">
+            <h1>Iniciar sesión</h1>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username">Email</label>
+                    <input type="text" id="username" name="username" placeholder="Correo electrónico" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required />
+                    <a th:href="@{/recuperar-password}" class="enlace-secundario">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <div th:if="${param.error}" class="error">
+                    Usuario o contraseña incorrectos.
+                </div>
+
+                <div th:if="${param.logout}" class="mensaje-exito">
+                    <p>¡Hasta pronto!</p>
+                </div>
+
+                <div class="acciones">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </form>
+
+            <p class="texto-secundario">
+                ¿No tienes cuenta?
+                <a th:href="@{/usuario/nuevo}">Regístrate aquí</a>
+            </p>
+        </section>
+    </main>
+
+    <script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
+
 </html>

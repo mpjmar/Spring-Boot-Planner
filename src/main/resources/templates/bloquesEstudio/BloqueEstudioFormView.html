@@ -24,9 +24,7 @@
 				<div class="error" th:if="${#fields.hasGlobalErrors()}">
 					<p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
 				</div>
-				
-				<input type="hidden" th:field="*{diaSemana}" />
-
+			
 				<div class="form-group">
 					<label for="fecha">Fecha</label>
 					<input type="date" id="fecha" th:field="*{fecha}" />
@@ -50,13 +48,12 @@
 						<option value="">-- Selecciona una asignatura --</option>
 						<option th:each="asig : ${asignaturas}"
 							th:value="${asig.id}"
-							th:text="${asig.nombre}"
-							th:selected="${asig.id == bloqueEstudio.asignaturaId}">
+							th:text="${asig.nombre}">
 						</option>
 					</select>
 					<span class="error"
-						th:if="${#fields.hasErrors('asignaturaId')}"
-						th:errors="*{asignaturaId}">
+						th:if="${#fields.hasErrors('asignatura.id')}"
+						th:errors="*{asignatura.id}">
 					</span>
 				</div>
 

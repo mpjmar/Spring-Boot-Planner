@@ -15,42 +15,58 @@
 	</header>
 
 	<div class="contenedor">
-		<table>
-			<thead>
-				<tr>
-					<th>Asignatura</th>
-					<th>Nombre</th>
-					<th>Descripción</th>
-					<th>Fecha límite</th>
-					<th>Prioridad</th>
-					<th>Estado</th>
-					<th>Tiempo estimado</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${#lists.isEmpty(tareas)}">
-					<td colspan="5" class="vacio">No tienes tareas registradas.</td>
-				</tr>
-				<tr th:each="tarea : ${tareas}">
-					<td th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></td>
-					<td th:text="${tarea.nombre}"></td>
-					<td th:text="${tarea.descripcion}"></td>
-					<td th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM/yyyy')}"></td>
-					<td th:text="${tarea.prioridad}"></td>
-					<td th:text="${tarea.estado}"></td>
-					<td th:text="${tarea.tiempoFormateado}"></td>
-					<td>
-						<a th:href="@{/tareas/{id}/editar(id=${tarea.id})}" class="btn-icon"
-							title="Editar">✏️</a>
-						<form th:action="@{/tareas/{id}/eliminar(id=${tarea.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar esta tarea?')">
-							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<article class="card-listado" th:each="tarea : ${tareas}">
+			<h3 th:text="${tarea.nombre}"></h3>
+		
+			<p class="card-campo">
+				<span class="card-label">Asignatura:</span>
+				<span th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Descripción:</span>
+				<span th:text="${tarea.descripcion}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Fecha límite:</span>
+				<span th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM/yyyy')}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Prioridad:</span>
+				<span th:text="${tarea.prioridad}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Estado:</span>
+				<span th:text="${tarea.estado}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Tiempo estimado:</span>
+				<span th:text="${tarea.tiempoFormateado}"></span>
+			</p>
+		
+			<div class="card-acciones">
+				<a th:href="@{/tareas/{id}/editar(id=${tarea.id})}" class="btn btn-secondary">
+					Editar
+				</a>
+		
+				<form th:action="@{/tareas/{id}/eliminar(id=${tarea.id})}"
+					  method="post"
+					  class="form-eliminar"
+					  data-confirm="¿Eliminar esta tarea?">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+			</div>
+		</article>
+		
+		<div th:if="${#lists.isEmpty(tareas)}">
+			<p>No tienes tareas registradas.</p>
+		</div>
 	</div>
 
 	<div class="barra-acciones">

@@ -15,39 +15,43 @@
 	</header>
 
 	<div class="contenedor">
-		<table>
-			<thead>
-				<tr>
-					<th>Nombre</th>
-					<th>Apellidos</th>
-					<th>Email</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${#lists.isEmpty(usuarios)}">
-					<td colspan="4" class="vacio">No hay usuarios registrados.</td>
-				</tr>
-				<tr th:each="usuario : ${usuarios}">
-					<td th:text="${usuario.nombre}"></td>
-					<td th:text="${usuario.apellidos}"></td>
-					<td th:text="${usuario.email}"></td>
-					<td>
-						<a th:href="@{/usuarios/{id}/editar(id=${usuario.id})}" class="btn-icon"
-							title="Editar">✏️</a>
-						<form th:action="@{/usuarios/{id}/eliminar(id=${usuarios.id})}" method="post"
-							onsubmit="return confirm('¿Eliminar este usuario?')">
-							<button type="submit" class="btn-icon" title="Eliminar">🗑️</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<article class="card-listado" th:each="usuario : ${usuarios}">
+			<h3 th:text="${usuario.nombre}"></h3>
+		
+			<p class="card-campo">
+				<span class="card-label">Apellidos:</span>
+				<span th:text="${usuario.apellidos}"></span>
+			</p>
+		
+			<p class="card-campo">
+				<span class="card-label">Email:</span>
+				<span th:text="${usuario.email}"></span>
+			</p>
+		
+			<div class="card-acciones">
+				<a th:href="@{/usuarios/{id}/editar(id=${usuario.id})}" class="btn btn-secondary">
+					Editar
+				</a>
+		
+				<form th:action="@{/usuarios/{id}/eliminar(id=${usuario.id})}"
+					  method="post"
+					  class="form-eliminar"
+					  data-confirm="¿Eliminar este usuario?">
+					<button type="submit" class="btn btn-secondary">
+						Borrar
+					</button>
+				</form>
+			</div>
+		</article>
+		
+		<div th:if="${#lists.isEmpty(usuarios)}">
+			<p>No hay usuarios registrados.</p>
+		</div>
 	</div>
 
 	<div class="barra-acciones">
 		<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		<a th:href="@{/usuarios/nuevo}" class="btn btn-primary">+ Añadir usuarios</a>
+		<a th:href="@{/usuarios/nuevo}" class="btn btn-primary">+ Añadir usuario</a>
 	</div>
 
 	<footer>
