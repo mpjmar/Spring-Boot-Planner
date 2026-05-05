@@ -28,14 +28,21 @@ footer {
     padding: 1rem;
 }
 
+.sticky-toolbar { 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    border-bottom: 1px solid #ddd; 
+    padding: 8px;
+    border: none;
+}
+
 .contenedor {
     width: min(1100px, 92%);
     margin: 2rem auto;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -127,13 +134,12 @@ select {
 
 .acciones,
 .card-acciones,
-.barra-acciones,
 .navegacion-fecha {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.75rem;
-    margin-top: 1rem;
+
     flex-wrap: wrap;
 }
 
@@ -148,8 +154,7 @@ select {
 }
 
 .card-acciones form,
-.acciones form,
-.barra-acciones form {
+.acciones form {
     display: inline-flex;
 }
 

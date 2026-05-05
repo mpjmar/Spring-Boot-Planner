@@ -15,8 +15,13 @@
 	</header>
 
 	<main class="contenedor">
+		
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/examenes}" class="btn btn-secondary">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar</button>
+		</div>
+		
 		<div class="card">
-
 			<form th:action="${examen.id != null}
                           ? @{/examenes/{id}/editar(id=${examen.id})}
                           : @{/examenes/nuevo}" th:object="${examen}" method="post">
@@ -57,12 +62,6 @@
 					<input type="text" id="notaObjetivo" th:field="*{notaObjetivo}" placeholder="Nota objetivo" />
 					<span class="error" th:if="${#fields.hasErrors('notaObjetivo')}" th:errors="*{notaObjetivo}"></span>
 				</div>
-
-				<div class="acciones">
-					<a th:href="@{/examenes}" class="btn btn-secondary">Cancelar</a>
-					<button type="submit" class="btn btn-primary">Guardar</button>
-				</div>
-
 			</form>
 		</div>
 	</main>

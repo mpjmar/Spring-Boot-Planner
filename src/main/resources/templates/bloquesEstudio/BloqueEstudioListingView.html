@@ -12,6 +12,12 @@
   <body class="fondo" th:classappend="${bodyClass}">
 
     <main class="contenedor">
+
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
+		</div>
+		
 		<div class="card">
 			<h3>Selecciona un día</h3>
 	
@@ -57,10 +63,7 @@
 				</div>
 			</section>
 		</div>
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
-		</div>
+		
 	</main>
 
 	<footer>

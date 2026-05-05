@@ -15,6 +15,10 @@
 	</header>
 
 	<main class="contenedor">
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+		</div>
+		
 		<div class="navegacion-dias">
 			<h3>Selecciona un día</h3>
 			<div th:each="dia : ${diasLectivos}">
@@ -25,9 +29,6 @@
 			</div>
 		</div>
 		
-		<div class="barra-acciones">
-			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-		</div>
 	</main>
 
 	<footer>

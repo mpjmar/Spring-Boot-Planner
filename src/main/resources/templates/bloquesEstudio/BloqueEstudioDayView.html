@@ -15,6 +15,13 @@
 	<header>
 		<h2 th:text="'Cuadrante del ' + ${#temporals.format(fecha, 'EEEE dd-MM-yyyy')}"></h2>
 	</header>
+	
+	<div class="acciones sticky-toolbar">
+		<a th:href="@{/bloquesEstudio}" class="btn btn-primary">← Planificación</a>
+		<a th:href="@{/bloquesEstudio/nuevo(fecha=${fecha})}" class="btn btn-primary">
+			+ Añadir bloque de estudio
+		</a>
+	</div>
 
 	<div class="bloques-grid">
 		<div class="bloque-card"
@@ -86,12 +93,6 @@
 		<a th:href="@{/bloquesEstudio/dia(fecha=${fecha.plusDays(1)})}">➡️</a>
 	</div>
 
-	<div class="barra-acciones">
-		<a th:href="@{/bloquesEstudio}" class="btn btn-primary">← Planificación</a>
-		<a th:href="@{/bloquesEstudio/nuevo(fecha=${fecha})}" class="btn btn-primary">
-			+ Añadir bloque de estudio
-		</a>
-	</div>
 </main>
 
 	<footer>

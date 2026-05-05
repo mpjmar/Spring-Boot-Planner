@@ -15,8 +15,13 @@
 	</header>
 
 	<main class="contenedor">
-		<div class="card">
+		
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/usuario}" class="btn btn-secondary">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar</button>
+		</div>
 
+		<div class="card">
 			<form th:action="${usuario.id != null}
                           ? @{/usuario/{id}/editar(id=${usuario.id})}
                           : @{/usuario/nuevo}" th:object="${usuario}" method="post">
@@ -51,11 +56,6 @@
 					<label for="repitePassword">Introduce de nuevo tu contraseña</label>
 					<input type="password" id="repitePassword" th:field="*{repitePassword}" placeholder="Repite tu password" />
 					<span class="error" th:if="${#fields.hasErrors('repitePassword')}" th:errors="*{repitePassword}"></span>
-				</div>
-
-				<div class="acciones">
-					<a th:href="@{/usuario}" class="btn btn-secondary">Cancelar</a>
-					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 
 			</form>

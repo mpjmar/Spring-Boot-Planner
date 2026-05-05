@@ -15,6 +15,12 @@
 	</header>
 
 	<main class="contenedor">
+		
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/tareas}" class="btn btn-secondary">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar</button>
+		</div>
+
 		<div class="card">
 
 			   <form th:action="${tarea.id != null}
@@ -77,11 +83,6 @@
 					<label for="minutos">Minutos</label>
 					<input type="number" id="minutos" th:field="*{minutos}" class="form-control" min="0" max="59" />
 					<span class="error" th:if="${#fields.hasErrors('tiempoEstimado')}" th:errors="*{tiempoEstimado}"></span>
-				</div>
-
-				<div class="acciones">
-					<a th:href="@{/tareas}" class="btn btn-secondary">Cancelar</a>
-					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 
 			</form>

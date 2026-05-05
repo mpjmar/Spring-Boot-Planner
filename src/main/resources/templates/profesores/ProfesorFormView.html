@@ -15,8 +15,12 @@
 	</header>
 
 	<main class="contenedor">
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/profesores}" class="btn btn-secondary">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar</button>
+		</div>
+		
 		<div class="card">
-
 			<form th:action="${profesor.id != null}
                           ? @{/profesores/{id}/editar(id=${profesor.id})}
                           : @{/profesores/nuevo}" th:object="${profesor}" method="post">
@@ -32,12 +36,6 @@
 					<input type="email" id="email" th:field="*{email}" placeholder="correo@ejemplo.com" />
 					<span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 				</div>
-
-				<div class="acciones">
-					<a th:href="@{/profesores}" class="btn btn-secondary">Cancelar</a>
-					<button type="submit" class="btn btn-primary">Guardar</button>
-				</div>
-
 			</form>
 		</div>
 	</main>

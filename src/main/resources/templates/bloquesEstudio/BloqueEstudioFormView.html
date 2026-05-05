@@ -15,8 +15,13 @@
 	</header>
 
 	<main class="contenedor">
-		<div class="card">
+		
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/bloquesEstudio}" class="btn btn-secondary">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar</button>
+		</div>
 
+		<div class="card">
 			<form th:action="${bloqueEstudio.id != null}
                           ? @{/bloquesEstudio/{id}/editar(id=${bloqueEstudio.id})}
                           : @{/bloquesEstudio/nuevo}" th:object="${bloqueEstudio}" method="post">
@@ -55,11 +60,6 @@
 						th:if="${#fields.hasErrors('asignatura.id')}"
 						th:errors="*{asignatura.id}">
 					</span>
-				</div>
-
-				<div class="acciones">
-					<a th:href="@{/bloquesEstudio}" class="btn btn-secondary">Cancelar</a>
-					<button type="submit" class="btn btn-primary">Guardar</button>
 				</div>
 
 			</form>
