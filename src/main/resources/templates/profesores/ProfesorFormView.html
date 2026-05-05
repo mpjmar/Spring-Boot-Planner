@@ -17,11 +17,12 @@
 	<main class="contenedor">
 		<div class="acciones sticky-toolbar">
 			<a th:href="@{/profesores}" class="btn btn-secondary">Cancelar</a>
-			<button type="submit" class="btn btn-primary">Guardar</button>
+			<button type="submit" form="profesorForm" class="btn btn-primary">Guardar</button>
 		</div>
 		
 		<div class="card">
-			<form th:action="${profesor.id != null}
+			<form id="profesorForm"
+				  th:action="${profesor.id != null}
                           ? @{/profesores/{id}/editar(id=${profesor.id})}
                           : @{/profesores/nuevo}" th:object="${profesor}" method="post">
 

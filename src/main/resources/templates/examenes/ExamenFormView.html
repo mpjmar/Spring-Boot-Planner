@@ -18,11 +18,12 @@
 		
 		<div class="acciones sticky-toolbar">
 			<a th:href="@{/examenes}" class="btn btn-secondary">Cancelar</a>
-			<button type="submit" class="btn btn-primary">Guardar</button>
+			<button type="submit" form="examenForm" class="btn btn-primary">Guardar</button>
 		</div>
 		
 		<div class="card">
-			<form th:action="${examen.id != null}
+			<form id="examenForm"
+				  th:action="${examen.id != null}
                           ? @{/examenes/{id}/editar(id=${examen.id})}
                           : @{/examenes/nuevo}" th:object="${examen}" method="post">
 				

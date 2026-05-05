@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -71,18 +72,23 @@ public class BloqueEstudioWebController {
 			.toList();
 
 		List<LocalDate> diasSemana = new ArrayList<>();
-		Map<LocalDate, List<BloqueEstudio>> bloquesPorDia = new LinkedHashMap<>();
+		List<DiaConBloques> diasConBloques = new ArrayList<>();
 		for (int i = 0; i < 7; i++) {
 			LocalDate dia = inicioSemana.plusDays(i);
 			diasSemana.add(dia);
-			bloquesPorDia.put(dia, bloques.stream()
+			List<BloqueEstudio> bloquesDia = bloques.stream()
 				.filter(bloque -> dia.equals(bloque.getFecha()))
-				.toList());
+				.toList();
+			diasConBloques.add(new DiaConBloques(dia, bloquesDia));
 		}
+		List<FilaBloqueSemana> filasSemana = construirFilasSemana(diasSemana, bloques);
+		List<DiaBloqueSemana> diasCuadrante = construirDiasCuadrante(diasSemana, filasSemana);
 
 		model.addAttribute("bloquesEstudio", bloques);
 		model.addAttribute("diasSemana", diasSemana);
-		model.addAttribute("bloquesPorDia", bloquesPorDia);
+		model.addAttribute("diasConBloques", diasConBloques);
+		model.addAttribute("filasSemana", filasSemana);
+		model.addAttribute("diasCuadrante", diasCuadrante);
 		model.addAttribute("inicioSemana", inicioSemana);
 		model.addAttribute("finSemana", finSemana);
 		model.addAttribute("semanaAnterior", inicioSemana.minusWeeks(1));
@@ -127,7 +133,7 @@ public class BloqueEstudioWebController {
 		}
 		bloqueEstudio.setUsuario(usuario);
 		bloqueEstudioRepository.save(bloqueEstudio);
-		return "redirect:/bloquesEstudio";
+		return "redirect:/bloquesEstudio?weekStart=" + bloqueEstudio.getFecha();
 	}
 
 	@GetMapping("/{id}/editar")
@@ -163,7 +169,7 @@ public class BloqueEstudioWebController {
 		}
 		bloqueEstudio.setUsuario(usuario);
 		bloqueEstudioRepository.save(bloqueEstudio);
-		return "redirect:/bloquesEstudio";
+		return "redirect:/bloquesEstudio?weekStart=" + bloqueEstudio.getFecha();
 	}
 
 	@PostMapping("/{id}/eliminar")
@@ -173,8 +179,9 @@ public class BloqueEstudioWebController {
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
 		if (!bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
 			return "redirect:/bloquesEstudio";
+		LocalDate fechaBloque = bloqueEstudio.getFecha();
 		bloqueEstudioRepository.deleteById(id);
-		return "redirect:/bloquesEstudio";
+		return "redirect:/bloquesEstudio?weekStart=" + fechaBloque;
 	}
 
 	@GetMapping("/dia")
@@ -267,6 +274,147 @@ public class BloqueEstudioWebController {
 			}
 		}
 		return fechaBase.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+	}
+
+	private List<FilaBloqueSemana> construirFilasSemana(List<LocalDate> diasSemana, List<BloqueEstudio> bloques) {
+		TreeSet<LocalTime> marcas = new TreeSet<>();
+		for (int hora = 8; hora <= 22; hora++) {
+			marcas.add(LocalTime.of(hora, 0));
+		}
+		for (BloqueEstudio bloque : bloques) {
+			if (bloque.getHoraInicio() != null) {
+				marcas.add(bloque.getHoraInicio());
+			}
+			if (bloque.getHoraFin() != null) {
+				marcas.add(bloque.getHoraFin());
+			}
+		}
+
+		List<LocalTime> listaMarcas = new ArrayList<>(marcas);
+		List<FilaBloqueSemana> filas = new ArrayList<>();
+		for (int i = 0; i < listaMarcas.size() - 1; i++) {
+			LocalTime inicio = listaMarcas.get(i);
+			LocalTime fin = listaMarcas.get(i + 1);
+			List<CeldaBloqueSemana> celdas = new ArrayList<>();
+
+			for (LocalDate dia : diasSemana) {
+				BloqueEstudio bloque = bloques.stream()
+					.filter(b -> dia.equals(b.getFecha()) && inicio.equals(b.getHoraInicio()))
+					.findFirst()
+					.orElse(null);
+				celdas.add(new CeldaBloqueSemana(dia, inicio.toString(), fin.toString(), bloque));
+			}
+			filas.add(new FilaBloqueSemana(inicio.toString(), fin.toString(), celdas));
+		}
+
+		return filas;
+	}
+
+	private List<DiaBloqueSemana> construirDiasCuadrante(List<LocalDate> diasSemana, List<FilaBloqueSemana> filasSemana) {
+		List<DiaBloqueSemana> diasCuadrante = new ArrayList<>();
+		for (LocalDate dia : diasSemana) {
+			List<CeldaBloqueSemana> celdasDia = new ArrayList<>();
+			for (FilaBloqueSemana fila : filasSemana) {
+				for (CeldaBloqueSemana celda : fila.getCeldas()) {
+					if (dia.equals(celda.getDia())) {
+						celdasDia.add(celda);
+					}
+				}
+			}
+			diasCuadrante.add(new DiaBloqueSemana(dia, celdasDia));
+		}
+
+		return diasCuadrante;
+	}
+
+	public static class FilaBloqueSemana {
+		private final String horaInicio;
+		private final String horaFin;
+		private final List<CeldaBloqueSemana> celdas;
+
+		public FilaBloqueSemana(String horaInicio, String horaFin, List<CeldaBloqueSemana> celdas) {
+			this.horaInicio = horaInicio;
+			this.horaFin = horaFin;
+			this.celdas = celdas;
+		}
+
+		public String getHoraInicio() {
+			return horaInicio;
+		}
+
+		public String getHoraFin() {
+			return horaFin;
+		}
+
+		public List<CeldaBloqueSemana> getCeldas() {
+			return celdas;
+		}
+	}
+
+	public static class CeldaBloqueSemana {
+		private final LocalDate dia;
+		private final String horaInicio;
+		private final String horaFin;
+		private final BloqueEstudio bloque;
+
+		public CeldaBloqueSemana(LocalDate dia, String horaInicio, String horaFin, BloqueEstudio bloque) {
+			this.dia = dia;
+			this.horaInicio = horaInicio;
+			this.horaFin = horaFin;
+			this.bloque = bloque;
+		}
+
+		public LocalDate getDia() {
+			return dia;
+		}
+
+		public String getHoraInicio() {
+			return horaInicio;
+		}
+
+		public String getHoraFin() {
+			return horaFin;
+		}
+
+		public BloqueEstudio getBloque() {
+			return bloque;
+		}
+	}
+
+	public static class DiaBloqueSemana {
+		private final LocalDate dia;
+		private final List<CeldaBloqueSemana> celdas;
+
+		public DiaBloqueSemana(LocalDate dia, List<CeldaBloqueSemana> celdas) {
+			this.dia = dia;
+			this.celdas = celdas;
+		}
+
+		public LocalDate getDia() {
+			return dia;
+		}
+
+		public List<CeldaBloqueSemana> getCeldas() {
+			return celdas;
+		}
+	}
+
+	public static class DiaConBloques {
+		private final LocalDate dia;
+		private final List<BloqueEstudio> bloques;
+
+		public DiaConBloques(LocalDate dia, List<BloqueEstudio> bloques) {
+			this.dia = dia;
+			this.bloques = bloques;
+		}
+
+		public LocalDate getDia() {
+			return dia;
+		}
+
+		public List<BloqueEstudio> getBloques() {
+			return bloques;
+		}
 	}
 
 }

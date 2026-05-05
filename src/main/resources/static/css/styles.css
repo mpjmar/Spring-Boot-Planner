@@ -157,6 +157,13 @@ h1, h2, h3 {
     color: #1f2937;
 }
 
+.horario-header small {
+    display: block;
+    margin-top: 0.15rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
 .horario-time-header,
 .horario-time-cell {
     background: #f8fafc;
@@ -480,6 +487,10 @@ select {
     gap: 0.8rem;
     overflow-x: auto;
     padding-bottom: 0.5rem;
+}
+
+.bloques-cuadrante {
+    margin-bottom: 1rem;
 }
 
 .bloques-semana-columna {

@@ -32,7 +32,7 @@
 		</div>
 
 		<section class="bloques-semana-grid">
-			<article class="bloques-semana-columna" th:each="dia : ${diasSemana}">
+			<article class="bloques-semana-columna" th:each="diaConBloques : ${diasConBloques}" th:with="dia=${diaConBloques.dia}">
 				<header class="bloques-columna-header">
 					<h3 th:text="${#temporals.format(dia, 'EEEE')}">Lunes</h3>
 					<p th:text="${#temporals.format(dia, 'dd/MM')}">01/01</p>
@@ -45,12 +45,12 @@
 				</a>
 
 				<div class="bloques-dia-lista">
-					<div th:if="${#lists.isEmpty(bloquesPorDia[dia])}" class="texto-secundario">
+					<div th:if="${#lists.isEmpty(diaConBloques.bloques)}" class="texto-secundario">
 						Sin bloques planificados.
 					</div>
 
 					<div class="bloque-card"
-						 th:each="bloque : ${bloquesPorDia[dia]}"
+						 th:each="bloque : ${diaConBloques.bloques}"
 						 th:style="${bloque.asignatura != null and bloque.asignatura.color != null ? '--card-color:' + bloque.asignatura.color : ''}">
 						<div class="card-contenido">
 							<div class="bloques-horas">
