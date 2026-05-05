@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	document.querySelectorAll('form').forEach(form => {
 		form.addEventListener('submit', function() {
+			if (form.classList.contains('form-eliminar')) {
+				return;
+			}
+
 			const botonSubmit = form.querySelector('button[type="submit"]');
 
 			if (botonSubmit) {
@@ -33,28 +37,36 @@ document.addEventListener('DOMContentLoaded', function () {
 	// BOTONES EDITAR
 	document.querySelectorAll('.btn-editar').forEach(btn => {
 		btn.addEventListener('click', function() {
-		const id = this.dataset.id;
-		mostrarFormularioEdicion(id);
+			mostrarFormularioEdicion(this);
 		});
 	});
 
 	// BOTONES CANCELAR
 	document.querySelectorAll('.btn-cancelar').forEach(btn => {
 		btn.addEventListener('click', function() {
-		const id = this.dataset.id;
-		ocultarFormularioEdicion(id);
+			ocultarFormularioEdicion(this);
 		});
 	});
 
-	function mostrarFormularioEdicion(id) {
-		const form = document.getElementById('form-editar-' + id);
+	function obtenerFormularioEdicion(trigger) {
+		const formId = trigger.dataset.formId || ('form-editar-' + trigger.dataset.id);
+		return document.getElementById(formId);
+	}
+
+	function mostrarFormularioEdicion(trigger) {
+		const form = obtenerFormularioEdicion(trigger);
 		if (form) {
+			form.hidden = false;
 			form.style.display = 'block';
 		}
 	}
 
-	function ocultarFormularioEdicion(id) {
-		document.getElementById('form-editar-' + id).style.display = 'none';
+	function ocultarFormularioEdicion(trigger) {
+		const form = obtenerFormularioEdicion(trigger);
+		if (form) {
+			form.hidden = true;
+			form.style.display = 'none';
+		}
 	}
 
 	if (calendarEl) {

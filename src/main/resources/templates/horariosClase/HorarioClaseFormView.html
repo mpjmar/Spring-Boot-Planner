@@ -18,11 +18,12 @@
 		
 		<div class="acciones sticky-toolbar">
 			<a th:href="@{/horariosClase}" class="btn btn-secondary">Cancelar</a>
-			<button type="submit" class="btn btn-primary">Guardar</button>
+			<button type="submit" form="horarioClaseForm" class="btn btn-primary">Guardar</button>
 		</div>
 
 		<div class="card">
-			<form th:action="${horarioClase.id != null}
+			<form id="horarioClaseForm"
+				  th:action="${horarioClase.id != null}
                           ? @{/horariosClase/{id}/editar(id=${horarioClase.id})}
                           : @{/horariosClase/nuevo}" th:object="${horarioClase}" method="post">
 
@@ -30,7 +31,17 @@
 					<p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
 				</div>
 				
-				<input type="hidden" th:field="*{diaLectivo}" />
+				<div class="form-group">
+					<label for="diaLectivo">Día lectivo</label>
+					<select id="diaLectivo" th:field="*{diaLectivo}" class="form-control">
+						<option value="">-- Selecciona un día --</option>
+						<option th:each="dia : ${diasLectivos}"
+								th:value="${dia}"
+								th:text="${dia.nombre}">
+						</option>
+					</select>
+					<span class="error" th:if="${#fields.hasErrors('diaLectivo')}" th:errors="*{diaLectivo}"></span>
+				</div>
 
 				<div class="form-group">
 					<label for="horaInicio">Hora inicio</label>

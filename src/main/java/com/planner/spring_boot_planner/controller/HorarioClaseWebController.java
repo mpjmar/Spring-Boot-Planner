@@ -2,7 +2,10 @@ package com.planner.spring_boot_planner.controller;
 
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -40,18 +43,35 @@ public class HorarioClaseWebController {
 
 	@GetMapping()
 	public String listarHorarios(@AuthenticationPrincipal Usuario usuario, Model model) {
-		model.addAttribute("horariosClase", horarioClaseRepository.findByUsuarioId(usuario.getId()));
+		List<HorarioClase> horarios = horarioClaseRepository.findByUsuarioId(usuario.getId());
+		horarios.sort(comparadorHorarios());
+
+		model.addAttribute("horariosClase", horarios);
+		List<FilaHorario> filasHorario = filasHorario(horarios);
+		model.addAttribute("filasHorario", filasHorario);
+		model.addAttribute("diasHorario", diasHorario(filasHorario));
+		model.addAttribute("asignaturas", asignaturaRepository.findByUsuarioId(usuario.getId()));
+		model.addAttribute("horasInicioDisponibles", horasPosibles().subList(0, horasPosibles().size() - 1));
+		model.addAttribute("horasFinDisponibles", horasPosibles());
 		return "horariosClase/HorarioClaseListingView";
 	}
 
 	@GetMapping("/nuevo")
 	public String mostrarFormularioNuevo(@RequestParam(required = false) DiaLectivo diaLectivo,
+										@RequestParam(required = false) String horaInicio,
+										@RequestParam(required = false) String horaFin,
                                      	@AuthenticationPrincipal Usuario usuario,
                                      	Model model) {
 		HorarioClaseFormDTO dto = new HorarioClaseFormDTO();
 
 		if (diaLectivo != null)
 			dto.setDiaLectivo(diaLectivo);
+
+		if (horaInicio != null && horasPosibles().contains(horaInicio))
+			dto.setHoraInicio(horaInicio);
+
+		if (horaFin != null && horasPosibles().contains(horaFin))
+			dto.setHoraFin(horaFin);
 
 		model.addAttribute("horarioClase", dto);
 		cargarHorasFormulario(model);
@@ -104,7 +124,7 @@ public class HorarioClaseWebController {
 		horarioClase.setAsignatura(resolverAsignatura(dto.getAsignaturaId(), usuario));
 		horarioClaseRepository.save(horarioClase);
 		
-		return "redirect:/horariosClase/dia/" + horarioClase.getDiaLectivo();
+		return "redirect:/horariosClase";
 	}
 
 	@GetMapping("/{id}/editar")
@@ -189,7 +209,7 @@ public class HorarioClaseWebController {
 
 		horarioClaseRepository.save(existente);
 
-		return "redirect:/horariosClase/dia/" + existente.getDiaLectivo();
+		return "redirect:/horariosClase";
 	}
 
 	@PostMapping("/{id}/eliminar")
@@ -198,9 +218,8 @@ public class HorarioClaseWebController {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id).orElse(null);
 		if (horarioClase == null || !puedeGestionar(horarioClase, usuario))
 			return "redirect:/horariosClase";
-		DiaLectivo diaLectivo = horarioClase.getDiaLectivo();
 		horarioClaseRepository.deleteById(id);
-		return "redirect:/horariosClase/dia/" + diaLectivo;
+		return "redirect:/horariosClase";
 	}
 
 	@GetMapping("/dia/{diaLectivo}")
@@ -209,10 +228,7 @@ public class HorarioClaseWebController {
 		DiaLectivo dia = DiaLectivo.valueOf(diaLectivo.toUpperCase());
 		List<HorarioClase> horarios = horarioClaseRepository.findByDiaLectivoAndUsuarioId(dia, usuario.getId());
 		
-		horarios.sort(Comparator.comparing(HorarioClase::getHoraInicio, 
-						Comparator.nullsLast(Comparator.naturalOrder()))
-						.thenComparing(HorarioClase::getHoraFin,
-						Comparator.nullsLast(Comparator.naturalOrder())));
+		horarios.sort(comparadorHorarios());
 		
 		model.addAttribute("horariosClase", horarios);
 		model.addAttribute("diaLectivo", dia);
@@ -232,6 +248,62 @@ public class HorarioClaseWebController {
 		List<String> horas = horasPosibles();
 		model.addAttribute("horasDisponibles", horas.subList(0, horas.size() - 1));
 		model.addAttribute("horasFinDisponibles", horas);
+	}
+
+	private Comparator<HorarioClase> comparadorHorarios() {
+		return Comparator.comparing(HorarioClase::getDiaLectivo,
+						Comparator.nullsLast(Comparator.naturalOrder()))
+						.thenComparing(HorarioClase::getHoraInicio,
+						Comparator.nullsLast(Comparator.naturalOrder()))
+						.thenComparing(HorarioClase::getHoraFin,
+						Comparator.nullsLast(Comparator.naturalOrder()));
+	}
+
+	private List<FilaHorario> filasHorario(List<HorarioClase> horarios) {
+		Map<String, HorarioClase> horariosPorCelda = new LinkedHashMap<>();
+		for (HorarioClase horario : horarios) {
+			if (horario.getDiaLectivo() != null && horario.getHoraInicio() != null) {
+				horariosPorCelda.put(claveCelda(horario.getDiaLectivo(), horario.getHoraInicio().toString()), horario);
+			}
+		}
+
+		List<String> horas = horasPosibles();
+		return java.util.stream.IntStream.range(0, horas.size() - 1)
+			.mapToObj(i -> {
+				String horaInicio = horas.get(i);
+				String horaFin = horas.get(i + 1);
+				List<CeldaHorario> celdas = new ArrayList<>();
+				for (DiaLectivo dia : DiaLectivo.values()) {
+					celdas.add(new CeldaHorario(
+						dia,
+						horaInicio,
+						horaFin,
+						horariosPorCelda.get(claveCelda(dia, horaInicio))));
+				}
+				return new FilaHorario(horaInicio, horaFin, celdas);
+			})
+			.toList();
+	}
+
+	private List<DiaHorario> diasHorario(List<FilaHorario> filasHorario) {
+		List<DiaHorario> diasHorario = new ArrayList<>();
+		for (DiaLectivo dia : DiaLectivo.values()) {
+			List<CeldaHorario> celdas = new ArrayList<>();
+			for (FilaHorario fila : filasHorario) {
+				for (CeldaHorario celda : fila.getCeldas()) {
+					if (celda.getDia() == dia) {
+						celdas.add(celda);
+					}
+				}
+			}
+			diasHorario.add(new DiaHorario(dia, celdas));
+		}
+
+		return diasHorario;
+	}
+
+	private String claveCelda(DiaLectivo dia, String horaInicio) {
+		return dia.name() + "-" + horaInicio;
 	}
 
 	private boolean puedeGestionar(HorarioClase horarioClase, Usuario usuario) {
@@ -254,6 +326,81 @@ public class HorarioClaseWebController {
 			"08:15", "09:15", "10:15", "11:15",
 			"11:45", "12:45", "13:45", "14:45"
 		);
+	}
+
+	public static class FilaHorario {
+
+		private final String horaInicio;
+		private final String horaFin;
+		private final List<CeldaHorario> celdas;
+
+		public FilaHorario(String horaInicio, String horaFin, List<CeldaHorario> celdas) {
+			this.horaInicio = horaInicio;
+			this.horaFin = horaFin;
+			this.celdas = celdas;
+		}
+
+		public String getHoraInicio() {
+			return horaInicio;
+		}
+
+		public String getHoraFin() {
+			return horaFin;
+		}
+
+		public List<CeldaHorario> getCeldas() {
+			return celdas;
+		}
+	}
+
+	public static class CeldaHorario {
+
+		private final DiaLectivo dia;
+		private final String horaInicio;
+		private final String horaFin;
+		private final HorarioClase horario;
+
+		public CeldaHorario(DiaLectivo dia, String horaInicio, String horaFin, HorarioClase horario) {
+			this.dia = dia;
+			this.horaInicio = horaInicio;
+			this.horaFin = horaFin;
+			this.horario = horario;
+		}
+
+		public DiaLectivo getDia() {
+			return dia;
+		}
+
+		public String getHoraInicio() {
+			return horaInicio;
+		}
+
+		public String getHoraFin() {
+			return horaFin;
+		}
+
+		public HorarioClase getHorario() {
+			return horario;
+		}
+	}
+
+	public static class DiaHorario {
+
+		private final DiaLectivo dia;
+		private final List<CeldaHorario> celdas;
+
+		public DiaHorario(DiaLectivo dia, List<CeldaHorario> celdas) {
+			this.dia = dia;
+			this.celdas = celdas;
+		}
+
+		public DiaLectivo getDia() {
+			return dia;
+		}
+
+		public List<CeldaHorario> getCeldas() {
+			return celdas;
+		}
 	}
 
 }
