@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	const horaInicioSelect = document.getElementById('horaInicio');
 	const horaFinSelect = document.getElementById('horaFin');
 	const calendarEl = document.getElementById('calendar'); 
+	const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+	const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
 
 	document.querySelectorAll('form').forEach(form => {
 		form.addEventListener('submit', function() {
@@ -88,6 +90,82 @@ document.addEventListener('DOMContentLoaded', function () {
 	
 			if (!confirm(mensaje)) {
 				event.preventDefault();
+			}
+		});
+	});
+
+	// DRAG & DROP BLOQUES DE ESTUDIO
+	const bloquesDraggables = document.querySelectorAll('.bloque-card[draggable="true"]');
+	const columnasDrop = document.querySelectorAll('.bloques-semana-columna[data-drop-date]');
+	let bloqueArrastrado = null;
+
+	bloquesDraggables.forEach(card => {
+		card.addEventListener('dragstart', event => {
+			bloqueArrastrado = card;
+			card.classList.add('is-dragging');
+			event.dataTransfer.effectAllowed = 'move';
+			event.dataTransfer.setData('text/plain', card.dataset.bloqueId || '');
+		});
+
+		card.addEventListener('dragend', () => {
+			card.classList.remove('is-dragging');
+			columnasDrop.forEach(col => col.classList.remove('drop-active'));
+			bloqueArrastrado = null;
+		});
+	});
+
+	columnasDrop.forEach(columna => {
+		columna.addEventListener('dragover', event => {
+			if (!bloqueArrastrado) {
+				return;
+			}
+			event.preventDefault();
+			event.dataTransfer.dropEffect = 'move';
+			columna.classList.add('drop-active');
+		});
+
+		columna.addEventListener('dragleave', () => {
+			columna.classList.remove('drop-active');
+		});
+
+		columna.addEventListener('drop', async event => {
+			event.preventDefault();
+			columna.classList.remove('drop-active');
+
+			if (!bloqueArrastrado) {
+				return;
+			}
+
+			const bloqueId = bloqueArrastrado.dataset.bloqueId;
+			const fechaDestino = columna.dataset.dropDate;
+			const fechaActual = bloqueArrastrado.dataset.currentDate;
+
+			if (!bloqueId || !fechaDestino || fechaDestino === fechaActual) {
+				return;
+			}
+
+			const headers = {
+				'Content-Type': 'application/json'
+			};
+			if (csrfToken && csrfHeader) {
+				headers[csrfHeader] = csrfToken;
+			}
+
+			try {
+				const response = await fetch(`/bloquesEstudio/${bloqueId}/mover`, {
+					method: 'POST',
+					headers,
+					body: JSON.stringify({ fecha: fechaDestino })
+				});
+
+				if (!response.ok) {
+					alert('No se pudo mover el bloque. Revisa solapamientos o permisos.');
+					return;
+				}
+
+				window.location.reload();
+			} catch (error) {
+				alert('Error de red al mover el bloque.');
 			}
 		});
 	});

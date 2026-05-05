@@ -3,9 +3,6 @@ package com.planner.spring_boot_planner.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.DayOfWeek;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -204,17 +201,31 @@ public class BloqueEstudioWebController {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id).orElse(null);
 		if (bloqueEstudio == null || !bloqueEstudio.getUsuario().getId().equals(usuario.getId()))
 			return ResponseEntity.status(403).build();
+		String fechaDestino = payload.get("fecha");
 		String start = payload.get("start");
-		if (start == null)
+		if (fechaDestino != null && !fechaDestino.isBlank()) {
+			bloqueEstudio.setFecha(LocalDate.parse(fechaDestino));
+		} else if (start != null && !start.isBlank()) {
+			LocalDate nuevaFecha = LocalDate.parse(start.substring(0, 10));
+			bloqueEstudio.setFecha(nuevaFecha);
+			if (start.length() >= 16) {
+				bloqueEstudio.setHoraInicio(LocalTime.parse(start.substring(11, 16)));
+			}
+			String end = payload.get("end");
+			if (end != null && end.length() >= 16) {
+				bloqueEstudio.setHoraFin(LocalTime.parse(end.substring(11, 16)));
+			}
+		} else {
 			return ResponseEntity.badRequest().build();
-		OffsetDateTime odt = OffsetDateTime.parse(start);
-		ZonedDateTime z = odt.atZoneSameInstant(ZoneId.systemDefault());
-		bloqueEstudio.setFecha(z.toLocalDate());
-		bloqueEstudio.setHoraInicio(z.toLocalTime().withSecond(0).withNano(0));
-		if (payload.get("end") != null) {
-			OffsetDateTime odtEnd = OffsetDateTime.parse(payload.get("end"));
-			bloqueEstudio.setHoraFin(odtEnd.atZoneSameInstant(ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0));
 		}
+
+		List<BloqueEstudio> solapados = bloqueEstudioRepository.findSolapadosPorUsuario(
+			bloqueEstudio.getFecha(), usuario.getId(), bloqueEstudio.getHoraInicio(), bloqueEstudio.getHoraFin());
+		boolean haySolape = solapados.stream().anyMatch(s -> !s.getId().equals(bloqueEstudio.getId()));
+		if (haySolape) {
+			return ResponseEntity.badRequest().build();
+		}
+
 		if (bloqueEstudio.getAsignatura() != null)
 			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor() != null
 								   ? bloqueEstudio.getAsignatura().getColor() : COLOR_DEFECTO);

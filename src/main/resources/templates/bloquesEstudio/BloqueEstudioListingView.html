@@ -6,6 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Planificación semanal de estudio</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 
   <body class="fondo" th:classappend="${bodyClass}">
@@ -32,7 +34,10 @@
 		</div>
 
 		<section class="bloques-semana-grid">
-			<article class="bloques-semana-columna" th:each="diaConBloques : ${diasConBloques}" th:with="dia=${diaConBloques.dia}">
+			<article class="bloques-semana-columna"
+					 th:each="diaConBloques : ${diasConBloques}"
+					 th:with="dia=${diaConBloques.dia}"
+					 th:attr="data-drop-date=${dia}">
 				<header class="bloques-columna-header">
 					<h3 th:text="${#temporals.format(dia, 'EEEE')}">Lunes</h3>
 					<p th:text="${#temporals.format(dia, 'dd/MM')}">01/01</p>
@@ -51,6 +56,8 @@
 
 					<div class="bloque-card"
 						 th:each="bloque : ${diaConBloques.bloques}"
+						 draggable="true"
+						 th:attr="data-bloque-id=${bloque.id},data-current-date=${bloque.fecha}"
 						 th:style="${bloque.asignatura != null and bloque.asignatura.color != null ? '--card-color:' + bloque.asignatura.color : ''}">
 						<div class="card-contenido">
 							<div class="bloques-horas">
@@ -65,9 +72,17 @@
 						</div>
 
 						<div class="card-acciones">
-							<a th:href="@{/bloquesEstudio/dia(fecha=${bloque.fecha})}" class="btn btn-secondary btn-small">
-								Ver día
+							<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" class="btn btn-secondary btn-small">
+								Editar
 							</a>
+							<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}"
+								  method="post"
+								  class="form-eliminar"
+								  data-confirm="¿Eliminar este bloque de estudio?">
+								<button type="submit" class="btn btn-secondary btn-small">
+									Borrar
+								</button>
+							</form>
 						</div>
 					</div>
 				</div>

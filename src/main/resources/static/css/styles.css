@@ -88,6 +88,15 @@ h1, h2, h3 {
     gap: 1rem;
 }
 
+.bloque-card[draggable="true"] {
+    cursor: grab;
+}
+
+.bloque-card.is-dragging {
+    opacity: 0.6;
+    transform: scale(0.98);
+}
+
 .card-contenido {
     flex: 1;
 }
@@ -499,6 +508,13 @@ select {
     padding: 0.75rem;
     box-shadow: 0 6px 14px #0001;
     min-height: 220px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.bloques-semana-columna.drop-active {
+    border-color: #2563eb;
+    background: #eff6ff;
 }
 
 .bloques-columna-header {
