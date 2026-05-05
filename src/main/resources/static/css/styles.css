@@ -432,6 +432,31 @@ select {
     gap: 1rem;
 }
 
+.dashboard-calendar-card {
+    margin-bottom: 1rem;
+}
+
+.dashboard-deadlines {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.deadline-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+    padding: 0.7rem 0;
+}
+
+.deadline-item p {
+    margin-top: 0.2rem;
+    color: #4b5563;
+}
+
 .dashboard-card {
     flex-direction: column;
     justify-content: center;
@@ -443,6 +468,52 @@ select {
     display: block;
     font-size: 2rem;
     margin-bottom: 0.5rem;
+}
+
+.bloques-semana-header {
+    margin-bottom: 1rem;
+}
+
+.bloques-semana-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(180px, 1fr));
+    gap: 0.8rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.bloques-semana-columna {
+    background: #fff;
+    border-radius: 14px;
+    padding: 0.75rem;
+    box-shadow: 0 6px 14px #0001;
+    min-height: 220px;
+}
+
+.bloques-columna-header {
+    text-align: center;
+    margin-bottom: 0.8rem;
+}
+
+.bloques-columna-header p {
+    color: #4b5563;
+}
+
+.badge-hoy {
+    display: inline-block;
+    margin-top: 0.2rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.bloques-dia-lista {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
 }
 
 .mensaje-destacado {
@@ -478,6 +549,11 @@ select {
 
     .horario-slot-actions {
         justify-content: flex-start;
+    }
+
+    .bloques-semana-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        overflow: visible;
     }
 }
 

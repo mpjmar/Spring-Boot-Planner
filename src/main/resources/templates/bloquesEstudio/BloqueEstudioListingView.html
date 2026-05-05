@@ -4,9 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Listado de Bloques de estudio</title>
+	<title>Planificación semanal de estudio</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
-	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 </head>
 
   <body class="fondo" th:classappend="${bodyClass}">
@@ -18,51 +17,62 @@
 			<a th:href="@{/bloquesEstudio/nuevo}" class="btn btn-primary">+ Añadir bloque de estudio</a>
 		</div>
 		
-		<div class="card">
-			<h3>Selecciona un día</h3>
-	
-			<form th:action="@{/bloquesEstudio/dia}" method="get">
-				<label for="fecha">Fecha</label>
-				<input type="date" id="fecha" name="fecha" />
-				<button type="submit" class="btn btn-primary">Ver día</button>
-			</form>
-
-			<div id="calendar"></div>
-
-			<section class="bloques-dia">
-				<h3>Bloques reservados</h3>
-			
-				<div th:if="${#lists.isEmpty(bloquesEstudio)}">
-					No hay bloques de estudio planificados.
-				</div>
-			
-				<div class="bloque-card"
-					 th:each="bloque : ${bloquesEstudio}"
-					 th:style="${bloque.asignatura != null and bloque.asignatura.color != null ? '--card-color:' + bloque.asignatura.color : ''}">
-					<div class="card-contenido">
-						<div class="bloques-fecha"
-							 th:text="${#temporals.format(bloque.fecha, 'EEEE dd-MM-yyyy')}">
-						</div>
-				
-						<div class="bloques-horas">
-							<span th:text="${bloque.horaInicio}"></span>
-							<span> - </span>
-							<span th:text="${bloque.horaFin}"></span>
-						</div>
-				
-						<div class="bloque-asignatura">
-							<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin asignatura'}"></span>
-						</div>
-					</div>
-
-					<div class="card-acciones">
-						<a th:href="@{/bloquesEstudio/dia(fecha=${bloque.fecha})}" class="btn btn-secondary">
-							Ver día
-						</a>
-					</div>
-				</div>
-			</section>
+		<div class="bloques-semana-header card">
+			<h3>
+				Semana del
+				<span th:text="${#temporals.format(inicioSemana, 'dd/MM')}">01/01</span>
+				al
+				<span th:text="${#temporals.format(finSemana, 'dd/MM')}">07/01</span>
+			</h3>
+			<div class="navegacion-fecha">
+				<a class="btn btn-secondary" th:href="@{/bloquesEstudio(weekStart=${semanaAnterior})}">← Semana anterior</a>
+				<a class="btn btn-secondary" th:href="@{/bloquesEstudio}">Semana actual</a>
+				<a class="btn btn-secondary" th:href="@{/bloquesEstudio(weekStart=${semanaSiguiente})}">Semana siguiente →</a>
+			</div>
 		</div>
+
+		<section class="bloques-semana-grid">
+			<article class="bloques-semana-columna" th:each="dia : ${diasSemana}">
+				<header class="bloques-columna-header">
+					<h3 th:text="${#temporals.format(dia, 'EEEE')}">Lunes</h3>
+					<p th:text="${#temporals.format(dia, 'dd/MM')}">01/01</p>
+					<span th:if="${dia.equals(hoy)}" class="badge-hoy">Hoy</span>
+				</header>
+
+				<a class="btn btn-secondary btn-small"
+				   th:href="@{/bloquesEstudio/nuevo(fecha=${dia})}">
+					+ Añadir bloque
+				</a>
+
+				<div class="bloques-dia-lista">
+					<div th:if="${#lists.isEmpty(bloquesPorDia[dia])}" class="texto-secundario">
+						Sin bloques planificados.
+					</div>
+
+					<div class="bloque-card"
+						 th:each="bloque : ${bloquesPorDia[dia]}"
+						 th:style="${bloque.asignatura != null and bloque.asignatura.color != null ? '--card-color:' + bloque.asignatura.color : ''}">
+						<div class="card-contenido">
+							<div class="bloques-horas">
+								<span th:text="${bloque.horaInicio}"></span>
+								<span> - </span>
+								<span th:text="${bloque.horaFin}"></span>
+							</div>
+					
+							<div class="bloque-asignatura">
+								<span th:text="${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin asignatura'}"></span>
+							</div>
+						</div>
+
+						<div class="card-acciones">
+							<a th:href="@{/bloquesEstudio/dia(fecha=${bloque.fecha})}" class="btn btn-secondary btn-small">
+								Ver día
+							</a>
+						</div>
+					</div>
+				</div>
+			</article>
+		</section>
 		
 	</main>
 
@@ -71,7 +81,6 @@
 		<p>Author: M. Paz Jiménez Martín</p>
 	</footer>
 
-	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>	
 	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
 

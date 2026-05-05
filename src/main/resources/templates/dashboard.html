@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Dashboard</title>
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -14,6 +15,40 @@
 	</header>
 
 	<main class="contenedor">
+		<section class="card dashboard-calendar-card">
+			<h2>Calendario de entregas y exámenes</h2>
+			<p class="texto-secundario">Vista global de fechas clave. Haz clic en un evento para editarlo.</p>
+			<div id="dashboard-calendar"></div>
+		</section>
+
+		<section class="dashboard-deadlines">
+			<article class="card">
+				<h3>Próximas entregas</h3>
+				<div th:if="${#lists.isEmpty(proximasTareas)}" class="texto-secundario">Sin tareas próximas.</div>
+				<div th:each="tarea : ${proximasTareas}" class="deadline-item">
+					<div>
+						<strong th:text="${tarea.nombre}">Tarea</strong>
+						<p th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : 'Sin asignatura'}">Asignatura</p>
+					</div>
+					<a class="btn btn-secondary btn-small" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"
+					   th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM')}">Fecha</a>
+				</div>
+			</article>
+
+			<article class="card">
+				<h3>Próximos exámenes</h3>
+				<div th:if="${#lists.isEmpty(proximosExamenes)}" class="texto-secundario">Sin exámenes próximos.</div>
+				<div th:each="examen : ${proximosExamenes}" class="deadline-item">
+					<div>
+						<strong th:text="${examen.asignatura != null ? examen.asignatura.nombre : 'Examen'}">Examen</strong>
+						<p th:text="${examen.descripcion}">Descripción</p>
+					</div>
+					<a class="btn btn-secondary btn-small" th:href="@{/examenes/{id}/editar(id=${examen.id})}"
+					   th:text="${#temporals.format(examen.fecha, 'dd/MM')}">Fecha</a>
+				</div>
+			</article>
+		</section>
+
 		<section class="card">
 			<h2>¿Qué quieres hacer hoy?</h2>
 
@@ -60,6 +95,32 @@
 		<p>Author: M. Paz Jiménez Martín</p>
 	</footer>
 
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		document.addEventListener('DOMContentLoaded', function () {
+			const calendarEl = document.getElementById('dashboard-calendar');
+			if (!calendarEl || typeof FullCalendar === 'undefined') {
+				return;
+			}
+
+			const events = /*[[${eventosCalendario}]]*/ [];
+			const calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				locale: 'es',
+				height: 'auto',
+				eventDisplay: 'block',
+				events: events,
+				eventDidMount: function(info) {
+					if (info.event.extendedProps && info.event.extendedProps.extendedHint) {
+						info.el.setAttribute('title', info.event.extendedProps.extendedHint);
+					}
+				}
+			});
+			calendar.render();
+		});
+		/*]]>*/
+	</script>
 	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
 

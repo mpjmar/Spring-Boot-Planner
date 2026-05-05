@@ -2,10 +2,15 @@ package com.planner.spring_boot_planner.controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,19 +52,42 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping
-	public String listarBloquesEstudio(@AuthenticationPrincipal Usuario usuario, Model model) {
+	public String listarBloquesEstudio(@AuthenticationPrincipal Usuario usuario,
+									   @RequestParam(value = "weekStart", required = false) String weekStartParam,
+									   Model model) {
 		LocalDate hoy = LocalDate.now();
+		LocalDate inicioSemana = resolverInicioSemana(weekStartParam, hoy);
+		LocalDate finSemana = inicioSemana.plusDays(6);
 
 		List<BloqueEstudio> bloques = bloqueEstudioRepository.findByUsuarioId(usuario.getId())
 			.stream()
-			.filter(bloque -> !bloque.getFecha().isBefore(hoy))
+			.filter(bloque -> bloque.getFecha() != null
+							&& !bloque.getFecha().isBefore(inicioSemana)
+							&& !bloque.getFecha().isAfter(finSemana))
 			.sorted(
 				Comparator.comparing(BloqueEstudio::getFecha)
 						.thenComparing(BloqueEstudio::getHoraInicio)
 			)
 			.toList();
 
+		List<LocalDate> diasSemana = new ArrayList<>();
+		Map<LocalDate, List<BloqueEstudio>> bloquesPorDia = new LinkedHashMap<>();
+		for (int i = 0; i < 7; i++) {
+			LocalDate dia = inicioSemana.plusDays(i);
+			diasSemana.add(dia);
+			bloquesPorDia.put(dia, bloques.stream()
+				.filter(bloque -> dia.equals(bloque.getFecha()))
+				.toList());
+		}
+
 		model.addAttribute("bloquesEstudio", bloques);
+		model.addAttribute("diasSemana", diasSemana);
+		model.addAttribute("bloquesPorDia", bloquesPorDia);
+		model.addAttribute("inicioSemana", inicioSemana);
+		model.addAttribute("finSemana", finSemana);
+		model.addAttribute("semanaAnterior", inicioSemana.minusWeeks(1));
+		model.addAttribute("semanaSiguiente", inicioSemana.plusWeeks(1));
+		model.addAttribute("hoy", hoy);
 		return "bloquesEstudio/BloqueEstudioListingView";
 	}
 
@@ -227,6 +255,18 @@ public class BloqueEstudioWebController {
 			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor());
 		else
 			bloqueEstudio.setColor(COLOR_DEFECTO);
+	}
+
+	private LocalDate resolverInicioSemana(String weekStartParam, LocalDate fallback) {
+		LocalDate fechaBase = fallback;
+		if (weekStartParam != null && !weekStartParam.isBlank()) {
+			try {
+				fechaBase = LocalDate.parse(weekStartParam);
+			} catch (DateTimeParseException ignored) {
+				fechaBase = fallback;
+			}
+		}
+		return fechaBase.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 	}
 
 }
