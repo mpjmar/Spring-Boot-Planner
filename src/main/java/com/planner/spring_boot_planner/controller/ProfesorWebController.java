@@ -1,15 +1,20 @@
 package com.planner.spring_boot_planner.controller;
 
-import com.planner.spring_boot_planner.entity.Profesor;
-import com.planner.spring_boot_planner.entity.Usuario;
-import com.planner.spring_boot_planner.repository.ProfesorRepository;
-import jakarta.validation.Valid;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.planner.spring_boot_planner.entity.Profesor;
+import com.planner.spring_boot_planner.entity.Usuario;
+import com.planner.spring_boot_planner.repository.ProfesorRepository;
+
+import jakarta.validation.Valid;
 
 @Controller 
 @RequestMapping("/profesores")
@@ -48,7 +53,7 @@ public class ProfesorWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model, 
 										  @AuthenticationPrincipal Usuario usuario) {
 		Profesor profesor = profesorRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado: " + id));
@@ -60,7 +65,7 @@ public class ProfesorWebController {
 	}
 
 	@PostMapping("/{id}/editar")
-	public String guardarEdicion(@PathVariable Long id,
+	public String guardarEdicion(@PathVariable("id") Long id,
 								@Valid @ModelAttribute("profesor") Profesor profesor,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
@@ -74,12 +79,13 @@ public class ProfesorWebController {
 		}
 		profesor.setId(id);
 		profesor.setUsuario(usuario);
+		profesor.setAsignaturas(existente.getAsignaturas());
 		profesorRepository.save(profesor);
 		return "redirect:/profesores";
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, 
+	public String eliminar(@PathVariable("id") Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Profesor profesor = profesorRepository.findById(id).orElse(null);
 		if (profesor == null || profesor.getUsuario() == null ||

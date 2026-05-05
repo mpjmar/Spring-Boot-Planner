@@ -108,7 +108,7 @@ public class HorarioClaseWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model, 
 										  @AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de horarioClase no encontrado: " + id));
@@ -133,7 +133,7 @@ public class HorarioClaseWebController {
 
 	@PostMapping("/{id}/editar")
 	public String guardarEdicion(
-			@PathVariable Long id,
+			@PathVariable("id") Long id,
 			@Valid @ModelAttribute("horarioClase") HorarioClaseFormDTO dto,
 			BindingResult result,
 			Model model,
@@ -193,7 +193,7 @@ public class HorarioClaseWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, 
+	public String eliminar(@PathVariable("id") Long id, 
 							@AuthenticationPrincipal Usuario usuario) {
 		HorarioClase horarioClase = horarioClaseRepository.findById(id).orElse(null);
 		if (horarioClase == null || !puedeGestionar(horarioClase, usuario))
@@ -204,7 +204,7 @@ public class HorarioClaseWebController {
 	}
 
 	@GetMapping("/dia/{diaLectivo}")
-	public String verDia(@PathVariable String diaLectivo, Model model,
+	public String verDia(@PathVariable("diaLectivo") String diaLectivo, Model model,
 						@AuthenticationPrincipal Usuario usuario) {
 		DiaLectivo dia = DiaLectivo.valueOf(diaLectivo.toUpperCase());
 		List<HorarioClase> horarios = horarioClaseRepository.findByDiaLectivoAndUsuarioId(dia, usuario.getId());

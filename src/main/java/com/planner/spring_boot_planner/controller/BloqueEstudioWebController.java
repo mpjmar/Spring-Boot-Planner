@@ -1,6 +1,5 @@
 package com.planner.spring_boot_planner.controller;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -66,9 +65,9 @@ public class BloqueEstudioWebController {
 
 	@GetMapping("/nuevo")
 	public String mostrarFormularioNuevo(
-			@RequestParam(required = false) String fecha,
-			@RequestParam(required = false) String horaInicio,
-			@RequestParam(required = false) String horaFin,
+			@RequestParam(value = "fecha",required = false) String fecha,
+			@RequestParam(value = "horaInicio", required = false) String horaInicio,
+			@RequestParam(value = "horaFin", required = false) String horaFin,
 			Model model, @AuthenticationPrincipal Usuario usuario) {
 
 		BloqueEstudio bloqueEstudio = new BloqueEstudio();
@@ -104,7 +103,7 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model, 
 										  @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
@@ -117,7 +116,7 @@ public class BloqueEstudioWebController {
 	}
 
 	@PostMapping("/{id}/editar")
-	public String guardarEdicion(@PathVariable long id,
+	public String guardarEdicion(@PathVariable("id") Long id,
 								@Valid @ModelAttribute("bloqueEstudio") BloqueEstudio bloqueEstudio,
 								BindingResult result, Model model,
 								@AuthenticationPrincipal Usuario usuario) {
@@ -140,7 +139,7 @@ public class BloqueEstudioWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, 
+	public String eliminar(@PathVariable("id") Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Bloque de estudio no encontrado: " + id));
@@ -151,8 +150,8 @@ public class BloqueEstudioWebController {
 	}
 
 	@GetMapping("/dia")
-	public String verDia(@RequestParam(required = false) String fecha, Model model, 
-						 @AuthenticationPrincipal Usuario usuario) {
+	public String verDia(@RequestParam(value = "fecha", required = false) String fecha, 
+						 Model model, @AuthenticationPrincipal Usuario usuario) {
 		LocalDate dia = fecha == null ? LocalDate.now() : LocalDate.parse(fecha);
 		List<BloqueEstudio> bloquesEstudio = bloqueEstudioRepository.findByFechaAndUsuarioId(dia, usuario.getId());
 		bloquesEstudio.sort(Comparator.comparing(BloqueEstudio::getHoraInicio, Comparator.nullsLast(Comparator.naturalOrder())));
@@ -164,7 +163,7 @@ public class BloqueEstudioWebController {
 
 	@PostMapping("/{id}/mover")
 	@ResponseBody
-	public ResponseEntity<Void> moverBloque(@PathVariable Long id, 
+	public ResponseEntity<Void> moverBloque(@PathVariable("id") Long id, 
 										 @RequestBody Map<String, String> payload, 
 										 @AuthenticationPrincipal Usuario usuario) {
 		BloqueEstudio bloqueEstudio = bloqueEstudioRepository.findById(id).orElse(null);

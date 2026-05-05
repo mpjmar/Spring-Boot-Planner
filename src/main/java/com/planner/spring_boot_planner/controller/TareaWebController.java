@@ -65,7 +65,7 @@ public class TareaWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model, 
 										  @AuthenticationPrincipal Usuario usuario) {
 		Tarea tarea = tareaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada: " + id));
@@ -78,7 +78,7 @@ public class TareaWebController {
 	}
 
 	@PostMapping("/{id}/editar")
-	public String guardarEdicion(@PathVariable Long id,
+	public String guardarEdicion(@PathVariable("id") Long id,
 								@Valid @ModelAttribute("tarea") Tarea tarea,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
@@ -103,7 +103,7 @@ public class TareaWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, 
+	public String eliminar(@PathVariable("id") Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Tarea tarea = tareaRepository.findById(id).orElse(null);
 		if (tarea ==  null || tarea.getUsuario() == null || !tarea.getUsuario().getId().equals(usuario.getId()))

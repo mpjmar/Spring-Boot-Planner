@@ -1,17 +1,22 @@
 package com.planner.spring_boot_planner.controller;
 
-import com.planner.spring_boot_planner.entity.Examen;
-import com.planner.spring_boot_planner.entity.Usuario;
-import com.planner.spring_boot_planner.entity.Asignatura;
-import com.planner.spring_boot_planner.repository.ExamenRepository;
-import com.planner.spring_boot_planner.repository.AsignaturaRepository;
-import jakarta.validation.Valid;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.planner.spring_boot_planner.entity.Asignatura;
+import com.planner.spring_boot_planner.entity.Examen;
+import com.planner.spring_boot_planner.entity.Usuario;
+import com.planner.spring_boot_planner.repository.AsignaturaRepository;
+import com.planner.spring_boot_planner.repository.ExamenRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/examenes")
@@ -56,7 +61,7 @@ public class ExamenWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model, 
 										  @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Examen no encontrado: " + id));
@@ -69,7 +74,7 @@ public class ExamenWebController {
 	}
 
 	@PostMapping("/{id}/editar")
-	public String guardarEdicion(@PathVariable Long id,
+	public String guardarEdicion(@PathVariable("id") Long id,
 								@Valid @ModelAttribute("examen") Examen examen,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
@@ -89,7 +94,7 @@ public class ExamenWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, 
+	public String eliminar(@PathVariable("id") Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Examen examen = examenRepository.findById(id).orElse(null);
 		if (examen == null || examen.getUsuario() == null || 

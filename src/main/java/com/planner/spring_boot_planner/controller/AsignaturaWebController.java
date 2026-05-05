@@ -1,17 +1,22 @@
 package com.planner.spring_boot_planner.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.planner.spring_boot_planner.entity.Asignatura;
 import com.planner.spring_boot_planner.entity.Profesor;
 import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.repository.AsignaturaRepository;
 import com.planner.spring_boot_planner.repository.ProfesorRepository;
-import jakarta.validation.Valid;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @Controller 
 @RequestMapping("/asignaturas")
@@ -56,7 +61,7 @@ public class AsignaturaWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model, 
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model, 
 										  @AuthenticationPrincipal Usuario usuario) {
 		Asignatura asignatura = asignaturaRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Asignatura no encontrada: " + id));
@@ -69,7 +74,7 @@ public class AsignaturaWebController {
 	}
 
 	@PostMapping("/{id}/editar")
-	public String guardarEdicion(@PathVariable Long id,
+	public String guardarEdicion(@PathVariable("id") Long id,
 								@Valid @ModelAttribute("asignatura") Asignatura asignatura,
 								BindingResult result, Model model, 
 								@AuthenticationPrincipal Usuario usuario) {
@@ -90,7 +95,7 @@ public class AsignaturaWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, 
+	public String eliminar(@PathVariable("id") Long id, 
 						   @AuthenticationPrincipal Usuario usuario) {
 		Asignatura asignatura = asignaturaRepository.findById(id).orElse(null);
 		if (asignatura == null || asignatura.getUsuario() == null || 

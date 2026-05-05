@@ -1,15 +1,21 @@
 package com.planner.spring_boot_planner.controller;
 
-import com.planner.spring_boot_planner.entity.Usuario;
-import com.planner.spring_boot_planner.repository.UsuarioRepository;
-import jakarta.validation.Valid;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.planner.spring_boot_planner.entity.Usuario;
+import com.planner.spring_boot_planner.repository.UsuarioRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/usuario")
@@ -61,7 +67,7 @@ public class UsuarioWebController {
 	}
 
 	@GetMapping("/{id}/editar")
-	public String mostrarFormularioEditar(@PathVariable Long id, Model model,
+	public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model,
 										  @AuthenticationPrincipal Usuario autenticado) {
 		if (autenticado == null || !autenticado.getId().equals(id))
 			return "redirect:/usuario/perfil";
@@ -75,7 +81,7 @@ public class UsuarioWebController {
 	}
 
 	@PostMapping("/{id}/editar")
-	public String guardarEleccion(@PathVariable Long id,
+	public String guardarEleccion(@PathVariable("id") Long id,
 								@ModelAttribute("usuario") Usuario datosFormulario,
 								@Valid BindingResult result, Model model,
 								@AuthenticationPrincipal Usuario autenticado) {
@@ -111,7 +117,7 @@ public class UsuarioWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar(@PathVariable("id") Long id, @AuthenticationPrincipal Usuario usuario) {
 		if (usuario == null || !usuario.getId().equals(id))
 			return "redirect:/usuario/perfil";
 		usuarioRepository.deleteById(id);
@@ -124,7 +130,7 @@ public class UsuarioWebController {
 	}
 
 	@PostMapping("/recuperar-password")
-	public String procesarRecuperarPassword(@RequestParam String email, Model model) {
+	public String procesarRecuperarPassword(@RequestParam("email") String email, Model model) {
 		// 1. Buscar usuario por email
 		// 2. Generar token único y guardarlo (en la entidad Usuario o en una tabla aparte)
 		// 3. Enviar email con enlace: /restablecer-password?token=XYZ
@@ -134,7 +140,7 @@ public class UsuarioWebController {
 	}
 
 	@GetMapping("/restablecer-password")
-	public String mostrarFormularioRestablecer(@RequestParam String token, Model model) {
+	public String mostrarFormularioRestablecer(@RequestParam("token") String token, Model model) {
 		// 1. Validar token
 		// 2. Si es válido, mostrar formulario
 		model.addAttribute("token", token);
@@ -142,7 +148,9 @@ public class UsuarioWebController {
 	}
 
 	@PostMapping("/restablecer-password")
-	public String procesarRestablecerPassword(@RequestParam String token, @RequestParam String password, Model model) {
+	public String procesarRestablecerPassword(@RequestParam("token") String token, 
+											  @RequestParam("password") String password, 
+											  Model model) {
 		// 1. Validar token
 		// 2. Cambiar contraseña del usuario
 		// 3. Eliminar/inutilizar el token
