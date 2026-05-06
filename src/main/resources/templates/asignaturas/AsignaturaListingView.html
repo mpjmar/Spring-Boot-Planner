@@ -30,10 +30,6 @@
 					<span class="card-label">Profesor:</span>
 					<span th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></span>
 				</p>
-				<p class="card-campo">
-					<span class="card-label">Color:</span>
-					<span th:text="${asignatura.color}"></span>
-				</p>
 				<img th:src="${asignatura.imagenUrl}" alt="imagen" class="card-imagen" />
 			</div>
 			<div class="card-acciones">
