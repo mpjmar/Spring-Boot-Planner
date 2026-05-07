@@ -9,83 +9,88 @@
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 </head>
 
-<body>
-	<header>
-		<h1>¡Bienvenido! <span th:text="${#authentication?.name}">Usuario</span></h1>
-	</header>
+<body class="dashboard-page">
+	<main class="contenedor dashboard-v2">
+		<header class="dashboard-v2-header">
+			<h1>¡Bienvenido! <span th:text="${#authentication?.name}">Usuario</span></h1>
+		</header>
 
-	<main class="contenedor">
-		<section class="card dashboard-calendar-card">
-			<h2>Calendario de entregas y exámenes</h2>
-			<p class="texto-secundario">Haz clic en un evento para editarlo.</p>
+		<section class="dashboard-panel dashboard-time">
+			<p class="dashboard-date" id="dashboard-current-date"
+			   th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}">01/05/2040</p>
+			<p class="dashboard-hour" id="dashboard-current-time">10:00</p>
+		</section>
+
+		<section class="dashboard-panel dashboard-plan-card">
+			<h3>Planificación de hoy</h3>
+			<div th:if="${#lists.isEmpty(planificacionHoy)}" class="texto-secundario">Sin planificación para hoy.</div>
+			<div th:each="item : ${planificacionHoy}" class="dashboard-plan-item">
+				<div class="dashboard-plan-dot" th:style="'--plan-color:' + ${item.color}"></div>
+				<div class="dashboard-plan-content">
+					<strong th:text="${item.titulo}">Bloque</strong>
+					<p class="dashboard-plan-meta">
+						<span th:text="${item.tipo}">Tipo</span>
+						<span class="dashboard-plan-sep">·</span>
+						<span th:text="${#temporals.format(item.horaInicio, 'HH:mm')}">00:00</span>
+						<span>-</span>
+						<span th:text="${#temporals.format(item.horaFin, 'HH:mm')}">00:00</span>
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="dashboard-panel dashboard-calendar-card">
 			<div id="dashboard-calendar"></div>
 		</section>
 
-		<section class="dashboard-deadlines">
-			<article class="card">
-				<h3>Próximas entregas</h3>
-				<div th:if="${#lists.isEmpty(proximasTareas)}" class="texto-secundario">Sin tareas próximas.</div>
-				<div th:each="tarea : ${proximasTareas}" class="deadline-item">
-					<div>
-						<strong th:text="${tarea.nombre}">Tarea</strong>
-						<p th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : 'Sin asignatura'}">Asignatura</p>
-					</div>
-					<a class="btn btn-secondary btn-small" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"
-					   th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM')}">Fecha</a>
-				</div>
-			</article>
+		<nav class="dashboard-apps" aria-label="Navegación de módulos">
+			<a th:href="@{/asignaturas}" class="dashboard-app-link"><span>Asignaturas</span></a>
+			<a th:href="@{/profesores}" class="dashboard-app-link"><span>Profesores</span></a>
+			<a th:href="@{/tareas}" class="dashboard-app-link"><span>Tareas</span></a>
+			<a th:href="@{/examenes}" class="dashboard-app-link"><span>Exámenes</span></a>
+			<a th:href="@{/horariosClase}" class="dashboard-app-link"><span>Horarios de clase</span></a>
+			<a th:href="@{/bloquesEstudio}" class="dashboard-app-link"><span>Cuadrantes de planificación</span></a>
+		</nav>
 
-			<article class="card">
-				<h3>Próximos exámenes</h3>
-				<div th:if="${#lists.isEmpty(proximosExamenes)}" class="texto-secundario">Sin exámenes próximos.</div>
-				<div th:each="examen : ${proximosExamenes}" class="deadline-item">
-					<div>
-						<strong th:text="${examen.asignatura != null ? examen.asignatura.nombre : 'Examen'}">Examen</strong>
-						<p th:text="${examen.descripcion}">Descripción</p>
-					</div>
-					<a class="btn btn-secondary btn-small" th:href="@{/examenes/{id}/editar(id=${examen.id})}"
-					   th:text="${#temporals.format(examen.fecha, 'dd/MM')}">Fecha</a>
-				</div>
-			</article>
+		<section class="dashboard-panel dashboard-image-card">
+			<div th:if="${imagenInspiradora != null}">
+				<img id="dashboard-inspiring-image"
+					 th:src="${imagenInspiradora}"
+					 alt="Imagen inspiradora"
+					 class="dashboard-inspiring-image" />
+			</div>
+			<div th:if="${imagenInspiradora == null}" class="dashboard-empty-image">
+				<p>Añade imágenes en <strong>/static/images</strong> para mostrarlas aquí.</p>
+			</div>
 		</section>
 
-		<section class="card">
-			<h2>¿Qué quieres hacer hoy?</h2>
-
-			<nav class="dashboard-grid">
-				<a th:href="@{/asignaturas}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">📘</span>
-					<span>Asignaturas</span>
-				</a>
-
-				<a th:href="@{/profesores}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">🎓</span>
-					<span>Profesores</span>
-				</a>
-
-				<a th:href="@{/tareas}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">📝</span>
-					<span>Tareas</span>
-				</a>
-
-				<a th:href="@{/examenes}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">📄</span>
-					<span>Exámenes</span>
-				</a>
-
-				<a th:href="@{/horariosClase}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">🕒</span>
-					<span>Horarios de clase</span>
-				</a>
-
-				<a th:href="@{/bloquesEstudio}" class="card-listado dashboard-card">
-					<span class="dashboard-icono">📅</span>
-					<span>Cuadrantes de planificación</span>
-				</a>
-			</nav>
+		<section class="dashboard-panel dashboard-exams-card">
+			<h3>Exámenes</h3>
+			<div th:if="${#lists.isEmpty(proximosExamenes)}" class="texto-secundario">Sin exámenes próximos.</div>
+			<div th:each="examen : ${proximosExamenes}" class="deadline-item">
+				<div>
+					<strong th:text="${examen.asignatura != null ? examen.asignatura.nombre : 'Examen'}">Examen</strong>
+					<p th:text="${examen.descripcion}">Descripción</p>
+				</div>
+				<a class="btn btn-secondary btn-small" th:href="@{/examenes/{id}/editar(id=${examen.id})}"
+					th:text="${#temporals.format(examen.fecha, 'dd/MM')}">Fecha</a>
+			</div>
 		</section>
 
-		<form th:action="@{/logout}" method="post" class="acciones">
+		<section class="dashboard-panel dashboard-deadlines-card">
+			<h3>Próximas entregas</h3>
+			<div th:if="${#lists.isEmpty(proximasTareas)}" class="texto-secundario">Sin tareas próximas.</div>
+			<div th:each="tarea : ${proximasTareas}" class="deadline-item">
+				<div>
+					<strong th:text="${tarea.nombre}">Tarea</strong>
+					<p th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : 'Sin asignatura'}">Asignatura</p>
+				</div>
+				<a class="btn btn-secondary btn-small" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"
+					th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM')}">Fecha</a>
+			</div>
+		</section>
+
+		<form th:action="@{/logout}" method="post" class="acciones dashboard-logout">
 			<button type="submit" class="btn btn-secondary">Cerrar sesión</button>
 		</form>
 	</main>
@@ -98,29 +103,13 @@
 	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
-		document.addEventListener('DOMContentLoaded', function () {
-			const calendarEl = document.getElementById('dashboard-calendar');
-			if (!calendarEl || typeof FullCalendar === 'undefined') {
-				return;
-			}
-
-			const events = /*[[${eventosCalendario}]]*/ [];
-			const calendar = new FullCalendar.Calendar(calendarEl, {
-				initialView: 'dayGridMonth',
-				locale: 'es',
-				height: 'auto',
-				eventDisplay: 'block',
-				events: events,
-				eventDidMount: function(info) {
-					if (info.event.extendedProps && info.event.extendedProps.extendedHint) {
-						info.el.setAttribute('title', info.event.extendedProps.extendedHint);
-					}
-				}
-			});
-			calendar.render();
-		});
+		window.dashboardData = {
+			eventosCalendario: /*[[${eventosCalendario}]]*/ [],
+			imagenesInspiradoras: /*[[${imagenesInspiradoras}]]*/ []
+		};
 		/*]]>*/
 	</script>
+	
 	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
 </body>
 

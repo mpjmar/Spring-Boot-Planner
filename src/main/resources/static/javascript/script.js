@@ -83,6 +83,75 @@ document.addEventListener('DOMContentLoaded', function () {
         calendar.render();
     }
 
+	// DASHBOARD (reloj + calendario + imagen inspiradora)
+	const dashboardCalendarEl = document.getElementById('dashboard-calendar');
+	const isDashboard = document.body.classList.contains('dashboard-page');
+	if (isDashboard && dashboardCalendarEl) {
+		const dashboardData = (window.dashboardData && typeof window.dashboardData === 'object')
+			? window.dashboardData
+			: { eventosCalendario: [], imagenesInspiradoras: [] };
+
+		const dateEl = document.getElementById('dashboard-current-date');
+		const timeEl = document.getElementById('dashboard-current-time');
+		if (dateEl || timeEl) {
+			const dateFormatter = new Intl.DateTimeFormat('es-ES');
+			const timeFormatter = new Intl.DateTimeFormat('es-ES', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			});
+
+			const actualizarReloj = function() {
+				const now = new Date();
+				if (dateEl) {
+					dateEl.textContent = dateFormatter.format(now);
+				}
+				if (timeEl) {
+					timeEl.textContent = timeFormatter.format(now);
+				}
+			};
+			actualizarReloj();
+			setInterval(actualizarReloj, 1000);
+		}
+
+		const inspiringImageEl = document.getElementById('dashboard-inspiring-image');
+		const imagenesInspiradoras = Array.isArray(dashboardData.imagenesInspiradoras)
+			? dashboardData.imagenesInspiradoras
+			: [];
+
+		if (inspiringImageEl && imagenesInspiradoras.length > 1) {
+			let indiceActual = Math.max(0, imagenesInspiradoras.indexOf(inspiringImageEl.getAttribute('src')));
+			setInterval(function () {
+				indiceActual = (indiceActual + 1) % imagenesInspiradoras.length;
+				inspiringImageEl.classList.add('is-fading');
+				setTimeout(function () {
+					inspiringImageEl.src = imagenesInspiradoras[indiceActual];
+					inspiringImageEl.classList.remove('is-fading');
+				}, 450);
+			}, 300000);
+		}
+
+		if (dashboardCalendarEl && typeof FullCalendar !== 'undefined') {
+			const events = Array.isArray(dashboardData.eventosCalendario)
+				? dashboardData.eventosCalendario
+				: [];
+
+			const dashboardCalendar = new FullCalendar.Calendar(dashboardCalendarEl, {
+				initialView: 'dayGridMonth',
+				locale: 'es',
+				height: 'auto',
+				eventDisplay: 'block',
+				events: events,
+				eventDidMount: function(info) {
+					if (info.event.extendedProps && info.event.extendedProps.extendedHint) {
+						info.el.setAttribute('title', info.event.extendedProps.extendedHint);
+					}
+				}
+			});
+			dashboardCalendar.render();
+		}
+	}
+
 	// FORMULARIOS ELIMINAR
 	document.querySelectorAll('.form-eliminar').forEach(form => {
 		form.addEventListener('submit', function (event) {
