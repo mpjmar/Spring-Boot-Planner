@@ -24,114 +24,121 @@
 			<h2>Planificación de la semana</h2>
 		</section>
 
-		<section class="horario-semanal" aria-label="Horario semanal">
-			<div class="horario-header horario-time-header">Hora</div>
-			<div class="horario-header" th:each="dia : ${diasLectivos}" th:text="${dia.nombre}">Lunes</div>
+		<div class="horario.semanal-wrap">
+			<section class="horario-semanal" aria-label="Horario semanal">
+				<div class="horario-header horario-time-header">Hora</div>
+				<div class="horario-header" th:each="dia : ${diasLectivos}" th:text="${dia.nombre}">Lunes</div>
 
-			<th:block th:each="fila : ${filasHorario}">
-				<div class="horario-cell horario-time-cell">
-					<span th:text="${fila.horaInicio}">08:15</span>
-					<span>-</span>
-					<span th:text="${fila.horaFin}">09:15</span>
-				</div>
-
-				<div class="horario-cell"
-					 th:each="celda : ${fila.celdas}"
-					 th:with="horario=${celda.horario}">
-					<div th:if="${horario == null}" class="horario-empty">
-						<a class="horario-add-link"
-						   th:href="@{/horariosClase/nuevo(diaLectivo=${celda.dia},horaInicio=${celda.horaInicio},horaFin=${celda.horaFin})}">
-							<span>+</span>
-							<span>Añadir</span>
-						</a>
+				<th:block th:each="fila : ${filasHorario}">
+					<div class="horario-cell horario-time-cell">
+						<span th:text="${fila.horaInicio}">08:15</span>
+						<span>-</span>
+						<span th:text="${fila.horaFin}">09:15</span>
 					</div>
 
-					<article th:if="${horario != null}"
-							 class="horario-slot"
-							 th:style="${horario.asignatura != null and horario.asignatura.color != null ? '--slot-color:' + horario.asignatura.color : ''}">
-						<div class="horario-slot-content">
-							<strong th:text="${horario.asignatura != null ? horario.asignatura.nombre : 'Sin asignatura'}">Asignatura</strong>
-							<span>
-								<span th:text="${horario.horaInicio}">08:15</span>
-								-
-								<span th:text="${horario.horaFin}">09:15</span>
-							</span>
+					<div class="horario-cell"
+						th:each="celda : ${fila.celdas}"
+						th:with="horario=${celda.horario}">
+						<div th:if="${horario == null}" class="horario-empty">
+							<a class="horario-add-link"
+							th:href="@{/horariosClase/nuevo(diaLectivo=${celda.dia},horaInicio=${celda.horaInicio},horaFin=${celda.horaFin})}">
+								<span>+</span>
+								<span>Añadir</span>
+							</a>
 						</div>
 
-						<div class="card-acciones horario-slot-actions">
-							<button type="button"
-									class="btn btn-secondary btn-small btn-editar"
-									th:attr="data-form-id=${'form-editar-desktop-' + horario.id}">
-								Editar
-							</button>
+						<article th:if="${horario != null}"
+								class="horario-slot"
+								th:style="${horario.asignatura != null and horario.asignatura.color != null ? '--slot-color:' + horario.asignatura.color : ''}">
+							<div class="horario-slot-content">
+								<strong th:text="${horario.asignatura != null ? horario.asignatura.nombre : 'Sin asignatura'}">Asignatura</strong>
+								<span>
+									<span th:text="${horario.horaInicio}">08:15</span>
+									-
+									<span th:text="${horario.horaFin}">09:15</span>
+								</span>
+							</div>
 
-							<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
-								  method="post"
-								  class="form-eliminar"
-								  data-confirm="¿Eliminar este horario de clase?">
-								<button type="submit" class="btn btn-secondary btn-small">Borrar</button>
-							</form>
-						</div>
+							<div class="card-acciones horario-slot-actions">
+								<button type="button"
+										class="btn btn-secondary btn-small btn-editar btn-icon"
+										th:attr="data-form-id=${'form-editar-desktop-' + horario.id}"
+										title="Editar">
+									<img th:src="@{/images/editar.png}" src="/images/editar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+									<span class="sr-only">Editar</span>
+								</button>
 
-						<div th:id="${'form-editar-desktop-' + horario.id}" class="horario-edit-form" hidden>
-							<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
-								<input type="hidden" name="id" th:value="${horario.id}" />
-
-								<label>Día
-									<select name="diaLectivo">
-										<option th:each="opcionDia : ${diasLectivos}"
-												th:value="${opcionDia}"
-												th:text="${opcionDia.nombre}"
-												th:selected="${opcionDia == horario.diaLectivo}">
-										</option>
-									</select>
-								</label>
-
-								<label>Hora inicio
-									<select name="horaInicio">
-										<option th:each="hora : ${horasInicioDisponibles}"
-												th:value="${hora}"
-												th:text="${hora}"
-												th:selected="${horario.horaInicio != null and hora == horario.horaInicio.toString()}">
-										</option>
-									</select>
-								</label>
-
-								<label>Hora fin
-									<select name="horaFin">
-										<option th:each="hora : ${horasFinDisponibles}"
-												th:value="${hora}"
-												th:text="${hora}"
-												th:selected="${horario.horaFin != null and hora == horario.horaFin.toString()}">
-										</option>
-									</select>
-								</label>
-
-								<label>Asignatura
-									<select name="asignaturaId">
-										<option th:each="asig : ${asignaturas}"
-												th:value="${asig.id}"
-												th:text="${asig.nombre}"
-												th:selected="${horario.asignatura != null and asig.id == horario.asignatura.id}">
-										</option>
-									</select>
-								</label>
-
-								<div class="horario-edit-actions">
-									<button type="submit" class="btn btn-primary btn-small">Guardar</button>
-									<button type="button"
-											class="btn btn-secondary btn-small btn-cancelar"
-											th:attr="data-form-id=${'form-editar-desktop-' + horario.id}">
-										Cancelar
+								<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
+									method="post"
+									class="form-eliminar"
+									data-confirm="¿Eliminar este horario de clase?">
+									<button type="submit" class="btn btn-secondary btn-small btn-icon" title="Borrar">
+										<img th:src="@{/images/borrar.png}" src="/images/borrar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+										<span class="sr-only">Borrar</span>
 									</button>
-								</div>
-							</form>
-						</div>
-					</article>
-				</div>
-			</th:block>
-		</section>
+								</form>
+							</div>
 
+							<div th:id="${'form-editar-desktop-' + horario.id}" class="horario-edit-form" hidden>
+								<form th:action="@{/horariosClase/{id}/editar(id=${horario.id})}" method="post">
+									<input type="hidden" name="id" th:value="${horario.id}" />
+
+									<label>Día
+										<select name="diaLectivo">
+											<option th:each="opcionDia : ${diasLectivos}"
+													th:value="${opcionDia}"
+													th:text="${opcionDia.nombre}"
+													th:selected="${opcionDia == horario.diaLectivo}">
+											</option>
+										</select>
+									</label>
+
+									<label>Hora inicio
+										<select name="horaInicio">
+											<option th:each="hora : ${horasInicioDisponibles}"
+													th:value="${hora}"
+													th:text="${hora}"
+													th:selected="${horario.horaInicio != null and hora == horario.horaInicio.toString()}">
+											</option>
+										</select>
+									</label>
+
+									<label>Hora fin
+										<select name="horaFin">
+											<option th:each="hora : ${horasFinDisponibles}"
+													th:value="${hora}"
+													th:text="${hora}"
+													th:selected="${horario.horaFin != null and hora == horario.horaFin.toString()}">
+											</option>
+										</select>
+									</label>
+
+									<label>Asignatura
+										<select name="asignaturaId">
+											<option th:each="asig : ${asignaturas}"
+													th:value="${asig.id}"
+													th:text="${asig.nombre}"
+													th:selected="${horario.asignatura != null and asig.id == horario.asignatura.id}">
+											</option>
+										</select>
+									</label>
+
+									<div class="horario-edit-actions">
+										<button type="submit" class="btn btn-primary btn-small">Guardar</button>
+										<button type="button"
+												class="btn btn-secondary btn-small btn-cancelar"
+												th:attr="data-form-id=${'form-editar-desktop-' + horario.id}">
+											Cancelar
+										</button>
+									</div>
+								</form>
+							</div>
+						</article>
+					</div>
+				</th:block>
+			</section>
+		</div>
+		
 		<section class="horario-mobile-days" aria-label="Horario semanal por días">
 			<article class="horario-mobile-day" th:each="diaHorario : ${diasHorario}">
 				<h3 th:text="${diaHorario.dia.nombre}">Lunes</h3>
@@ -168,16 +175,21 @@
 
 							<div class="card-acciones horario-slot-actions">
 								<button type="button"
-										class="btn btn-secondary btn-small btn-editar"
-										th:attr="data-form-id=${'form-editar-mobile-' + horario.id}">
-									Editar
+										class="btn btn-secondary btn-small btn-editar btn-icon"
+										th:attr="data-form-id=${'form-editar-mobile-' + horario.id}"
+										title="Editar">
+									<img th:src="@{/images/editar.png}" src="/images/editar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+									<span class="sr-only">Editar</span>
 								</button>
 
 								<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
 									  method="post"
 									  class="form-eliminar"
 									  data-confirm="¿Eliminar este horario de clase?">
-									<button type="submit" class="btn btn-secondary btn-small">Borrar</button>
+									<button type="submit" class="btn btn-secondary btn-small btn-icon" title="Borrar">
+										<img th:src="@{/images/borrar.png}" src="/images/borrar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+										<span class="sr-only">Borrar</span>
+									</button>
 								</form>
 							</div>
 

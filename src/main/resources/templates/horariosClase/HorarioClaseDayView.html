@@ -37,17 +37,20 @@
 
 				<div class="card-acciones">	
 					<button type="button"
-							class="btn btn-secondary btn-editar"
-							th:attr="data-id=${horario.id}">
-					Editar
+							class="btn btn-secondary btn-editar btn-icon"
+							th:attr="data-id=${horario.id}"
+							title="Editar">
+						<img th:src="@{/images/editar.png}" src="/images/editar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+						<span class="sr-only">Editar</span>
 					</button>
 
 					<form th:action="@{/horariosClase/{id}/eliminar(id=${horario.id})}"
 						method="post"
 						class="form-eliminar"
 						data-confirm="¿Eliminar este horario de clase?">
-						<button type="submit" class="btn btn-secondary">
-							Borrar
+						<button type="submit" class="btn btn-secondary btn-icon" title="Borrar">
+							<img th:src="@{/images/borrar.png}" src="/images/borrar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+							<span class="sr-only">Borrar</span>
 						</button>
 					</form>
 				</div>

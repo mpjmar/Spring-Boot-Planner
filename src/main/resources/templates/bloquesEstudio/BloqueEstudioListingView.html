@@ -72,15 +72,17 @@
 						</div>
 
 						<div class="card-acciones">
-							<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" class="btn btn-secondary btn-small">
-								Editar
+							<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" class="btn btn-secondary btn-small btn-icon" title="Editar">
+								<img th:src="@{/images/editar.png}" src="/images/editar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+								<span class="sr-only">Editar</span>
 							</a>
 							<form th:action="@{/bloquesEstudio/{id}/eliminar(id=${bloque.id})}"
 								  method="post"
 								  class="form-eliminar"
 								  data-confirm="¿Eliminar este bloque de estudio?">
-								<button type="submit" class="btn btn-secondary btn-small">
-									Borrar
+								<button type="submit" class="btn btn-secondary btn-small btn-icon" title="Borrar">
+									<img th:src="@{/images/borrar.png}" src="/images/borrar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+									<span class="sr-only">Borrar</span>
 								</button>
 							</form>
 						</div>
