@@ -25,12 +25,7 @@
 				 th:each="tarea : ${tareas}"
 				 th:style="${tarea.asignatura != null and tarea.asignatura.color != null ? '--card-color:' + tarea.asignatura.color : ''}">
 			<div class="card-contenido">
-				<h3 th:text="${tarea.nombre}"></h3>
-			
-				<p class="card-campo">
-					<span class="card-label">Asignatura:</span>
-					<span th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : '—'}"></span>
-				</p>
+				<h3 th:text="${tarea.asignatura != null ? tarea.asignatura.nombre : 'Sin asignatura'}"></h3>
 			
 				<p class="card-campo">
 					<span class="card-label">Descripción:</span>
