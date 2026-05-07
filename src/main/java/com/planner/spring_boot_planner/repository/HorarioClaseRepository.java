@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
@@ -31,10 +32,11 @@ public interface HorarioClaseRepository extends JpaRepository<HorarioClase, Long
 		and h.horaInicio < :horaFin
 		and h.horaFin > :horaInicio
 	""")
-	boolean existeSolapamiento(Long usuarioId,
-							DiaLectivo diaLectivo,
-							LocalTime horaInicio,
-							LocalTime horaFin);
+	boolean existeSolapamiento(
+		@Param("usuarioId") Long usuarioId,
+		@Param("diaLectivo") DiaLectivo diaLectivo,
+		@Param("horaInicio") LocalTime horaInicio,
+		@Param("horaFin") LocalTime horaFin);
 
 	@Query("""
 		select count(h) > 0
@@ -45,10 +47,11 @@ public interface HorarioClaseRepository extends JpaRepository<HorarioClase, Long
 		and h.horaFin > :horaInicio
 		and h.id <> :id
 	""")
-	boolean existeSolapamientoEditando(Long id,
-									Long usuarioId,
-									DiaLectivo diaLectivo,
-									LocalTime horaInicio,
-									LocalTime horaFin);
+	boolean existeSolapamientoEditando(
+		@Param("id") Long id,
+		@Param("usuarioId") Long usuarioId,
+		@Param("diaLectivo") DiaLectivo diaLectivo,
+		@Param("horaInicio") LocalTime horaInicio,
+		@Param("horaFin") LocalTime horaFin);
 
 }

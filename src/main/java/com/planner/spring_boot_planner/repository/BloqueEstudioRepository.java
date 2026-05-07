@@ -22,6 +22,7 @@ public interface BloqueEstudioRepository extends JpaRepository<BloqueEstudio, Lo
 	@RestResource(path = "por-usuario", rel = "por-usuario")
 	List<BloqueEstudio> findByUsuarioId(Long usuarioId);
 
+	@RestResource(path = "solapados-por-usuario", rel = "solapados-por-usuario")
 	@Query("SELECT b FROM BloqueEstudio b WHERE b.fecha = :fecha AND b.usuario.id = :usuarioId "
 		+ "AND b.horaInicio < :horaFin AND b.horaFin > :horaInicio")
 	List<BloqueEstudio> findSolapadosPorUsuario(
