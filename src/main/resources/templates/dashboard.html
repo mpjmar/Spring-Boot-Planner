@@ -21,6 +21,32 @@
 			<p class="dashboard-hour" id="dashboard-current-time">10:00</p>
 		</section>
 
+		<nav class="dashboard-apps" aria-label="Navegación de módulos">
+			<a th:href="@{/asignaturas}" class="dashboard-app-link"><span>Asignaturas</span></a>
+			<a th:href="@{/profesores}" class="dashboard-app-link"><span>Profesores</span></a>
+			<a th:href="@{/tareas}" class="dashboard-app-link"><span>Tareas</span></a>
+			<a th:href="@{/examenes}" class="dashboard-app-link"><span>Exámenes</span></a>
+			<a th:href="@{/horariosClase}" class="dashboard-app-link"><span>Horarios de clase</span></a>
+			<a th:href="@{/bloquesEstudio}" class="dashboard-app-link"><span>Cuadrantes de planificación</span></a>
+			<a th:href="@{/imagenesInspiradoras}" class="dashboard-app-link"><span>Añadir imágenes</span></a>
+		</nav>
+
+		<section class="dashboard-panel dashboard-calendar-card">
+			<div id="dashboard-calendar"></div>
+		</section>
+
+		<section class="dashboard-panel dashboard-image-card">
+			<div th:if="${imagenInspiradora != null}">
+				<img id="dashboard-inspiring-image"
+					 th:src="${imagenInspiradora}"
+					 alt="Imagen inspiradora"
+					 class="dashboard-inspiring-image" />
+			</div>
+			<div th:if="${imagenInspiradora == null}" class="dashboard-empty-image">
+				<p>Añade imágenes en <strong>/static/images</strong> para mostrarlas aquí.</p>
+			</div>
+		</section>
+
 		<section class="dashboard-panel dashboard-plan-card">
 			<h3>Planificación de hoy</h3>
 			<div th:if="${#lists.isEmpty(planificacionHoy)}" class="texto-secundario">Sin planificación para hoy.</div>
@@ -36,31 +62,6 @@
 						<span th:text="${#temporals.format(item.horaFin, 'HH:mm')}">00:00</span>
 					</p>
 				</div>
-			</div>
-		</section>
-
-		<section class="dashboard-panel dashboard-calendar-card">
-			<div id="dashboard-calendar"></div>
-		</section>
-
-		<nav class="dashboard-apps" aria-label="Navegación de módulos">
-			<a th:href="@{/asignaturas}" class="dashboard-app-link"><span>Asignaturas</span></a>
-			<a th:href="@{/profesores}" class="dashboard-app-link"><span>Profesores</span></a>
-			<a th:href="@{/tareas}" class="dashboard-app-link"><span>Tareas</span></a>
-			<a th:href="@{/examenes}" class="dashboard-app-link"><span>Exámenes</span></a>
-			<a th:href="@{/horariosClase}" class="dashboard-app-link"><span>Horarios de clase</span></a>
-			<a th:href="@{/bloquesEstudio}" class="dashboard-app-link"><span>Cuadrantes de planificación</span></a>
-		</nav>
-
-		<section class="dashboard-panel dashboard-image-card">
-			<div th:if="${imagenInspiradora != null}">
-				<img id="dashboard-inspiring-image"
-					 th:src="${imagenInspiradora}"
-					 alt="Imagen inspiradora"
-					 class="dashboard-inspiring-image" />
-			</div>
-			<div th:if="${imagenInspiradora == null}" class="dashboard-empty-image">
-				<p>Añade imágenes en <strong>/static/images</strong> para mostrarlas aquí.</p>
 			</div>
 		</section>
 
