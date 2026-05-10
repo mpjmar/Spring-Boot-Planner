@@ -2,14 +2,10 @@ package com.planner.spring_boot_planner.controller;
 
 import java.time.LocalDate;
 import java.time.DayOfWeek;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,12 +16,16 @@ import com.planner.spring_boot_planner.DiaLectivo;
 import com.planner.spring_boot_planner.entity.BloqueEstudio;
 import com.planner.spring_boot_planner.entity.Examen;
 import com.planner.spring_boot_planner.entity.HorarioClase;
+import com.planner.spring_boot_planner.entity.Imagen;
 import com.planner.spring_boot_planner.entity.Tarea;
 import com.planner.spring_boot_planner.entity.Usuario;
 import com.planner.spring_boot_planner.repository.BloqueEstudioRepository;
 import com.planner.spring_boot_planner.repository.ExamenRepository;
 import com.planner.spring_boot_planner.repository.HorarioClaseRepository;
+import com.planner.spring_boot_planner.repository.ImagenRepository;
 import com.planner.spring_boot_planner.repository.TareaRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class DashboardWebController {
@@ -34,21 +34,26 @@ public class DashboardWebController {
 	private final ExamenRepository examenRepository;
 	private final BloqueEstudioRepository bloqueEstudioRepository;
 	private final HorarioClaseRepository horarioClaseRepository;
+	private final ImagenRepository imagenRepository;
 
 	public DashboardWebController(
 		TareaRepository tareaRepository,
 		ExamenRepository examenRepository,
 		BloqueEstudioRepository bloqueEstudioRepository,
-		HorarioClaseRepository horarioClaseRepository
+		HorarioClaseRepository horarioClaseRepository,
+		ImagenRepository imagenRepository
 	) {
 		this.tareaRepository = tareaRepository;
 		this.examenRepository = examenRepository;
 		this.bloqueEstudioRepository = bloqueEstudioRepository;
 		this.horarioClaseRepository = horarioClaseRepository;
+		this.imagenRepository = imagenRepository;
 	}
 
 	@GetMapping("/dashboard")
-	public String mostrarDashboard(@AuthenticationPrincipal Usuario usuario, Model model) {
+	public String mostrarDashboard(@AuthenticationPrincipal Usuario usuario, 
+					               Model model, 
+								   HttpSession session) {
 		LocalDate hoy = LocalDate.now();
 		LocalDate enDosMeses = hoy.plusMonths(2);
 
@@ -102,9 +107,18 @@ public class DashboardWebController {
 		model.addAttribute("proximasTareas", proximasTareas);
 		model.addAttribute("proximosExamenes", proximosExamenes);
 		model.addAttribute("planificacionHoy", construirPlanificacionHoy(usuario, hoy));
-		List<String> imagenesInspiradoras = listarImagenesInspiradoras();
-		model.addAttribute("imagenesInspiradoras", imagenesInspiradoras);
-		model.addAttribute("imagenInspiradora", seleccionarImagenInspiradora(imagenesInspiradoras));
+		List<String> urls = imagenRepository.findByUsuarioIdOrderByCreatedAtDesc(usuario.getId())
+			.stream()
+			.map(Imagen::getUrl)
+			.toList();
+		String fondoSesion = (String) session.getAttribute("fondoSesion");
+			if (fondoSesion == null && !urls.isEmpty()) {
+				fondoSesion = urls.get(ThreadLocalRandom.current().nextInt(urls.size()));
+				session.setAttribute("fondoSesion", fondoSesion);
+			}
+		model.addAttribute("fondoSesion", fondoSesion);
+		model.addAttribute("imagenesInspiradoras", urls);
+		model.addAttribute("imagenInspiradora", seleccionarImagenInspiradora(urls));
 		return "dashboard";
 	}
 
@@ -193,32 +207,6 @@ public class DashboardWebController {
 		}
 		int index = ThreadLocalRandom.current().nextInt(imagenes.size());
 		return imagenes.get(index);
-	}
-
-	private List<String> listarImagenesInspiradoras() {
-		Path imagesDir = Path.of("src/main/resources/static/images");
-		if (!Files.isDirectory(imagesDir)) {
-			return List.of();
-		}
-
-		try (Stream<Path> files = Files.list(imagesDir)) {
-			return files
-				.filter(Files::isRegularFile)
-				.map(path -> path.getFileName().toString())
-				.filter(this::esImagen)
-				.map(nombre -> "/images/" + nombre)
-				.sorted()
-				.toList();
-		} catch (Exception ex) {
-			return List.of();
-		}
-	}
-
-	private boolean esImagen(String nombreArchivo) {
-		String lower = nombreArchivo.toLowerCase();
-		return Arrays.asList(".png", ".jpg", ".jpeg", ".webp", ".gif")
-			.stream()
-			.anyMatch(lower::endsWith);
 	}
 
 	public static class CalendarEventItem {

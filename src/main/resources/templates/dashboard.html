@@ -9,7 +9,8 @@
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 </head>
 
-<body class="dashboard-page">
+<body class="dashboard-page"
+      th:style="${fondoSesion != null} ? |background-image: linear-gradient(rgba(10,15,30,.55), rgba(10,15,30,.55)), url('${fondoSesion}'); background-size: cover; background-position: center; background-attachment: fixed;| : ''">
 	<main class="contenedor dashboard-v2">
 		<header class="dashboard-v2-header">
 			<h1>¿Qué hacemos hoy?<span th:text="${#authentication?.name}">Usuario</span></h1>
@@ -29,6 +30,9 @@
 			<a th:href="@{/horariosClase}" class="dashboard-app-link"><span>Horarios de clase</span></a>
 			<a th:href="@{/bloquesEstudio}" class="dashboard-app-link"><span>Cuadrantes de planificación</span></a>
 			<a th:href="@{/imagenesInspiradoras}" class="dashboard-app-link"><span>Añadir imágenes</span></a>
+			<form th:action="@{/logout}" method="post" class="dashboard-app-link dashboard-logout-link">
+				<button type="submit" class="btn logout">Cerrar sesión</button>
+			</form>
 		</nav>
 
 		<section class="dashboard-panel dashboard-calendar-card">
@@ -43,7 +47,7 @@
 					 class="dashboard-inspiring-image" />
 			</div>
 			<div th:if="${imagenInspiradora == null}" class="dashboard-empty-image">
-				<p>Añade imágenes en <strong>/static/images</strong> para mostrarlas aquí.</p>
+				<p>Añade imágenes desde <strong>Añadir imágenes</strong> para mostrarlas aquí.</p>
 			</div>
 		</section>
 
@@ -91,9 +95,6 @@
 			</div>
 		</section>
 
-		<form th:action="@{/logout}" method="post" class="acciones dashboard-logout">
-			<button type="submit" class="btn btn-secondary">Cerrar sesión</button>
-		</form>
 	</main>
 
 	<footer>

@@ -117,34 +117,19 @@ public class UsuarioWebController {
 	}
 
 	@PostMapping("/{id}/eliminar")
-	public String eliminar(@PathVariable("id") Long id, @AuthenticationPrincipal Usuario usuario) {
+	public String eliminar(@PathVariable("id") Long id, 
+						   @AuthenticationPrincipal Usuario usuario,
+						   Model model) {
 		if (usuario == null || !usuario.getId().equals(id))
 			return "redirect:/usuario/perfil";
 		usuarioRepository.deleteById(id);
+		model.addAttribute("mensaje", "Usuario eliminado correctamente");
 		return "redirect:/login";
 	}
 
 	@GetMapping("/recuperar-password")
 	public String mostrarFormularioRecuperar() {
 		return "recuperarPassword";
-	}
-
-	@PostMapping("/recuperar-password")
-	public String procesarRecuperarPassword(@RequestParam("email") String email, Model model) {
-		// 1. Buscar usuario por email
-		// 2. Generar token único y guardarlo (en la entidad Usuario o en una tabla aparte)
-		// 3. Enviar email con enlace: /restablecer-password?token=XYZ
-		// 4. Mostrar mensaje de éxito
-		model.addAttribute("mensaje", "Si el email existe, recibirás un enlace para restablecer tu contraseña.");
-		return "recuperarPassword";
-	}
-
-	@GetMapping("/restablecer-password")
-	public String mostrarFormularioRestablecer(@RequestParam("token") String token, Model model) {
-		// 1. Validar token
-		// 2. Si es válido, mostrar formulario
-		model.addAttribute("token", token);
-		return "restablecerPassword";
 	}
 
 	@PostMapping("/restablecer-password")

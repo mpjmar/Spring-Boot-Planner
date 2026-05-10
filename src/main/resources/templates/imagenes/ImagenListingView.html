@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Imágenes inspiradoras</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
+</head>
+
+<body>
+
+	<header>
+		<h1>Imágenes inspiradoras</h1>
+	</header>
+
+	<main class="contenedor">
+		<div class="acciones sticky-toolbar">
+			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
+		</div>
+
+		<div th:if="${ok}" class="alert alert-success" th:text="${ok}"></div>
+		<div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+		<section class="card-listado card-imagen-upload">
+			<h3>Subir nueva imagen</h3>
+			<form th:action="@{/imagenesInspiradoras}" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<label for="archivo">Selecciona imagen</label>
+					<input type="file" id="archivo" name="archivo" accept="image/*" required />
+				</div>
+				<button type="submit" class="btn btn-primary">Subir imagen</button>
+			</form>
+		</section>
+
+		<article class="card-listado" th:each="imagen : ${imagenes}">
+			<div class="card-contenido">
+				<img th:src="${imagen.url}" alt="Imagen inspiradora" style="max-width: 260px; border-radius: 10px;" />
+				<p class="card-campo">
+					<span class="card-label">Subida:</span>
+					<span th:text="${#temporals.format(imagen.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026 12:00</span>
+				</p>
+			</div>
+
+			<div class="card-acciones">
+				<form th:action="@{/imagenesInspiradoras/{id}/eliminar(id=${imagen.id})}"
+					  method="post"
+					  class="form-eliminar"
+					  data-confirm="¿Eliminar esta imagen?">
+					<button type="submit" class="btn btn-secondary btn-icon" title="Borrar">
+						<img th:src="@{/images/borrar.png}" src="/images/borrar.png" alt="" aria-hidden="true" class="btn-icon-img" />
+						<span class="sr-only">Borrar</span>
+					</button>
+				</form>
+			</div>
+		</article>
+
+		<div th:if="${#lists.isEmpty(imagenes)}">
+			<p>No tienes imágenes subidas todavía.</p>
+		</div>
+	</main>
+
+	<footer>
+		<p>Planificador de estudios con Spring Boot + Supabase</p>
+		<p>Author: M. Paz Jiménez Martín</p>
+	</footer>
+
+	<script th:src="@{/javascript/script.js}" src="/javascript/script.js"></script>
+</body>
+
+</html>
