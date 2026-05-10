@@ -76,6 +76,20 @@ footer {
     width: min(1280px, 94%);
 }
 
+.contenedor-listados {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 2rem;
+	width: min(1100px, 92%);
+	margin: 0 auto;
+}
+
+.contenedor-listados .sticky-toolbar,
+.contenedor-listados > .alert,
+.contenedor-listados > div:not(.card-listado) {
+	grid-column: 1 / -1;
+}
+
 h1, h2, h3 {
     text-align: center;
     margin: 1rem auto 1.5rem auto;
@@ -1048,6 +1062,12 @@ a:hover {
         width: 100%;
         margin: 0.5rem auto;
     }
+}
+
+@media (max-width: 900px) {
+	.contenedor-listados {
+	  grid-template-columns: 1fr;
+	}
 }
 
 @media (max-width: 760px) {
