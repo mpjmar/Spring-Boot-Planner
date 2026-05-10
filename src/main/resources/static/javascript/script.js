@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			const dashboardCalendar = new FullCalendar.Calendar(dashboardCalendarEl, {
 				initialView: 'dayGridMonth',
 				locale: 'es',
+				firstDay: 1,
 				height: 'auto',
 				eventDisplay: 'block',
 				events: events,
