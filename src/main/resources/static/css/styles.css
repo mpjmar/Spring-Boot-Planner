@@ -479,7 +479,7 @@ textarea:focus {
 
 .btn-primary,
 .btn-secondary {
-    border: 1px solid #6d798a;
+    border: 0.5px solid #616d7c;
     background: var(--glass-bg);
     box-shadow: var(--glass-shadow);
     backdrop-filter: var(--glass-blur);
