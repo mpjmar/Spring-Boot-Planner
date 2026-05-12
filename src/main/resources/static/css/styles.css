@@ -145,6 +145,7 @@ h1, h2, h3 {
 .card-contenido {
     flex: 1;
 	padding: 1rem;
+    text-overflow: ellipsis;
 }
 
 .card-contenido h3 {
@@ -623,10 +624,28 @@ a:hover {
 
 .bloques-semana-grid {
     display: grid;
-    grid-template-columns: repeat(7, minmax(180px, 1fr));
-    gap: 0.8rem;
-    overflow-x: auto;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: clamp(0.6rem, 2vw, 2rem);
+    overflow-x: visible;
     padding-bottom: 0.5rem;
+    align-self: stretch;
+    width: 100%;
+}
+
+.bloques-semana-columna { 
+    min-width: 0; 
+}
+
+.bloques-semana-columna .bloque-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.bloques-semana-columna .card-contenido {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .bloques-cuadrante {
@@ -1030,6 +1049,24 @@ a:hover {
 	width: 100%;
 }
 
+/* Evita que .bloque-card sobrepase la columna */
+.bloques-semana-columna { min-width: 0; }
+
+.bloques-semana-columna .bloque-card {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 0.75rem 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bloques-semana-columna .card-contenido {
+  flex: 1 1 auto;
+  min-width: 0; 
+  overflow: hidden;
+  word-wrap: break-word; /* permite quiebre de palabras en móviles */
+}
+
 
 /* RESPONSIVIDAD */
 
@@ -1081,7 +1118,10 @@ a:hover {
     }
 
     .horario-mobile-days {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 80%;
     }
 
     .horario-intro {
@@ -1092,14 +1132,17 @@ a:hover {
         justify-content: flex-start;
     }
 
-    .bloques-semana-grid {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
+    @media (max-width: 420px) {
+        .bloques-semana-grid {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
         overflow: visible;
+        }
     }
 
     .card-acciones.horario-slot-actions {
         justify-content: center;
-      }
+    }
 }
 
 @media (max-width: 640px) {
