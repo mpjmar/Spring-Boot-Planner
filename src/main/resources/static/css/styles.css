@@ -545,8 +545,8 @@ textarea:focus {
 }
 
 .mensaje-exito {
-    color: #6954e1;
-    background: #14532d80;
+    color: #ffffff;
+    background: #03a9eb5e;
     border: 1px solid #120a41;
     border-radius: 8px;
     padding: 0.6rem 0.75rem;
@@ -703,8 +703,8 @@ a:hover {
 }
 
 .mensaje-destacado {
-    background: #dcfce7;
-    border: 1px solid #120a41;
+    color: #ffffff;
+    background: #03a9eb5e;
     border-radius: 8px;
     padding: 0.75rem 1rem;
     text-align: center;

@@ -30,7 +30,6 @@
 					<span class="card-label">Profesor:</span>
 					<span th:text="${asignatura.profesor != null ? asignatura.profesor.nombre : '—'}"></span>
 				</p>
-				<img th:src="${asignatura.imagenUrl}" alt="imagen" class="card-imagen" />
 			</div>
 			<div class="card-acciones">
 				<a th:href="@{/asignaturas/{id}/editar(id=${asignatura.id})}" class="btn btn-secondary btn-icon" title="Editar">
