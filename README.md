@@ -4,6 +4,8 @@ Aplicación web de planificación académica desarrollada con Spring Boot + Thym
 
 Permite gestionar el estudio y la carga lectiva mediante módulos de asignaturas, tareas, exámenes, horarios y bloques de estudio, con un dashboard central para visualizar el estado general.
 
+https://spring-boot-planner.onrender.com
+
 ## Funcionalidades actuales
 
 - Autenticación de usuarios con Spring Security.
