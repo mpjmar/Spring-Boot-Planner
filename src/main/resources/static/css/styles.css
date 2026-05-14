@@ -203,7 +203,7 @@ h1, h2, h3 {
     border-radius: 18px;
     box-shadow: 0 18px 45px #00000040;
 	min-width: 980px;
-    width: 75%;
+    width: 100%;
 	margin: 50px auto;
 }
 
