@@ -10,7 +10,9 @@
 	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 
-  <body class="fondo" th:classappend="${bodyClass}">
+<body class="fondo"
+      th:classappend="${#strings.trim((bodyClass != null ? bodyClass : '') + (fondoSesion != null ? ' fondo-sesion' : ''))}"
+      th:style="${fondoSesion != null} ? |--fondo-sesion-image: url('${fondoSesion}');| : _">
 
 	<header>
 		<h1>Planificación semanal</h1>

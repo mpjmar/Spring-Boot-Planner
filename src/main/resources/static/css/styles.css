@@ -27,6 +27,14 @@ body {
     background-position: center;
     background-attachment: fixed;
     color: #e5e7eb;
+	padding-top: 25px;
+}
+
+body.fondo-sesion {
+	background-image: linear-gradient(rgba(10, 15, 30, 0.55), rgba(10, 15, 30, 0.55)), var(--fondo-sesion-image);
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
 }
 
 :root {
@@ -34,10 +42,6 @@ body {
     --glass-border: 1px solid #ffffff2b;
     --glass-shadow: 0 10px 25px #00000033;
     --glass-blur: blur(5px);
-}
-
-main {
-    flex: 1;
 }
 
 footer {
@@ -65,7 +69,7 @@ footer {
 }
 
 .contenedor {
-    width: min(1100px, 92%);
+    width: min(1400px, 92%);
     margin: 0 auto;
 	display: flex;
 	flex-direction: column;

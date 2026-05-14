@@ -8,7 +8,7 @@
 	<link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css" />
 </head>
 
-<body>
+<body th:classappend="${fondoSesion != null} ? 'fondo-sesion' : _" th:style="${fondoSesion != null} ? |--fondo-sesion-image: url('${fondoSesion}');| : _">
 
 	<header>
 		<h1>Listado de Exámenes</h1>

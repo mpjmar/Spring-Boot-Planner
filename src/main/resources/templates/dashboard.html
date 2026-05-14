@@ -10,7 +10,7 @@
 </head>
 
 <body class="dashboard-page"
-      th:style="${fondoSesion != null} ? |background-image: linear-gradient(rgba(10,15,30,.55), rgba(10,15,30,.55)), url('${fondoSesion}'); background-size: cover; background-position: center; background-attachment: fixed;| : ''">
+      th:classappend="${fondoSesion != null} ? 'fondo-sesion' : _" th:style="${fondoSesion != null} ? |--fondo-sesion-image: url('${fondoSesion}');| : _">
 	<main class="contenedor dashboard-v2">
 		<header class="dashboard-v2-header">
 			<h1>¿Qué hacemos hoy?<span th:text="${#authentication?.name}">Usuario</span></h1>
