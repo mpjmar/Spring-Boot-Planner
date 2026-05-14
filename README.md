@@ -10,15 +10,15 @@ Permite gestionar el estudio y la carga lectiva mediante módulos de asignaturas
 <p align="center"">
 	<img src="src/main/resources/static/images/dashboard.png" alt="Dashboard" width="500" style="max-width: 100%;" /> 
 </p>
-<br /><br />
+<br />
 <p align="center"">
 	<img src="src/main/resources/static/images/horario.png" alt="Dashboard" width="500" style="max-width: 100%;" />
 </p>
-<br /><br />
+<br />
 <p align="center"">
 	<img src="src/main/resources/static/images/weekly-planner.png" alt="Dashboard" width="500" style="max-width: 100%;" />
 </p>
-<br /><br />
+<br />
 
 ## Funcionalidades actuales
 
