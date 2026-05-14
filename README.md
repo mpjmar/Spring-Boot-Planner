@@ -7,10 +7,11 @@ Permite gestionar el estudio y la carga lectiva mediante módulos de asignaturas
 ## Demo
 
 - **Aplicación en vivo:** [https://spring-boot-planner.onrender.com](https://spring-boot-planner.onrender.com)
-
-<img src="src/main/resources/static/images/dashboard.png" alt="Dashboard" width="500" style="max-width: 100%;" />
-<img src="src/main/resources/static/images/horario.png" alt="Dashboard" width="500" style="max-width: 100%;" />
-<img src="src/main/resources/static/images/weekly-planner.png" alt="Dashboard" width="500" style="max-width: 100%;" />
+<div align="center">
+	<img src="src/main/resources/static/images/dashboard.png" alt="Dashboard" width="500" style="max-width: 100%;" />
+	<img src="src/main/resources/static/images/horario.png" alt="Dashboard" width="500" style="max-width: 100%;" />
+	<img src="src/main/resources/static/images/weekly-planner.png" alt="Dashboard" width="500" style="max-width: 100%;" />
+</div>
 
 ## Funcionalidades actuales
 
