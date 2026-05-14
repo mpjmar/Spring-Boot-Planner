@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<meta charset="UTF-8">
@@ -30,6 +30,8 @@
 			<a th:href="@{/horariosClase}" class="dashboard-app-link"><span>Horarios de clase</span></a>
 			<a th:href="@{/bloquesEstudio}" class="dashboard-app-link"><span>Cuadrantes de planificación</span></a>
 			<a th:href="@{/imagenesInspiradoras}" class="dashboard-app-link"><span>Añadir imágenes</span></a>
+			<a th:href="@{/usuario/perfil}" class="dashboard-app-link"><span>Mi perfil</span></a>
+			<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/usuarios}" class="dashboard-app-link"><span>Usuarios</span></a>
 			<form th:action="@{/logout}" method="post" class="dashboard-app-link dashboard-logout-link">
 				<button type="submit" class="btn logout">Cerrar sesión</button>
 			</form>

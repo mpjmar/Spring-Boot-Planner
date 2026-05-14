@@ -16,9 +16,12 @@
 
 	<main class="contenedor contenedor-listados">
 
+		<p th:if="${mensaje}" th:text="${mensaje}" class="mensaje-destacado"></p>
+		<p th:if="${error}" th:text="${error}" class="error" style="text-align:center;margin:0.5rem 0;"></p>
+
 		<div class="acciones sticky-toolbar">
 			<a th:href="@{/dashboard}" class="btn btn-primary">← Dashboard</a>
-			<a th:href="@{/usuarios/nuevo}" class="btn btn-primary">+ Añadir usuario</a>
+			<a th:href="@{/usuario/nuevo}" class="btn btn-primary">+ Registrar usuario</a>
 		</div>
 		
 		<article class="card-listado" th:each="usuario : ${usuarios}">
@@ -34,15 +37,20 @@
 					<span class="card-label">Email:</span>
 					<span th:text="${usuario.email}"></span>
 				</p>
+
+				<p class="card-campo">
+					<span class="card-label">Rol:</span>
+					<span th:text="${usuario.rol}"></span>
+				</p>
 			</div>
 		
 			<div class="card-acciones">
-				<a th:href="@{/usuarios/{id}/editar(id=${usuario.id})}" class="btn btn-secondary btn-icon" title="Editar">
+				<a th:href="@{/admin/usuarios/{id}/editar(id=${usuario.id})}" class="btn btn-secondary btn-icon" title="Editar">
 					<img th:src="@{/images/editar.png}" src="/images/editar.png" alt="" aria-hidden="true" class="btn-icon-img" />
 					<span class="sr-only">Editar</span>
 				</a>
 		
-				<form th:action="@{/usuarios/{id}/eliminar(id=${usuario.id})}"
+				<form th:action="@{/admin/usuarios/{id}/eliminar(id=${usuario.id})}"
 					  method="post"
 					  class="form-eliminar"
 					  data-confirm="¿Eliminar este usuario?">

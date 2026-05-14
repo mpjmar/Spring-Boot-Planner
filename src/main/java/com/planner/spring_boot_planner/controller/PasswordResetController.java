@@ -41,6 +41,11 @@ public class PasswordResetController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @GetMapping("/recuperar-password")
+    public String mostrarFormularioRecuperar() {
+        return "recuperarPassword";
+    }
+
     @PostMapping("/recuperar-password")
     public String procesarRecuperarPassword(@RequestParam("email") String email, Model model) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
