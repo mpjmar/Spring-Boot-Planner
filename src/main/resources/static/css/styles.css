@@ -787,10 +787,9 @@ a:hover {
 .dashboard-time {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
-    text-align: left;
+    text-align: center;
     align-content: center;
     justify-items: center;
-    padding-left: 25px;
     margin: 0;
     height: 100%;
 }
