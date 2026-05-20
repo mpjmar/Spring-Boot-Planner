@@ -1,12 +1,11 @@
 package com.planner.spring_boot_planner.controller;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,28 +15,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.planner.spring_boot_planner.entity.PasswordResetToken;
 import com.planner.spring_boot_planner.entity.Usuario;
-import com.planner.spring_boot_planner.repository.PasswordResetTokenRepository;
 import com.planner.spring_boot_planner.repository.UsuarioRepository;
+import com.planner.spring_boot_planner.service.PasswordResetMailService;
+import com.planner.spring_boot_planner.service.PasswordResetTokenService;
 
 @Controller
 public class PasswordResetController {
 
-    private final UsuarioRepository usuarioRepository;
-    private final PasswordResetTokenRepository tokenRepository;
-    private final JavaMailSender mailSender;
-    private final PasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(PasswordResetController.class);
 
-    @Value("${app.base-url}")
-    private String baseUrl;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordResetTokenService passwordResetTokenService;
+    private final PasswordResetMailService passwordResetMailService;
+    private final PasswordEncoder passwordEncoder;
 
     public PasswordResetController(
             UsuarioRepository usuarioRepository,
-            PasswordResetTokenRepository tokenRepository,
-            JavaMailSender mailSender,
+            PasswordResetTokenService passwordResetTokenService,
+            PasswordResetMailService passwordResetMailService,
             PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
-        this.tokenRepository = tokenRepository;
-        this.mailSender = mailSender;
+        this.passwordResetTokenService = passwordResetTokenService;
+        this.passwordResetMailService = passwordResetMailService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -52,38 +51,30 @@ public class PasswordResetController {
 
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
+            PasswordResetToken resetToken = null;
 
-            // Invalida tokens anteriores del usuario
-            tokenRepository.deleteByUsuario(usuario);
+            try {
+                String token = UUID.randomUUID().toString();
+                resetToken = passwordResetTokenService.crearToken(usuario, token);
 
-            String token = UUID.randomUUID().toString();
-            PasswordResetToken resetToken = new PasswordResetToken(
-                    token,
-                    usuario,
-                    LocalDateTime.now().plusMinutes(30));
-            tokenRepository.save(resetToken);
-
-            String resetLink = baseUrl + "/restablecer-password?token=" + token;
-
-            SimpleMailMessage mensaje = new SimpleMailMessage();
-            mensaje.setTo(usuario.getEmail());
-            mensaje.setSubject("Recuperación de contraseña");
-            mensaje.setText(
-                    "Hola " + usuario.getNombre() + ",\n\n" +
-                    "Para restablecer tu contraseña, haz clic en el siguiente enlace:\n" +
-                    resetLink + "\n\n" +
-                    "Este enlace caduca en 30 minutos.");
-
-            mailSender.send(mensaje);
+                passwordResetMailService.enviarCorreoRecuperacion(usuario, token);
+                model.addAttribute("mensaje", "Si el email existe, recibirás un enlace para restablecer tu contraseña.");
+            } catch (MailException ex) {
+                logger.error("Error enviando correo de recuperación a {}", email, ex);
+                if (resetToken != null) {
+                    passwordResetTokenService.eliminarToken(resetToken);
+                }
+                model.addAttribute("error", "No se ha podido enviar el correo de recuperación. Revisa la configuración del email.");
+            }
+        } else {
+            model.addAttribute("mensaje", "Si el email existe, recibirás un enlace para restablecer tu contraseña.");
         }
-
-        model.addAttribute("mensaje", "Si el email existe, recibirás un enlace para restablecer tu contraseña.");
         return "recuperarPassword";
     }
 
     @GetMapping("/restablecer-password")
     public String mostrarFormularioRestablecer(@RequestParam("token") String token, Model model) {
-        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenService.obtenerToken(token);
 
         if (tokenOpt.isEmpty() || tokenOpt.get().isUsado() || tokenOpt.get().estaExpirado()) {
             model.addAttribute("error", "El enlace no es válido o ha expirado.");
@@ -101,7 +92,7 @@ public class PasswordResetController {
             @RequestParam("repitePassword") String repitePassword,
             Model model) {
 
-        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenService.obtenerToken(token);
 
         if (tokenOpt.isEmpty() || tokenOpt.get().isUsado() || tokenOpt.get().estaExpirado()) {
             model.addAttribute("error", "El enlace no es válido o ha expirado.");
@@ -120,8 +111,7 @@ public class PasswordResetController {
         usuario.setPassword(passwordEncoder.encode(password));
         usuarioRepository.save(usuario);
 
-        resetToken.setUsado(true);
-        tokenRepository.save(resetToken);
+        passwordResetTokenService.marcarComoUsado(resetToken);
 
         return "redirect:/login?resetSuccess";
     }

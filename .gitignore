@@ -22,6 +22,7 @@ target/
 
 ### VS Code ###
 .vscode/
+.cursor/
 
 ### Secrets ###
 application-local.properties
