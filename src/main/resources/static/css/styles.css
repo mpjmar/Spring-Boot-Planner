@@ -1,9 +1,17 @@
 @font-face {
-    font-family: "DS-Digital";
-    src: url("/fonts/ds-digit.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+	font-family: "DS-Digital";
+	src: url("/fonts/ds-digit.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: "DS-Digital";
+	src: url("/fonts/ds-digib.ttf") format("truetype");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
   }
 
 * {
@@ -27,6 +35,14 @@ body {
     background-position: center;
     background-attachment: fixed;
     color: #e5e7eb;
+	padding-top: 25px;
+}
+
+body.fondo-sesion {
+	background-image: linear-gradient(rgba(10, 15, 30, 0.55), rgba(10, 15, 30, 0.55)), var(--fondo-sesion-image);
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
 }
 
 :root {
@@ -34,10 +50,6 @@ body {
     --glass-border: 1px solid #ffffff2b;
     --glass-shadow: 0 10px 25px #00000033;
     --glass-blur: blur(5px);
-}
-
-main {
-    flex: 1;
 }
 
 footer {
@@ -65,7 +77,7 @@ footer {
 }
 
 .contenedor {
-    width: min(1100px, 92%);
+    width: min(1400px, 92%);
     margin: 0 auto;
 	display: flex;
 	flex-direction: column;
@@ -199,7 +211,7 @@ h1, h2, h3 {
     border-radius: 18px;
     box-shadow: 0 18px 45px #00000040;
 	min-width: 980px;
-    width: 75%;
+    width: 100%;
 	margin: 50px auto;
 }
 
@@ -775,10 +787,9 @@ a:hover {
 .dashboard-time {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
-    text-align: left;
+    text-align: center;
     align-content: center;
     justify-items: center;
-    padding-left: 25px;
     margin: 0;
     height: 100%;
 }

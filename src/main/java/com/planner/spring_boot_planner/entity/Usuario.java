@@ -2,10 +2,10 @@ package com.planner.spring_boot_planner.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,10 +13,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PostLoad;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -58,6 +61,14 @@ public class Usuario implements UserDetails {
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String repitePassword;
+
+	/**
+	 * Nullable en BD para permitir migración con filas existentes (Hibernate add column).
+	 * Valores null se normalizan a {@link Rol#USER} en {@link #normalizarRolNulo()}.
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20, nullable = true)
+	private Rol rol = Rol.USER;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -144,6 +155,25 @@ public class Usuario implements UserDetails {
 		this.repitePassword = repitePassword;
 	}
 
+	public Rol getRol() {
+		return rol;
+	}
+
+	public void setRol(Rol rol) {
+		this.rol = rol;
+	}
+
+	public boolean esAdmin() {
+		return rol == Rol.ADMIN;
+	}
+
+	@PostLoad
+	private void normalizarRolNulo() {
+		if (rol == null) {
+			rol = Rol.USER;
+		}
+	}
+
     public List<BloqueEstudio> getBloquesEstudio() {
         return bloquesEstudio;
     }
@@ -201,6 +231,7 @@ public class Usuario implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.emptyList(); // O asigna roles si los tienes
+		Rol efectivo = rol != null ? rol : Rol.USER;
+		return List.of(new SimpleGrantedAuthority("ROLE_" + efectivo.name()));
 	}
 }

@@ -20,13 +20,19 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
 					"/css/**",
-					"/js/**",
-					"/img/**",
-					"/login",
-					"/usuario/nuevo",
-					"/usuarios/nuevo"
+					"/javascript/**",
+					"/images/**",
+					"/fonts/**"
 				).permitAll()
-				.requestMatchers("/horariosClase/**").authenticated()
+				.requestMatchers(
+					"/login",
+					"/logout",
+					"/usuario/nuevo",
+					"/usuario/recuperar-password",
+					"/recuperar-password",
+					"/restablecer-password"
+				).permitAll()
+				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)
 			.formLogin(form -> form

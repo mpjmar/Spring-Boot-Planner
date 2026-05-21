@@ -25,8 +25,6 @@ import com.planner.spring_boot_planner.repository.HorarioClaseRepository;
 import com.planner.spring_boot_planner.repository.ImagenRepository;
 import com.planner.spring_boot_planner.repository.TareaRepository;
 
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class DashboardWebController {
 
@@ -51,9 +49,8 @@ public class DashboardWebController {
 	}
 
 	@GetMapping("/dashboard")
-	public String mostrarDashboard(@AuthenticationPrincipal Usuario usuario, 
-					               Model model, 
-								   HttpSession session) {
+	public String mostrarDashboard(@AuthenticationPrincipal Usuario usuario,
+					               Model model) {
 		LocalDate hoy = LocalDate.now();
 		LocalDate enDosMeses = hoy.plusMonths(2);
 
@@ -111,12 +108,6 @@ public class DashboardWebController {
 			.stream()
 			.map(Imagen::getUrl)
 			.toList();
-		String fondoSesion = (String) session.getAttribute("fondoSesion");
-			if (fondoSesion == null && !urls.isEmpty()) {
-				fondoSesion = urls.get(ThreadLocalRandom.current().nextInt(urls.size()));
-				session.setAttribute("fondoSesion", fondoSesion);
-			}
-		model.addAttribute("fondoSesion", fondoSesion);
 		model.addAttribute("imagenesInspiradoras", urls);
 		model.addAttribute("imagenInspiradora", seleccionarImagenInspiradora(urls));
 		return "dashboard";
