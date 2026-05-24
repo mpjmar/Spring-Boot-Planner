@@ -78,6 +78,16 @@
 						</div>
 
 						<div class="card-acciones">
+							<button type="button"
+									class="btn btn-secondary btn-small btn-icon btn-copiar-bloque"
+									title="Copiar a otro día"
+									th:attr="data-bloque-id=${bloque.id},
+											data-bloque-fecha=${bloque.fecha},
+											data-bloque-horario=${bloque.horaInicio + ' - ' + bloque.horaFin},
+											data-bloque-asignatura=${bloque.asignatura != null ? bloque.asignatura.nombre : 'Sin asignatura'}">
+								<img th:src="@{/images/copy.png}" src="/images/copy.png" alt="" aria-hidden="true" class="btn-icon-img" />
+								<span class="sr-only">Copiar</span>
+							</button>
 							<a th:href="@{/bloquesEstudio/{id}/editar(id=${bloque.id})}" class="btn btn-secondary btn-small btn-icon" title="Editar">
 								<img th:src="@{/images/editar.png}" src="/images/editar.png" alt="" aria-hidden="true" class="btn-icon-img" />
 								<span class="sr-only">Editar</span>
@@ -98,6 +108,24 @@
 		</section>
 		
 	</main>
+
+	<dialog id="dialogo-copiar-bloque" class="dialogo-copiar">
+		<h2>Copiar bloque</h2>
+		<p id="copiar-bloque-resumen" class="copiar-bloque-resumen"></p>
+		<p class="texto-secundario">Elige el día destino:</p>
+		<div id="copiar-dias-grid" class="copiar-dias-grid">
+			<button type="button"
+					class="btn btn-secondary btn-copiar-dia"
+					th:each="dia : ${diasSemana}"
+					th:text="${#temporals.format(dia, 'EEE dd/MM')}"
+					th:attr="data-fecha=${dia}">
+				Lun 01/01
+			</button>
+		</div>
+		<div class="dialogo-copiar-acciones">
+			<button type="button" class="btn btn-secondary" id="cerrar-dialogo-copiar">Cancelar</button>
+		</div>
+	</dialog>
 
 	<footer>
 		<p>Planificador de estudios con Spring Boot + Supabase</p>

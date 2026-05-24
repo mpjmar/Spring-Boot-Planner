@@ -218,20 +218,69 @@ public class BloqueEstudioWebController {
 			return ResponseEntity.badRequest().build();
 		}
 
-		List<BloqueEstudio> solapados = bloqueEstudioRepository.findSolapadosPorUsuario(
-			bloqueEstudio.getFecha(), usuario.getId(), bloqueEstudio.getHoraInicio(), bloqueEstudio.getHoraFin());
-		boolean haySolape = solapados.stream().anyMatch(s -> !s.getId().equals(bloqueEstudio.getId()));
-		if (haySolape) {
+		if (tieneSolape(bloqueEstudio, usuario.getId(), bloqueEstudio.getId())) {
 			return ResponseEntity.badRequest().build();
 		}
 
-		if (bloqueEstudio.getAsignatura() != null)
-			bloqueEstudio.setColor(bloqueEstudio.getAsignatura().getColor() != null
-								   ? bloqueEstudio.getAsignatura().getColor() : COLOR_DEFECTO);
-		else
-			bloqueEstudio.setColor(COLOR_DEFECTO);
+		resolverColor(bloqueEstudio);
 		bloqueEstudioRepository.save(bloqueEstudio);
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/{id}/copiar")
+	@ResponseBody
+	public ResponseEntity<Void> copiarBloque(@PathVariable("id") Long id,
+											@RequestBody Map<String, String> payload,
+											@AuthenticationPrincipal Usuario usuario) {
+		BloqueEstudio origen = bloqueEstudioRepository.findById(id).orElse(null);
+		if (origen == null || !origen.getUsuario().getId().equals(usuario.getId()))
+			return ResponseEntity.status(403).build();
+
+		String fechaStr = payload.get("fecha");
+		if (fechaStr == null || fechaStr.isBlank())
+			return ResponseEntity.badRequest().build();
+
+		LocalDate fechaDestino;
+		try {
+			fechaDestino = LocalDate.parse(fechaStr);
+		} catch (DateTimeParseException e) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		if (origen.getFecha() != null && origen.getFecha().equals(fechaDestino))
+			return ResponseEntity.badRequest().build();
+
+		if (origen.getHoraInicio() == null || origen.getHoraFin() == null)
+			return ResponseEntity.badRequest().build();
+
+		BloqueEstudio copia = new BloqueEstudio();
+		copia.setFecha(fechaDestino);
+		copia.setHoraInicio(origen.getHoraInicio());
+		copia.setHoraFin(origen.getHoraFin());
+		copia.setAsignatura(origen.getAsignatura());
+		copia.setUsuario(usuario);
+		resolverColor(copia);
+
+		if (tieneSolape(copia, usuario.getId(), null)) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		bloqueEstudioRepository.save(copia);
+		return ResponseEntity.ok().build();
+	}
+
+	private boolean tieneSolape(BloqueEstudio bloqueEstudio, Long usuarioId, Long idExcluido) {
+		if (bloqueEstudio.getFecha() == null
+				|| bloqueEstudio.getHoraInicio() == null
+				|| bloqueEstudio.getHoraFin() == null) {
+			return false;
+		}
+		List<BloqueEstudio> solapados = bloqueEstudioRepository.findSolapadosPorUsuario(
+			bloqueEstudio.getFecha(), usuarioId, bloqueEstudio.getHoraInicio(), bloqueEstudio.getHoraFin());
+		if (idExcluido == null) {
+			return !solapados.isEmpty();
+		}
+		return solapados.stream().anyMatch(s -> !s.getId().equals(idExcluido));
 	}
 
 	private void validarSolapados(Long idExcluido, BloqueEstudio bloqueEstudio,

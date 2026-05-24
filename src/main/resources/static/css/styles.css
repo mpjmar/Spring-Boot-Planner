@@ -636,7 +636,7 @@ a:hover {
 
 .bloques-semana-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: clamp(0.6rem, 2vw, 2rem);
     overflow-x: visible;
     padding-bottom: 0.5rem;
@@ -672,6 +672,8 @@ a:hover {
     min-height: 220px;
     border: 2px solid transparent;
     transition: border-color 0.2s ease, background-color 0.2s ease;
+    container-type: inline-size;
+    container-name: dia-semana;
 }
 
 .bloques-semana-columna.drop-active {
@@ -1074,11 +1076,120 @@ a:hover {
 
 .bloques-semana-columna .card-contenido {
   flex: 1 1 auto;
-  min-width: 0; 
+  min-width: 0;
   overflow: hidden;
-  word-wrap: break-word; /* permite quiebre de palabras en móviles */
+  word-wrap: break-word;
+  padding: 0.35rem 0.25rem;
 }
 
+.bloques-semana-columna .card-acciones {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.bloques-semana-columna .card-acciones form {
+  margin: 0;
+  display: inline-flex;
+}
+
+.bloques-semana-columna .btn-small.btn-icon {
+  min-width: 1.85rem;
+  min-height: 1.85rem;
+  padding: 0.25rem;
+  flex: 0 0 auto;
+}
+
+.bloques-semana-columna .btn-icon-img {
+  width: 16px;
+  height: 16px;
+}
+
+@container dia-semana (max-width: 280px) {
+  .bloques-semana-columna .bloque-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.65rem;
+  }
+
+  .bloques-semana-columna .card-contenido {
+    padding: 0.25rem 0;
+    text-align: center;
+  }
+
+  .bloques-semana-columna .card-acciones {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1100px) {
+  .bloques-semana-columna .bloque-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .bloques-semana-columna .card-acciones {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Diálogo copiar bloque */
+.dialogo-copiar {
+  border: var(--glass-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  max-width: min(92vw, 420px);
+  background: #1f2937f0;
+  color: #f9fafb;
+  box-shadow: var(--glass-shadow);
+}
+
+.dialogo-copiar::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dialogo-copiar h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-size: 1.15rem;
+}
+
+.copiar-bloque-resumen {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.copiar-dias-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.copiar-dias-grid .btn-copiar-dia {
+  width: 100%;
+  min-height: 2.75rem;
+}
+
+.copiar-dias-grid .btn-copiar-dia:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dialogo-copiar-acciones {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
 
 /* RESPONSIVIDAD */
 

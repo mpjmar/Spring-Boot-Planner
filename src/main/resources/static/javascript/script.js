@@ -240,5 +240,68 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 
+	// COPIAR BLOQUES DE ESTUDIO
+	const dialogoCopiar = document.getElementById('dialogo-copiar-bloque');
+	const copiarDiasGrid = document.getElementById('copiar-dias-grid');
+	const copiarResumen = document.getElementById('copiar-bloque-resumen');
+	const cerrarDialogoCopiar = document.getElementById('cerrar-dialogo-copiar');
+	let bloqueIdCopiar = null;
+	let fechaOrigenCopiar = null;
+
+	if (dialogoCopiar && copiarDiasGrid) {
+		document.querySelectorAll('.btn-copiar-bloque').forEach(btn => {
+			btn.addEventListener('click', () => {
+				bloqueIdCopiar = btn.dataset.bloqueId;
+				fechaOrigenCopiar = btn.dataset.bloqueFecha;
+				if (copiarResumen) {
+					copiarResumen.textContent =
+						`${btn.dataset.bloqueAsignatura || 'Bloque'} · ${btn.dataset.bloqueHorario || ''}`;
+				}
+				copiarDiasGrid.querySelectorAll('.btn-copiar-dia').forEach(diaBtn => {
+					const esOrigen = diaBtn.dataset.fecha === fechaOrigenCopiar;
+					diaBtn.disabled = esOrigen;
+				});
+				dialogoCopiar.showModal();
+			});
+		});
+
+		if (cerrarDialogoCopiar) {
+			cerrarDialogoCopiar.addEventListener('click', () => dialogoCopiar.close());
+		}
+
+		dialogoCopiar.addEventListener('cancel', () => dialogoCopiar.close());
+
+		copiarDiasGrid.addEventListener('click', async event => {
+			const diaBtn = event.target.closest('.btn-copiar-dia');
+			if (!diaBtn || diaBtn.disabled || !bloqueIdCopiar) {
+				return;
+			}
+
+			const headers = {
+				'Content-Type': 'application/json'
+			};
+			if (csrfToken && csrfHeader) {
+				headers[csrfHeader] = csrfToken;
+			}
+
+			try {
+				const response = await fetch(`/bloquesEstudio/${bloqueIdCopiar}/copiar`, {
+					method: 'POST',
+					headers,
+					body: JSON.stringify({ fecha: diaBtn.dataset.fecha })
+				});
+
+				if (!response.ok) {
+					alert('No se pudo copiar el bloque. Puede haber un solapamiento en ese horario.');
+					return;
+				}
+
+				window.location.reload();
+			} catch (error) {
+				alert('Error de red al copiar el bloque.');
+			}
+		});
+	}
+
 });
 
