@@ -25,7 +25,7 @@ Permite gestionar el estudio y la carga lectiva mediante módulos de asignaturas
 
 ### Limitaciones de la demo en producción
 
-En el despliegue público en Render (plan gratuito), la **recuperación de contraseña por email no está disponible**: estos entornos suelen bloquear conexiones SMTP salientes (por ejemplo, Gmail en el puerto 587), lo que impide enviar el correo con el enlace de restablecimiento. El resto de funcionalidades (registro, login, planificación, CRUD, etc.) funciona con normalidad.
+En el despliegue público en Render (plan gratuito), la **recuperación de contraseña por email no está disponible**: estos entornos suelen bloquear conexiones SMTP salientes (en este caso, Gmail en el puerto 587), lo que impide enviar el correo con el enlace de restablecimiento. El resto de funcionalidades (registro, login, planificación, CRUD, etc.) funciona con normalidad.
 
 En **entorno local**, con las variables de correo configuradas, el flujo de recuperación sí puede probarse de extremo a extremo.
 
@@ -87,7 +87,7 @@ En **entorno local**, con las variables de correo configuradas, el flujo de recu
   - `application.properties`
   - `static/` — `css/styles.css`, `javascript/script.js`, imágenes
   - `templates/` — Vistas Thymeleaf por módulo (`dashboard`, `tareas`, `examenes`, `horariosClase`, `bloquesEstudio`, `imagenes`, etc.)
-- `Dockerfile` — Imagen para despliegue en PaaS (Render, Railway, etc.)
+- `Dockerfile` — Imagen para despliegue en PaaS (Render)
 
 ## Configuración de entorno
 
@@ -142,11 +142,6 @@ spring.mail.password=${SPRING_MAIL_PASSWORD}
 El proyecto incluye un `Dockerfile` que ejecuta `./mvnw clean package -DskipTests` y arranca el JAR en el puerto definido por `PORT`.
 
 **Render** (demo actual): conectar el repositorio, configurar las variables de entorno y desplegar como Web Service. El pool de conexiones Hikari está limitado a 5 conexiones para adaptarse a límites de Supabase en planes gratuitos.
-
-**Notas para producción:**
-
-- Configura `APP_BASE_URL` con la URL pública exacta (sin barra final) para que los enlaces de recuperación de contraseña apunten al dominio correcto cuando el correo pueda enviarse.
-- En planes gratuitos de Render, el envío SMTP a Gmail suele no estar disponible; para habilitar correo en producción haría falta un proveedor transaccional (Brevo, SendGrid, Resend, etc.).
 
 ## Autor
 
