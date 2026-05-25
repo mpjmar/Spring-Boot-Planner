@@ -25,7 +25,7 @@ Manage your studies and workload through modules for subjects, tasks, exams, cla
 
 ### Production demo limitations
 
-On the public deployment on Render (free tier), **password recovery by email is not available**: these environments often block outbound SMTP connections (e.g. Gmail on port 587), which prevents sending the email with the reset link. All other features (registration, login, planning, CRUD, etc.) work as expected.
+On the public deployment on Render (free tier), **password recovery by email is not available**: these environments often block outbound SMTP connections (Gmail on port 587 in this case), which prevents sending the email with the reset link. All other features (registration, login, planning, CRUD, etc.) work as expected.
 
 In a **local environment**, with mail variables configured, the full recovery flow can be tested end to end.
 
@@ -136,17 +136,6 @@ spring.mail.password=${SPRING_MAIL_PASSWORD}
 ```
 
 5. Open [http://localhost:8080](http://localhost:8080).
-
-## Deployment
-
-The project includes a `Dockerfile` that runs `./mvnw clean package -DskipTests` and starts the JAR on the port defined by `PORT`.
-
-**Render** (current demo): connect the repository, configure environment variables, and deploy as a Web Service. The Hikari connection pool is limited to 5 connections to fit Supabase free-tier limits.
-
-**Production notes:**
-
-- Set `APP_BASE_URL` to the exact public URL (no trailing slash) so password recovery links point to the correct domain when mail can be sent.
-- On Render's free tier, SMTP to Gmail is usually unavailable; enabling mail in production would require a transactional provider (Brevo, SendGrid, Resend, etc.).
 
 ## Author
 
